@@ -24,8 +24,17 @@
 - Data Visualization. The app will analize your expending patterns and give you advices for fulfilling your personal  finance requirements.
 
 
-
-
-
 ## Overview 
 Project helps users manage personal finances by giving them an overview of their expenses allowing them to visualize and analyze by storing their expenditures in jsons acessed by two means one stored in a cloudflare kv and the method involves exporting the json from the kv and reading it locally the user will get an analysis of their expenditure which they will input into the program and as stated previously will be stored in a kv the main web application will be stored in a page running react and typescript in order to facilitate development and the api will be managed by a cloudflare worker. The application will also give the user notifications for importatnt financial events such as bill due etc.
+
+
+## Getting Started 
+1. Ensure your Node.js version is higher than 18, preferably the latest available(20.11). https://nodejs.org/en/download/. Make sure that you download the 64 bit version.
+
+2. To run the application, execute the following commands in your VS terminal:
+   a. Switch to bash shell (May not be necessary). You do this by typing `bash` in the terminal.
+   b. Run `npm install`.
+   c. Execute `npm run dev`.
+3. If you want to make use of some tutorials to guide you here is one:
+    https://www.freecodecamp.org/ 
+    It has a couple useful tutorials in many topics.
