@@ -1,0 +1,15 @@
+name = "worker-pfm"
+main = "src/worker.js"
+compatibility_date = "2024-02-09"
+workers_dev = true
+
+[placement]
+mode = "smart"
+
+[[kv_namespaces]]
+id = "1f0a960a8d2447ac9bcf3d21a60d2ff6"
+binding = "pfmLogin"
+
+[[kv_namespaces]]
+id = "d956f1782e8d498b8333c9644be0c60e"
+binding = "pfmUserData"
