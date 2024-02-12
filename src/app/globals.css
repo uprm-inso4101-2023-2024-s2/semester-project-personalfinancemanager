@@ -31,3 +31,8 @@ body {
     text-wrap: balance;
   }
 }
+
+svg {
+  color:cornflowerblue;
+  background-color: antiquewhite;
+}
