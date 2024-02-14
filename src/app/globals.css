@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -30,9 +32,27 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+  .btn{
+    @apply px-4 py-2 text-sm capitalize rounded-xl;
+  }
+  
+  .btn-primary{
+    @apply border bg-slate-700 border-slate-700 text-lime-400;
+  }
+
+  .btn-primary-outline{
+    @apply border border-lime-400 text-lime-400;
+  }
+  .btn-danger{
+    @apply border text-white  bg-red-600 border-black
+  }
+  .btn-login{
+    @apply border text-white  bg-green-600 border-black
+  }
 }
 
 svg {
   color:cornflowerblue;
   background-color: antiquewhite;
 }
+
