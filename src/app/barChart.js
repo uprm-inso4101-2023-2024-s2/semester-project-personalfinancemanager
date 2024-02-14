@@ -14,7 +14,7 @@ export default function RenderBarChart() {
                   .attr('width', w)
                   .attr('height',h)
                   .style('overflow', 'visible')
-                  .style('margin-top', '75px');
+                  .style('margin-top', '20px');
     //setting the scaling
     const xScale = d3.scaleBand()
                 .domain(data.map((val, i) => i))
