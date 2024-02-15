@@ -27,7 +27,15 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+@layer base {
+  body {
+    @apply text-white bg-slate-900 relative;
+  }
 
+  button {
+    @apply transition-all duration-100 hover:scale-110;
+  }
+}
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -37,14 +45,14 @@ body {
   }
   
   .btn-primary{
-    @apply border bg-slate-700 border-slate-700 text-lime-400;
+    @apply border bg-slate-400 border-slate-400 text-black;
   }
 
   .btn-primary-outline{
     @apply border border-lime-400 text-lime-400;
   }
   .btn-danger{
-    @apply border text-white  bg-red-600 border-black
+    @apply border text-white  bg-red-600 border-red-600
   }
   .btn-login{
     @apply border text-white  bg-green-600 border-black
