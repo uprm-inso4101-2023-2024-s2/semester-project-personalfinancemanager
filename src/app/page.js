@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import RenderBarChart from "./barChart";
 import RenderPieChart from "./ExpenseChart"; // Import the RenderPieChart component
 import RenderDBC from "./divergingBarChart";
-import theNothinger from './somethingElse';
 import ExpenseCategoryItem from './ExpenseCategoryItem';
 import RenderLineChart from './lineChart';
 
