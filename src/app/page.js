@@ -4,14 +4,31 @@ import RenderBarChart from "./barChart";
 import RenderPieChart from "./ExpenseChart"; // Import the RenderPieChart component
 import theNothinger from "./somethingElse";
 import ExpenseCategoryItem from './ExpenseCategoryItem';
+import RenderLineChart from './lineChart';
 
 export default function Home() {
-  const [showBarChart, setShowBarChart] = useState(false);
+  const [chartType, setChartType] = useState('bar');
 
-  const toggleChange = () => {
-    setShowBarChart(!showBarChart);
+  const toggleChartType = () => {
+    setChartType(prevType => {
+      if (prevType === 'bar') return 'pie';
+      else if (prevType === 'pie') return 'line';
+      else return 'bar';
+    });
   }
 
+  const renderChart = () => {
+    switch (chartType) {
+      case 'bar':
+        return <RenderBarChart />;
+      case 'pie':
+        return <RenderPieChart />;
+      case 'line':
+        return <RenderLineChart />;
+      default:
+        return null;
+    }
+  }
   return (
     <>
       <main className="container max-w-2x1 px-6 mx-auto">
@@ -30,12 +47,20 @@ export default function Home() {
           </div>
         </section>
 
-        <div className="mt-2 group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
-          <button onClick={toggleChange}>{showBarChart ? 'Show Pie Chart' : 'Show Bar Chart'}</button>
+        <div className="mt-2 group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 flex justify-between">
+          <button style={{ marginRight: '10px' }} onClick={() => setChartType('bar')}>
+            <img src="https://cdn.pixabay.com/photo/2014/03/25/16/26/bar-chart-297122_1280.png" alt="Bar Chart" style={{ width: '100px', height: 'auto' }} />          
+          </button>
+          <button style={{ margin: '0 10px' }} onClick={() => setChartType('pie')}>
+            <img src="https://freesvg.org/img/1529053464.png" alt="Pie Chart" style={{ width: '100px', height: 'auto' }} />  
+          </button>
+          <button style={{ marginLeft: '10px' }} onClick={() => setChartType('line')}>
+            <img src="https://c.mql5.com/31/4/MAStop_200.png" alt="Line Chart" style={{ width: '100px', height: 'auto' }} />  
+          </button>
         </div>
-        
+
         <section className='max-w-2x1 px-6 mx-auto'>
-          {showBarChart ? <RenderBarChart /> : <RenderPieChart />}
+          {renderChart()}
         </section>
       </main>
     </>
