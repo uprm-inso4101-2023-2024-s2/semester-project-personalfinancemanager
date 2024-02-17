@@ -4,14 +4,31 @@ import RenderBarChart from "./barChart";
 import RenderPieChart from "./ExpenseChart"; // Import the RenderPieChart component
 import theNothinger from "./somethingElse";
 import ExpenseCategoryItem from './ExpenseCategoryItem';
+import RenderLineChart from './lineChart';
 
 export default function Home() {
-  const [showBarChart, setShowBarChart] = useState(false);
+  const [chartType, setChartType] = useState('bar');
 
-  const toggleChange = () => {
-    setShowBarChart(!showBarChart);
+  const toggleChartType = () => {
+    setChartType(prevType => {
+      if (prevType === 'bar') return 'pie';
+      else if (prevType === 'pie') return 'line';
+      else return 'bar';
+    });
   }
 
+  const renderChart = () => {
+    switch (chartType) {
+      case 'bar':
+        return <RenderBarChart />;
+      case 'pie':
+        return <RenderPieChart />;
+      case 'line':
+        return <RenderLineChart />;
+      default:
+        return null;
+    }
+  }
   return (
     <>
       <main className="container max-w-2x1 px-6 mx-auto">
@@ -31,11 +48,13 @@ export default function Home() {
         </section>
 
         <div className="mt-2 group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
-          <button onClick={toggleChange}>{showBarChart ? 'Show Pie Chart' : 'Show Bar Chart'}</button>
+          <button onClick={toggleChartType}>
+            {chartType === 'bar' ? 'Show Pie Chart' : (chartType === 'pie' ? 'Show Line Chart' : 'Show Bar Chart')}
+          </button>
         </div>
-        
+
         <section className='max-w-2x1 px-6 mx-auto'>
-          {showBarChart ? <RenderBarChart /> : <RenderPieChart />}
+          {renderChart()}
         </section>
       </main>
     </>
