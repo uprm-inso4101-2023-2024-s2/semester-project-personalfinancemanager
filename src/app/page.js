@@ -47,9 +47,15 @@ export default function Home() {
           </div>
         </section>
 
-        <div className="mt-2 group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
-          <button onClick={toggleChartType}>
-            {chartType === 'bar' ? 'Show Pie Chart' : (chartType === 'pie' ? 'Show Line Chart' : 'Show Bar Chart')}
+        <div className="mt-2 group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 flex justify-between">
+          <button style={{ marginRight: '10px' }} onClick={() => setChartType('bar')}>
+            <img src="https://cdn.pixabay.com/photo/2014/03/25/16/26/bar-chart-297122_1280.png" alt="Bar Chart" style={{ width: '100px', height: 'auto' }} />          
+          </button>
+          <button style={{ margin: '0 10px' }} onClick={() => setChartType('pie')}>
+            <img src="https://freesvg.org/img/1529053464.png" alt="Pie Chart" style={{ width: '100px', height: 'auto' }} />  
+          </button>
+          <button style={{ marginLeft: '10px' }} onClick={() => setChartType('line')}>
+            <img src="https://c.mql5.com/31/4/MAStop_200.png" alt="Line Chart" style={{ width: '100px', height: 'auto' }} />  
           </button>
         </div>
 
