@@ -1,10 +1,12 @@
 'use client'
 import React, {useState} from 'react';
 import RenderBarChart from "./barChart";
-import theNothinger from "./somethingElse";
+// import theNothinger from "./somethingElse";
 import {currencyFormatter} from './utils'
 import ExpenseCategoryItem from './ExpenseCategoryItem';
-import Modal from './modal';
+import AddExpensesModal from './AddExpensesModal';
+import AddIncomesModal from './AddIncomesModal';
+
 
 const DUMMY_DATA = [
   {
@@ -35,8 +37,9 @@ const DUMMY_DATA = [
 
 export default function Home() {
 
-  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [showBarChart, setShowBarChart] = useState(false);
+  const [showAddIncomeModal, setShowAddIncomeModal] = useState(false);
+  const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
 
   const toggleChange = () => {
       setShowBarChart(!showBarChart);
@@ -44,10 +47,18 @@ export default function Home() {
 
   return (
     <>
-      {/* Modal */}
-      <Modal show={modalIsOpen} onClose={setModalIsOpen}>
-        <h3>Hello World</h3>
-      </Modal>
+      {/* Add Income Modal */}
+      <AddIncomesModal 
+        show={showAddIncomeModal} 
+        onClose={setShowAddIncomeModal}
+      />
+      
+      
+      {/* Add Expenses Moda */}
+      <AddExpensesModal 
+        show={showAddExpenseModal} 
+        onClose={setShowAddExpenseModal} 
+      />
 
       <main className="container max-w-2x1 px-6 mx-auto">
         <section className="py-3">
@@ -57,11 +68,14 @@ export default function Home() {
 
         <section className='flex items-center gap-2 py-3'>
           <button 
-          onClick={() => {
-              setModalIsOpen(true);
-            }}
-            className='btn btn-primary'>+ Expenses</button>
-          <button className='btn btn-primary'>+ Income</button>
+            onClick={() => {setShowAddExpenseModal(true);}}
+            className='btn btn-primary'>+ Expenses
+          </button>
+          
+          <button 
+            onClick={() => {setShowAddIncomeModal(true);}}
+            className='btn btn-primary'>+ Income
+          </button>
         </section>
 
         {/** Expenses */}
@@ -83,10 +97,8 @@ export default function Home() {
         <div className="mt-2 group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
           <button onClick={toggleChange}>{showBarChart ? 'Show Nothing' : 'Show Bar Chart'}</button>
         </div>
-        <section className='max-w-2x1 px-6 mx-auto'>{showBarChart ? <RenderBarChart /> : <theNothinger />}</section>
-        
+        <section className='max-w-2x1 px-6 mx-auto' style={{ backgroundColor: 'white' }}>{showBarChart ? <RenderBarChart /> : <theNothinger />}</section>
       </main>
     </>
-    
   );
 }
