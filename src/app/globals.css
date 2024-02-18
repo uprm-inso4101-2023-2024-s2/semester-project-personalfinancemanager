@@ -51,9 +51,14 @@ body {
   }
 }
 
+@layer utilities {
+  .text-black {
+    color: black;
+  }
+}
+
 svg {
   color:cornflowerblue;
-  background-color: antiquewhite;
 }
 
 .pie-chart svg {

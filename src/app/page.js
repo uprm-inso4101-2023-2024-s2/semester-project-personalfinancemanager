@@ -1,62 +1,89 @@
-'use client';
-
-import React, {  useState  } from 'react';
-import RenderBarChart from './barChart';
+'use client'
+import React, { useState } from 'react';
+import RenderBarChart from "./barChart";
 import RenderPieChart from "./ExpenseChart"; // Import the RenderPieChart component
-import theNothinger from './somethingElse';
+import RenderDBC from "./divergingBarChart";
 import ExpenseCategoryItem from './ExpenseCategoryItem';
-import LoginPage from './LoginPage'; // imports the LoginPage components
+import RenderLineChart from './lineChart';
+import LoginPage from './LoginPage';
 
-function Home() {
-    const [showBarChart, setShowBarChart] = useState(false);
-    const [isLoginPage, setLoginPage] = useState(false);
+export default function Home() {
+  const [chartType, setChartType] = useState('bar');
+  const [isLoginPage, setLoginPage] = useState(false);
 
-    const toggleChange = () => {
-      setShowBarChart(!showBarChart);
-    };
+  const toggleChartType = () => {
+    setChartType(prevType => {
+      if (prevType === 'bar') return 'pie';
+      else if (prevType === 'pie') return 'line';
+      else if (prevType === 'line') return 'divergence';
+      else return 'bar';
+    });
+  }
 
-    const handleLoginButtonClick = () => {
-        setLoginPage(true); // Show the login page when the button is clicked
-    };
+  const handleLoginButtonClick = () => {
+    setLoginPage(true); // Show the login page when the button is clicked
+  };
 
-    const handleLogin = (email) => {
-        setLoginPage(false);
-    };
+  const handleLogin = (email) => {
+    setLoginPage(false);
+  };
 
-    return (
-        <>
-            {isLoginPage ? (
-                <LoginPage onLogin={handleLogin} />
-            ) : (
-                <main className="container max-w-2x1 px-6 mx-auto">
-                    {/* Login button */}
-                    <div className="flex justify-end mt-1">
-                        <button className="bg-green-500 text-white px-4 py-2 rounded" onClick={handleLoginButtonClick}>Login</button>
-                    </div>
+  const renderChart = () => {
+    switch (chartType) {
+      case 'bar':
+        return <RenderBarChart />;
+      case 'pie':
+        return <RenderPieChart />;
+      case 'line':
+        return <RenderLineChart />;
+      case 'divergence':
+        return <RenderDBC />
+      default:
+        return null;
+    }
+  }
+  return (
+    <>
+      {isLoginPage ? (
+        <LoginPage onLogin={handleLogin} />
+      ) : (
+        <main className="container max-w-2x1 px-6 mx-auto">
+          <button className="bg-green-500 text-white px-4 py-2 rounded absolute top-0 right-20 m-7" onClick={handleLoginButtonClick}>Login</button>
+          <section className="py-3">
+            <small className="text-gray-400 text-md">My Balance</small>
+            <h2 className="text-4x1 font-bold">$100</h2>
+          </section>
 
-                    <section className="py-3">
-                        <small className="text-gray-400 text-md">My Balance</small>
-                        <h2 className="text-4x1 font-bold">$100</h2>
-                    </section>
+          {/* Add Expenses feature */}
+          <section>
+            <h3 className='flex-2x1'>My Expenses</h3>
+            <div className='flex flex-col gap-2 mt-6'>
+              <ExpenseCategoryItem color={'#014'} title={'Mock-cost'} total={300} />
+              <ExpenseCategoryItem color={'#032'} title={'Mock-cost'} total={125} />
+              <ExpenseCategoryItem color={'#121'} title={"Mock-cost"} total={200} />
+            </div>
+          </section>
 
-                  {/* Add Expenses feature */}
-                  <section>
-                      <h3 className="flex-2x1">My Expenses</h3>
-                      <div className="flex flex-col gap-2 mt-6">
-                        <ExpenseCategoryItem color={'#014'} title={'Mock-cost'} total={300} />
-                        <ExpenseCategoryItem color={'#032'} title={'Mock-cost'} total={125} />
-                        <ExpenseCategoryItem color={'#121'} title={'Mock-cost'} total={200} />
-                      </div>
-                  </section>
+          <div className="mt-2 group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 flex justify-between">
+            <button style={{ margin: '0 5px' }} onClick={() => setChartType('bar')}>
+              <img src="https://cdn.pixabay.com/photo/2014/03/25/16/26/bar-chart-297122_1280.png" alt="Bar Chart" style={{ width: '100px', height: 'auto' }} />
+            </button>
+            <button style={{ margin: '0 5px' }} onClick={() => setChartType('pie')}>
+              <img src="https://freesvg.org/img/1529053464.png" alt="Pie Chart" style={{ width: '100px', height: 'auto' }} />
+            </button>
+            <button style={{ margin: '0 5px' }} onClick={() => setChartType('line')}>
+              <img src="https://c.mql5.com/31/4/MAStop_200.png" alt="Line Chart" style={{ width: '100px', height: 'auto' }} />
+            </button>
+            <button style={{ margin: '0 5px' }} onClick={() => setChartType('divergence')}>
+              <img src="https://www.xelplus.com/wp-content/uploads/2019/04/Charting-Survey-Results-727a6c.png" alt="Diverging Bar Chart" style={{ width: '100px', height: 'auto' }} />
+            </button>
+          </div>
 
-                    <div className="mt-2 group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
-                        <button onClick={toggleChange}>{showBarChart ? 'Show Nothing' : 'Show Bar Chart'}</button>
-                    </div>
-                    <section className="max-w-2x1 px-6 mx-auto">{showBarChart ? <RenderBarChart /> : <theNothinger />}</section>
-                </main>
-            )}
-        </>
-    );
+          <section className='max-w-2x1 px-6 mx-auto'>
+            {renderChart()}
+          </section>
+        </main>
+      )}
+    </>
+  );
 }
-
-export default Home;
