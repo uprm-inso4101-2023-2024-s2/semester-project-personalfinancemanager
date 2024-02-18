@@ -1,5 +1,5 @@
 
-function ExpenseCategoryItem ({color, title, total}) {
+function AddCategoryItem ({color, title, total}) {
     return (
      <button>
         <div className="flex items-center justify-between px-4 py-4 bg-slate-300 rounded-full">
@@ -13,4 +13,4 @@ function ExpenseCategoryItem ({color, title, total}) {
     );
 }
 
-export default ExpenseCategoryItem;
+export default AddCategoryItem;
