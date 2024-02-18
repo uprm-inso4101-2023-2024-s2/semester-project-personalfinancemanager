@@ -47,7 +47,7 @@ body {
     @apply border text-white  bg-red-600 border-black
   }
   .btn-login{
-    @apply border text-white  bg-green-600 border-black
+    @apply text-white  bg-green-600
   }
 }
 
