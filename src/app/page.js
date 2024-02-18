@@ -85,9 +85,7 @@ export default function Home() {
             {DUMMY_DATA.map((expense) => {
               return (
                 <ExpenseCategoryItem 
-                color={expense.color} 
-                title={expense.title} 
-                amount={expense.amount} 
+                  expense={expense}
             />
               );
             })}
