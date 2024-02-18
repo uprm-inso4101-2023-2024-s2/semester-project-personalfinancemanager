@@ -74,12 +74,11 @@ export default function Home() {
   }
   return (
     <>
-        
-        <main className="container max-w-2x1 px-6 mx-auto">
-          <section className="py-3">
-            <small className="text-gray-400 text-md">My Balance</small>
-            <h2 className="text-4x1 font-bold">$100</h2>
-          </section>
+      <main className="container max-w-2x1 px-6 mx-auto">
+      <section className="py-3">
+          <small className="text-black-400 text-md">My Balance</small>
+          <h2 className="text-4x1 font-bold">${totalIncomes - totalExpenses}</h2>
+        </section>
 
         <section>
             <small className="text-black-400 text-md">My {displayExpenses ? 'Expenses' : 'Incomes'}</small>
