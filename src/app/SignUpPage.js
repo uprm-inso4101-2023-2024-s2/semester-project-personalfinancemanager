@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 function SignUpPage({ onSignUp }) {
     const [fullName, setFullName] = useState('');
@@ -9,6 +11,7 @@ function SignUpPage({ onSignUp }) {
     const [gender, setGender] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
+    
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
     };
@@ -31,42 +34,31 @@ function SignUpPage({ onSignUp }) {
                     <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="border px-3 py-1 rounded text-black" />
                 </div>
                 <div>
-                    <label className="block">Password:</label>
-                    <div className="relative">
-                        <input
-                        type={showPassword ? 'text' : 'password'}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="border px-3 py-1 rounded text-black" // Added padding-right to prevent text overlap
-                        />
-                        <button
-                        className="absolute inset-y-0 right-0 px-16 py-1 text-sm font-medium text-black"
-                        onClick={toggleShowPassword}
-                        type="button"
-                        >
-                        {showPassword ? 'Hide' : 'Show'}
-                        </button>
+                <label className="block">Password:</label>
+          <div className="relative">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              
+              onChange={(e) => setPassword(e.target.value)}
+              className="border px-3 py-1 rounded text-black" // Added padding-right to prevent text overlap
+            />
+            <FontAwesomeIcon
+              icon={showPassword ? faEye : faEyeSlash}
+              className="eye-icon px-2"
+              onClick={toggleShowPassword}
+            />
                     </div>
                 </div>
                 <div>
                     <label className="block">Mobile phone number:</label>
                     <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="border px-3 py-1 rounded text-black" />
                 </div>
-                <div className="flex gap-3">
+                <label className="block" style={{ marginBottom: '-14px' }}>Date of birth:</label> 
+                 <div className="flex gap-3">
                     <div>
-                        <label className="block">Birth month:</label>
-                        <select value={birthDate.year} onChange={(e) => setBirthDate({...birthDate, year: e.target.value})} className="border px-3 py-1 rounded text-black">
-                            <option value="">Year</option>
-                            {[...Array(124)].map((_, index) => {
-                                const year = 2024 - index;
-                                return <option key={year} value={year}>{year}</option>;
-                            })}
-                        </select>
-                    </div>
-                    <div>
-                        <label className="block">Day:</label>
                         <select value={birthDate.day} onChange={(e) => setBirthDate({...birthDate, day: e.target.value})} className="border px-3 py-1 rounded text-black">
-                            <option value="">Day</option>
+                            <option value="">DD</option>
                             {[...Array(31)].map((_, index) => {
                                 const day = index + 1;
                                 return <option key={day} value={day}>{day}</option>;
@@ -74,11 +66,19 @@ function SignUpPage({ onSignUp }) {
                         </select>
                     </div>
                     <div>
-                        <label className="block">Year:</label>
                         <select value={birthDate.month} onChange={(e) => setBirthDate({...birthDate, month: e.target.value})} className="border px-3 py-1 rounded text-black">
-                            <option value="">Month</option>
+                            <option value="">MM</option>
                             {["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map((month, index) => {
                                 return <option key={month} value={index + 1}>{month}</option>;
+                            })}
+                        </select>
+                    </div>
+                    <div>
+                        <select value={birthDate.year} onChange={(e) => setBirthDate({...birthDate, year: e.target.value})} className="border px-3 py-1 rounded text-black">
+                            <option value="">YYYY</option>
+                            {[...Array(124)].map((_, index) => {
+                                const year = 2024 - index;
+                                return <option key={year} value={year}>{year}</option>;
                             })}
                         </select>
                     </div>
