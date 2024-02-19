@@ -6,10 +6,12 @@ import RenderDBC from "./divergingBarChart";
 import AddCategoryItem from "./addcategoryItem";
 import RenderLineChart from './lineChart';
 import LoginPage from './LoginPage';
+import SignUpPage from './SignUpPage';
 
 export default function Home() {
   const [chartType, setChartType] = useState('bar');
   const [isLoginPage, setLoginPage] = useState(false);
+  const [isSignUpPage, setSignUpPage] = useState(false);
   const [displayExpenses, setDisplayExpenses] = useState(true); 
 
   const [expensesData, setExpensesData] = useState([
@@ -48,6 +50,16 @@ export default function Home() {
     setLoginPage(false);
   };
 
+  const handleSignUpButtonClick = () => {
+    setSignUpPage(true);
+    setLoginPage(false); // Ensure login page is closed when opening sign up
+  };
+
+  const handleSignUp = (userInfo) => {
+    console.log(userInfo); // Here you would handle the user info, e.g., send it to a server
+    setSignUpPage(false);
+  };
+
   const toggleDisplay = () => {
     setDisplayExpenses((prevDisplay) => !prevDisplay); 
   };
@@ -68,11 +80,18 @@ export default function Home() {
   }
   return (
     <>
-      {isLoginPage ? (
+      {isLoginPage && (
         <LoginPage onLogin={handleLogin} />
-      ) : (
+      )}
+      {isSignUpPage && (
+        <SignUpPage onSignUp={handleSignUp} />
+      )}
+      {!isLoginPage && !isSignUpPage && (
+        // Main container code...
         <main className="container max-w-2x1 px-6 mx-auto">
           <button className="bg-green-500 text-white px-4 py-2 rounded absolute top-0 right-20 m-7" onClick={handleLoginButtonClick}>Login</button>
+          {/* Sign Up button */}
+          <button className="bg-blue-500 text-white px-4 py-2 rounded absolute top-0 right-40 m-7" onClick={handleSignUpButtonClick}>Sign Up</button>
         <section className="py-3">
             <small className="text-black-400 text-md">My Balance</small>
             <h2 className="text-4x1 font-bold">${totalIncomes - totalExpenses}</h2>
