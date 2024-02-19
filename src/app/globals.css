@@ -51,6 +51,12 @@ body {
   }
 }
 
+@layer utilities {
+  .text-black {
+    color: black;
+  }
+}
+
 svg {
   color:cornflowerblue;
 }
