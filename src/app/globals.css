@@ -44,7 +44,7 @@ body {
     @apply border border-lime-400 text-lime-400;
   }
   .btn-danger{
-    @apply border text-white  bg-red-600 border-black
+    @apply border text-white  bg-red-600 border-red-300
   }
   .btn-login{
     @apply border text-white  bg-green-600 border-black

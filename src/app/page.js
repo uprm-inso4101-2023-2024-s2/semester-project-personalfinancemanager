@@ -76,7 +76,6 @@ export default function Home() {
     <>
 
         <main className="container max-w-2x1 px-6 mx-auto">
-          <button className="bg-green-500 text-white px-4 py-2 rounded absolute top-0 right-20 m-7" onClick={handleLoginButtonClick}>Login</button>
         <section className="py-3">
             <small className="text-black-400 text-md">My Balance</small>
             <h2 className="text-4x1 font-bold">${totalIncomes - totalExpenses}</h2>
