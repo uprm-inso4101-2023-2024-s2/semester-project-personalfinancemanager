@@ -114,7 +114,7 @@ export default function Home() {
             </button>
           </div>
 
-          <section className='max-w-2x1 px-6 mx-auto'>
+          <section className='max-w-2x1 px-6 mx-auto '>
             {renderChart()}
           </section>
         </main>
