@@ -1,15 +1,17 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import RenderBarChart from "./barChart";
 import RenderPieChart from "./ExpenseChart"; // Import the RenderPieChart component
 import RenderDBC from "./divergingBarChart";
 import ExpenseCategoryItem from './ExpenseCategoryItem';
 import RenderLineChart from './lineChart';
 import LoginPage from './LoginPage';
+import { authContext } from './auth-context';
 
 export default function Home() {
   const [chartType, setChartType] = useState('bar');
   const [isLoginPage, setLoginPage] = useState(false);
+  const { user } = useContext(authContext);
 
   const toggleChartType = () => {
     setChartType(prevType => {
@@ -42,13 +44,14 @@ export default function Home() {
         return null;
     }
   }
+
+  if (!user) {
+    return <LoginPage/>
+  }
   return (
     <>
-      {isLoginPage ? (
-        <LoginPage onLogin={handleLogin} />
-      ) : (
+        
         <main className="container max-w-2x1 px-6 mx-auto">
-          <button className="bg-green-500 text-white px-4 py-2 rounded absolute top-0 right-20 m-7" onClick={handleLoginButtonClick}>Login</button>
           <section className="py-3">
             <small className="text-gray-400 text-md">My Balance</small>
             <h2 className="text-4x1 font-bold">$100</h2>
@@ -83,7 +86,7 @@ export default function Home() {
             {renderChart()}
           </section>
         </main>
-      )}
+      
     </>
   );
 }
