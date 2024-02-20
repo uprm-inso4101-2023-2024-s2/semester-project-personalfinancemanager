@@ -65,7 +65,8 @@ export default function Home() {
           <h2 className="text-4x1 font-bold">${totalIncomes - totalExpenses}</h2>
         </section>
 
-        <section>
+          {/* Add Expenses feature */}
+          <section>
             <small className="text-black-400 text-md">My {displayExpenses ? 'Expenses' : 'Incomes'}</small>
             <h2 className="text-4x1 font-bold">${displayExpenses ? totalExpenses : totalIncomes}</h2>
           <div className='flex flex-col gap-2 mt-6'>
@@ -80,7 +81,7 @@ export default function Home() {
             )}
           </div>
           
-        </section>
+         </section>
               
         <button style={{ margin: '25px 0' }} className="bg-blue-500 text-white px-4 py-2 rounded" onClick={toggleDisplay}>{displayExpenses ? 'Show Incomes' : 'Show Expenses'}</button>
 
