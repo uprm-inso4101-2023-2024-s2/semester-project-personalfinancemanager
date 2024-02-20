@@ -124,6 +124,7 @@ export default function RenderDBC( {
             .attr("x", i => xScale(X[i]) + Math.sign(X[i] - 0) * 4)
             .attr("y", i => yScale(Y[i]) + yScale.bandwidth() / 2)
             .attr("dy", "0.35em")
+            .attr("fill", "#808080")
             .text(i => format(X[i]));
     
         svg.append("g")
