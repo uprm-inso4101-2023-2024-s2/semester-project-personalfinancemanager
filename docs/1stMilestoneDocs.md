@@ -1,3 +1,48 @@
+# PersonalFinanceManager Documentation
+
+## Team Composition
+
+The project team consists of 27 individuals, each bringing unique skills and perspectives to the development of the PersonalFinanceManager app.
+
+## 1. Introduction
+
+### 1.1 Overview
+
+PersonalFinanceManager is designed to assist individuals in making informed financial decisions and planning their finances with precision. By leveraging data and aligning with users' financial goals, our app aims to simplify and enhance the budgeting process.
+
+### 1.2 Current Challenges and Solution
+
+Many people struggle with efficiently managing their budgets. Traditional methods, such as handwritten notebooks or complex spreadsheet templates, are often tedious and inaccessible for some. The PersonalFinanceManager app addresses this issue by offering an intuitive platform that minimizes technical and economic barriers. It not only facilitates budget tracking and management but also provides predictive insights and actionable recommendations to improve spending habits according to user goals.
+
+## 2. Project Scope and Methodology
+
+### Scope
+
+The PersonalFinanceManager WebApp targets a broad audience seeking to improve their personal finance management. Initially, the app will require manual input of transactions, with future iterations planned to include automatic bank account synchronization for real-time tracking and categorization of expenses and income.
+
+### Span
+
+Our development process adopts the AGILE methodology, enabling flexibility and continuous improvement through successive sprints. This approach ensures that the app remains responsive to user needs and evolving project goals.
+
+### Synopsis
+
+The app's design acknowledges the reality that a completely frictionless experience is unattainable. Users must actively engage with the app to reap its full benefits. Our vision includes gradually introducing features that accommodate passive users, allowing them to receive essential notifications with minimal effort.
+
+### Domain Description
+
+- **Entities**: The primary entity is the user, alongside financial entities such as cash flow (income and expenses) and liquid assets. Abstract entities like debt are also considered to capture the full financial picture of the user.
+
+- **Functions**: Users can perform two main actions: earning and spending money, categorized by type for detailed tracking. Setting financial goals is another critical function, enabling personalized advice and progress tracking.
+
+- **Events**: The app distinguishes between synchronous and asynchronous events. Synchronous events update the user's financial overview in real-time, while asynchronous events include notifications and reminders to guide user behavior towards their financial goals.
+
+- **Behaviors**: The ultimate behavior change targeted by the app is the alignment of the user's financial activities with their set goals. This involves a dynamic interaction between user actions, app feedback, and personalized advice to encourage positive financial habits.
+
+## Conclusion
+
+PersonalFinanceManager aspires to transform the way individuals interact with their finances. Through a user-friendly interface, data-driven insights, and a forward-looking development approach, we aim to empower users to achieve their financial goals with confidence.
+
+
 ## Descriptive Part
 
 ### 2.1 Domain Description
