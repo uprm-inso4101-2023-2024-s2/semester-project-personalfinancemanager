@@ -80,14 +80,6 @@ export default function Home() {
 
           {/* Add Expenses feature */}
           <section>
-            <h3 className='flex-2x1'>My Expenses</h3>
-            <div className='flex flex-col gap-2 mt-6'>
-              <AddCategoryItem color={'#014'} title={'Mock-cost'} total={300} />
-              <AddCategoryItem color={'#032'} title={'Mock-cost'} total={125} />
-              <AddCategoryItem color={'#121'} title={"Mock-cost"} total={200} />
-            </div>
-          </section>
-        <section>
             <small className="text-black-400 text-md">My {displayExpenses ? 'Expenses' : 'Incomes'}</small>
             <h2 className="text-4x1 font-bold">${displayExpenses ? totalExpenses : totalIncomes}</h2>
           <div className='flex flex-col gap-2 mt-6'>
@@ -102,7 +94,7 @@ export default function Home() {
             )}
           </div>
           
-        </section>
+         </section>
               
         <button style={{ margin: '25px 0' }} className="bg-blue-500 text-white px-4 py-2 rounded" onClick={toggleDisplay}>{displayExpenses ? 'Show Incomes' : 'Show Expenses'}</button>
 
