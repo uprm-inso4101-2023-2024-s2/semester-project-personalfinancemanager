@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
+import PwdChangePage from './PasswordChanged';
 
 function ForgotPasswordPage({ onReturnHome }) {
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [passwordChanged, setPasswordChanged] = useState(false);
 
     const handleConfirmPasswordChange = () => {
-        // Add logic for confirming the new password and navigating back to the login page
-        // For now, just navigate back to the login page
-        onReturnHome();
+        setPasswordChanged(true);
     };
 
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
     };
+    
+    if(passwordChanged){
+        return <PwdChangePage onReturnHome={onReturnHome} />;
+    }
 
     return (
         <div className="flex flex-col items-center justify-center h-screen">
