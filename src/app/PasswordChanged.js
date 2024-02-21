@@ -13,9 +13,11 @@ function PwdChangePage({ onReturnHome }) {
       {mainPage ? (
         <Home onLogin={() => setMainPage(false)} />
       ) : (
-        <div style={{ textAlign: 'center', marginTop: '50px' }}>
-          <h1>Congratulations!</h1>
-          <p style={{ fontSize: '18px' }}>You have successfully changed your password.</p>
+        <div style={{ textAlign: "center", marginTop: "50px" }}>
+          <h1 style={{ fontSize: "36px" }}>Congratulations!</h1>{" "}
+          <p style={{ fontSize: "18px" }}>
+            You have successfully changed your password.
+          </p>
           <button
             onClick={handleBackToMainClick}
             className="bg-green-500 text-white px-4 py-2 rounded mt-3"
