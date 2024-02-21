@@ -35,7 +35,7 @@ function ForgotPasswordPage({ onReturnHome }) {
                     <input type="password" value={confirmNewPassword} onChange={(e) => setConfirmNewPassword(e.target.value)} className="border px-3 py-1 rounded text-black" />
                 </div>
             </div>
-            <button onClick={handleConfirmPasswordChange} className="bg-blue-500 text-white px-4 py-2 rounded mt-3">Confirm Password Change</button>
+            <button onClick={handleConfirmPasswordChange} className="bg-green-500 text-white px-4 py-2 rounded mt-3">Confirm Password Change</button>
         </div>
     );
 }
