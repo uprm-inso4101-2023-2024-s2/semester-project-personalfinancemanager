@@ -13,7 +13,7 @@ function ForgotPassword() {
     };
 
     return (isShowForgotPassword ? (
-        <div className="flex flex-col items-center justify-center h-screen">
+        <div className="flex flex-col items-center h-screen">
             <h2 className="text-2xl font-semibold mb-3">Forgot Password</h2>
             <div className="flex flex-col gap-4">
                 <div>

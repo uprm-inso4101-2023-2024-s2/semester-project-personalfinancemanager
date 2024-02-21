@@ -11,6 +11,7 @@ export default function Home() {
   const [chartType, setChartType] = useState('bar');
   const [isLoginPage, setLoginPage] = useState(false);
   const [displayExpenses, setDisplayExpenses] = useState(true); 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const [expensesData, setExpensesData] = useState([
     { color: '#014', title: 'housing', total: 300 },
@@ -41,11 +42,20 @@ export default function Home() {
   }
 
   const handleLoginButtonClick = () => {
-    setLoginPage(true); // Show the login page when the button is clicked
+    if (isLoggedIn) {
+      setIsLoggedIn(false); // If user is logged in, log them out
+    } else {
+      setLoginPage(true); // Show the login page when the button is clicked
+    }
   };
 
   const handleLogin = (email) => {
     setLoginPage(false);
+    setIsLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
   };
 
   const toggleDisplay = () => {
@@ -72,7 +82,7 @@ export default function Home() {
         <LoginPage onLogin={handleLogin} />
       ) : (
         <main className="container max-w-2x1 px-6 mx-auto">
-          <button className="bg-green-500 text-white px-4 py-2 rounded absolute top-0 right-20 m-7" onClick={handleLoginButtonClick}>Login</button>
+        <button className="bg-green-500 text-white px-4 py-2 rounded absolute top-0 right-20 m-7" onClick={handleLoginButtonClick}>{isLoggedIn ? 'Sign out' : 'Login'}</button>
         <section className="py-3">
             <small className="text-black-400 text-md">My Balance</small>
             <h2 className="text-4x1 font-bold">${totalIncomes - totalExpenses}</h2>
@@ -94,7 +104,7 @@ export default function Home() {
             )}
           </div>
           
-         </section>
+        </section>
               
         <button style={{ margin: '25px 0' }} className="bg-blue-500 text-white px-4 py-2 rounded" onClick={toggleDisplay}>{displayExpenses ? 'Show Incomes' : 'Show Expenses'}</button>
 
