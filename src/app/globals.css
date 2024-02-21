@@ -61,7 +61,7 @@ body {
     @apply border text-white  bg-red-600 border-red-600
   }
   .btn-login{
-    @apply border text-white  bg-green-600 border-black
+    @apply text-white  bg-green-600
   }
   
   .input-ground{

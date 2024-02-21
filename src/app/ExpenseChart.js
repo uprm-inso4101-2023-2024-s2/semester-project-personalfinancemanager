@@ -56,6 +56,7 @@ const RenderPieChart = () => {
       .attr("y", 9)
       .attr("dy", ".35em")
       .style("text-anchor", "start")
+      .style("fill", "#8db0c7")
       .text(d => d.category);
   }, [data]);
 
