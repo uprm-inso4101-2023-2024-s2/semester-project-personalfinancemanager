@@ -55,7 +55,8 @@ export default function RenderBarChart() {
       .attr('x', d => xScale(d.name))
       .attr('y', d => yScale(d.value))
       .attr('width', xScale.bandwidth())
-      .attr('height', d => h - yScale(d.value));
+      .attr('height', d => h - yScale(d.value))
+      .style('fill', "#8db0c7");
 
   }, [data]);
 
