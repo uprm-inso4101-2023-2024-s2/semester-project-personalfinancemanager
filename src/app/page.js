@@ -3,14 +3,49 @@ import React, { useState } from 'react';
 import RenderBarChart from "./barChart";
 import RenderPieChart from "./ExpenseChart"; 
 import RenderDBC from "./divergingBarChart";
-import AddCategoryItem from "./addcategoryItem";
 import RenderLineChart from './lineChart';
 import LoginPage from './LoginPage';
+import { currencyFormatter } from './utils';
+import ExpenseCategoryItem from './ExpenseCategoryItem';
+import AddExpensesModal from './AddExpensesModal';
+import AddIncomesModal from './AddIncomesModal';
+
+
+const DUMMY_DATA = [
+  {
+    id: '1',
+    title: 'Family',
+    color: '#f00',
+    amount: 500,
+  },
+  {
+    id: '2',
+    title: 'Education',
+    color: '#ff6',
+    amount: 200,
+  },
+  {
+    id: '3',
+    title: 'Pets',
+    color: '#008f',
+    amount: 1200,
+  },
+  {
+    id: '4',
+    title: 'Cinema',
+    color: '#d07',
+    amount: 800,
+  }
+];
 
 export default function Home() {
   const [chartType, setChartType] = useState('bar');
   const [isLoginPage, setLoginPage] = useState(false);
   const [displayExpenses, setDisplayExpenses] = useState(true); 
+  const [showBarChart, setShowBarChart] = useState(false);
+  const [showAddIncomeModal, setShowAddIncomeModal] = useState(false);
+  const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
+
 
   const [expensesData, setExpensesData] = useState([
     { color: '#014', title: 'housing', total: 300 },
@@ -39,7 +74,6 @@ export default function Home() {
       else return 'bar';
     });
   }
-
   const handleLoginButtonClick = () => {
     setLoginPage(true); // Show the login page when the button is clicked
   };
@@ -68,17 +102,17 @@ export default function Home() {
   }
   return (
     <>
-      {isLoginPage ? (
+      {/* {isLoginPage ? (
         <LoginPage onLogin={handleLogin} />
-      ) : (
+      ) :  */}
         <main className="container max-w-2x1 px-6 mx-auto">
           <button className="bg-green-500 text-white px-4 py-2 rounded absolute top-0 right-20 m-7" onClick={handleLoginButtonClick}>Login</button>
-        <section className="py-3">
+        {/* <section className="py-3">
             <small className="text-black-400 text-md">My Balance</small>
             <h2 className="text-4x1 font-bold">${totalIncomes - totalExpenses}</h2>
-          </section>
+        </section> */}
 
-          {/* Add Expenses feature */}
+          {/* Add Expenses feature
           <section>
             <small className="text-black-400 text-md">My {displayExpenses ? 'Expenses' : 'Incomes'}</small>
             <h2 className="text-4x1 font-bold">${displayExpenses ? totalExpenses : totalIncomes}</h2>
@@ -93,10 +127,55 @@ export default function Home() {
               ))
             )}
           </div>
+         </section> */}
+
+         {/* Add Income Modal */}
+      <AddIncomesModal 
+        show={showAddIncomeModal} 
+        onClose={setShowAddIncomeModal}
+      />
+      
+      
+      {/* Add Expenses Moda */}
+      <AddExpensesModal 
+        show={showAddExpenseModal} 
+        onClose={setShowAddExpenseModal} 
+      />
+
+      <main className="container max-w-2x1 px-6 mx-auto">
+        <section className="py-3">
+          <small className="text-gray-600 text-md">My Balance</small>
+          <h2 className="text-4x1 font-bold">{currencyFormatter(12345)}</h2>
+        </section>
+
+        <section className='flex items-center gap-2 py-3'>
+          <button 
+            onClick={() => {setShowAddExpenseModal(true);}}
+            className='btn btn-primary'>+ Expenses
+          </button>
           
-         </section>
+          <button 
+            onClick={() => {setShowAddIncomeModal(true);}}
+            className='btn btn-primary'>+ Income
+          </button>
+        </section>
+
+        {/** Expenses */}
+        <section className='py-6'>
+          <h3 className="text-2xl">My Expenses</h3>
+          <div className='flex flex-col gap-4 mt-6'>
+            {DUMMY_DATA.map((expense) => {
+              return (
+                <ExpenseCategoryItem 
+                  expense={expense}
+            />
+              );
+            })}
+          </div>
+        </section>
+        </main>
               
-        <button style={{ margin: '25px 0' }} className="bg-blue-500 text-white px-4 py-2 rounded" onClick={toggleDisplay}>{displayExpenses ? 'Show Incomes' : 'Show Expenses'}</button>
+        {/* <button style={{ margin: '25px 0' }} className="bg-blue-500 text-white px-4 py-2 rounded" onClick={toggleDisplay}>{displayExpenses ? 'Show Incomes' : 'Show Expenses'}</button> */}
 
           <div className="mt-2 group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 flex justify-between">
             <button style={{ margin: '0 5px' }} onClick={() => setChartType('bar')}>
@@ -117,7 +196,6 @@ export default function Home() {
             {renderChart()}
           </section>
         </main>
-      )}
     </>
   );
 }
