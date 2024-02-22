@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import LoginPage from './LoginPage';
 
 function SignUpPage({ onSignUp }) {
     const [fullName, setFullName] = useState('');
@@ -10,6 +11,7 @@ function SignUpPage({ onSignUp }) {
     const [birthDate, setBirthDate] = useState({ day: '', month: '', year: '' });
     const [gender, setGender] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoginPage, setLoginPage] = useState(false);
 
     
     const toggleShowPassword = () => {
@@ -20,9 +22,18 @@ function SignUpPage({ onSignUp }) {
         onSignUp({ fullName, email, password, phone, birthDate, gender });
     };
 
+    const handleLoginClick = () => {
+        setLoginPage(true); 
+    };
+
     return (
-    <div className="flex flex-col items-center justify-start h-screen" style={{ backgroundColor: 'white',  color: 'black' }}>
-        <h2 className="text-2xl font-semibold mb-3">Create Account</h2>
+        <>
+        {isLoginPage && (
+            <LoginPage onLogin={handleLoginClick} />
+            )}
+        {!isLoginPage && (
+        <div className="flex flex-col items-center justify-center h-screen" style={{ backgroundColor: 'white',  color: 'black', margin: '-10vh' }}>
+            <h2 className="text-2xl font-semibold mb-3">Create Account</h2>
             <div className="flex flex-col gap-4">
                 <div>
                     <label className="block">Full name:</label>
@@ -34,7 +45,7 @@ function SignUpPage({ onSignUp }) {
                 </div>
                 <div>
                 <label className="block">Password:</label>
-          <div className="relative">
+            <div className="relative">
             <input
               type={showPassword ? 'text' : 'password'}
               value={password}
@@ -95,7 +106,12 @@ function SignUpPage({ onSignUp }) {
                 </div>
             </div>
             <button onClick={handleSignUp} className="bg-blue-500 text-white px-4 py-2 rounded mt-7">Sign Up</button>
+            <div>
+            <button onClick={handleLoginClick} className="text-blue-500 hover:underline">Already have an account? Log in</button>
+            </div>
         </div>
+        )}
+        </>
     );
 }
 
