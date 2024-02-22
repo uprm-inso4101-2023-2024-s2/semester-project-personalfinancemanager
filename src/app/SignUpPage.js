@@ -17,13 +17,12 @@ function SignUpPage({ onSignUp }) {
     };
 
     const handleSignUp = () => {
-        // Other sign-up logic
         onSignUp({ fullName, email, password, phone, birthDate, gender });
     };
 
     return (
-        <div className="flex flex-col items-center justify-start h-screen">
-            <h2 className="text-2xl font-semibold mb-3">Create Account</h2>
+    <div className="flex flex-col items-center justify-start h-screen" style={{ backgroundColor: 'white',  color: 'black' }}>
+        <h2 className="text-2xl font-semibold mb-3">Create Account</h2>
             <div className="flex flex-col gap-4">
                 <div>
                     <label className="block">Full name:</label>
