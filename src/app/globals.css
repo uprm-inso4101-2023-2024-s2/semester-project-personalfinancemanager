@@ -57,6 +57,9 @@ body {
   .btn-primary-outline{
     @apply border border-lime-400 text-lime-400;
   }
+  .btn2-primary-outline{
+    @apply border border-lime-800 text-lime-800;
+  }
   .btn-danger{
     @apply border text-white  bg-red-600 border-red-600
   }
