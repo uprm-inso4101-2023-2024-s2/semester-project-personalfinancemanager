@@ -23,7 +23,7 @@ function SignUpPage({ onSignUp }) {
 
     return (
         <div className="flex flex-col items-center justify-start h-screen">
-            <h2 className="text-2xl font-semibold mb-3">Sign Up</h2>
+            <h2 className="text-2xl font-semibold mb-3">Create Account</h2>
             <div className="flex flex-col gap-4">
                 <div>
                     <label className="block">Full name:</label>
@@ -41,12 +41,13 @@ function SignUpPage({ onSignUp }) {
               value={password}
               
               onChange={(e) => setPassword(e.target.value)}
-              className="border px-3 py-1 rounded text-black" // Added padding-right to prevent text overlap
+              className="border px-3 py-1 rounded text-black" 
             />
             <FontAwesomeIcon
               icon={showPassword ? faEye : faEyeSlash}
               className="eye-icon px-2"
               onClick={toggleShowPassword}
+              style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)' }}
             />
                     </div>
                 </div>
@@ -94,7 +95,7 @@ function SignUpPage({ onSignUp }) {
                     </select>
                 </div>
             </div>
-            <button onClick={handleSignUp} className="bg-blue-500 text-white px-4 py-2 rounded mt-3">Sign Up</button>
+            <button onClick={handleSignUp} className="bg-blue-500 text-white px-4 py-2 rounded mt-7">Sign Up</button>
         </div>
     );
 }
