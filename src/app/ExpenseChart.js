@@ -1,15 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
-const RenderPieChart = () => {
+const RenderPieChart = ({ expensesData }) => {
   const svgRef = useRef();
-
-  const [data] = useState([
-    { category: 'Food', value: 300 },
-    { category: 'Housing', value: 500 },
-    { category: 'Entertainment', value: 200 },
-    { category: 'Others', value: 100 },
-  ]);
 
   useEffect(() => {
     const width = 400;
@@ -23,14 +16,14 @@ const RenderPieChart = () => {
       .attr('transform', `translate(${width / 2},${height / 2})`);
 
     const pie = d3.pie()
-      .value(d => d.value);
+      .value(d => d.total);
 
     const arc = d3.arc()
       .innerRadius(0)
       .outerRadius(radius);
 
     const arcs = svg.selectAll("arc")
-      .data(pie(data))
+      .data(pie(expensesData))
       .enter()
       .append("g")
       .attr("class", "arc");
@@ -40,7 +33,7 @@ const RenderPieChart = () => {
       .attr("fill", (d, i) => d3.schemeCategory10[i]);
 
     const legend = svg.selectAll(".legend")
-      .data(data)
+      .data(expensesData)
       .enter()
       .append("g")
       .attr("class", "legend")
@@ -56,8 +49,9 @@ const RenderPieChart = () => {
       .attr("y", 9)
       .attr("dy", ".35em")
       .style("text-anchor", "start")
-      .text(d => d.category);
-  }, [data]);
+      .style("fill", "#8db0c7")
+      .text(d => d.title);
+  }, [expensesData]);
 
   return (
     <div className="pie-chart">
