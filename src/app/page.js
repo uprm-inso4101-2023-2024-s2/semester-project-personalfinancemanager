@@ -75,7 +75,7 @@ export default function Home() {
       case 'bar':
         return <RenderBarChart />;
       case 'pie':
-        return <RenderPieChart />;
+        return <RenderPieChart expensesData={expensesData} />;
       case 'line':
         return <RenderLineChart />;
       case 'divergence':
