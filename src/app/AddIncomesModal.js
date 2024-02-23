@@ -56,6 +56,7 @@ function AddIncomesModal({ show, onClose }) {
                         ref={amountRef}
                         min={0.01} 
                         step={0.01}
+                        className="bg bg-slate-500"
                         placeholder="Enter income amount" 
                         required
                     />
@@ -67,6 +68,7 @@ function AddIncomesModal({ show, onClose }) {
                         name="description"
                         type="text" 
                         ref={descriptionRef}
+                        className="bg bg-slate-500"
                         placeholder="Enter income description" 
                         required
                     />

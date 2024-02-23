@@ -126,10 +126,10 @@ export default function Home() {
         onClose={setShowAddExpenseModal} 
       />
 
-      <main className="container max-w-2x1 px-6 mx-auto">
+      <main className=" container max-w-2x1 px-6 mx-auto">
         <section className="py-3">
-          <small className="text-gray-600 text-md">My Balance</small>
-          <h2 className="text-4x1 font-bold">{currencyFormatter(balance)}</h2>
+          <small className="text-black text text-lg">My Balance</small>
+          <h2 className="text-4x1 text text-3xl font-bold">{currencyFormatter(balance)}</h2>
         </section>
 
         <section className='flex items-center gap-2 py-3'>

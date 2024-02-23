@@ -48,7 +48,7 @@ function ViewExpenseModal({ show, onClose, expense }) {
       </div>
   
       <div>
-        <h3 className="my-4 text-2xl">Expense History</h3>
+        <h3 className="my-8 text-2xl">Expense History</h3>
         {expense.items.map((item) => {
           return (
             <div key={item.id} className="flex items-center justify-between">
@@ -57,7 +57,7 @@ function ViewExpenseModal({ show, onClose, expense }) {
                   ? new Date(item.createdAt.toMillis()).toISOString()
                   : item.createdAt && item.createdAt.toISOString()}
               </small>
-              <p className="flex items-center gap-2 justify-end"> {/* Modified */}
+              <p className="flex items-center gap-2 justify-end">
                 <button
                   onClick={() => {
                     deleteExpenseItemHandler(item);
