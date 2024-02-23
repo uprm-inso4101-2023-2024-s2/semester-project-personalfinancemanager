@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useContext } from "react";
 import { FaRegTrashAlt } from 'react-icons/fa'
 import { db } from './index.js';
 import { financeContext } from './finance-context';
+import { toast } from 'react-toastify';
 
 function AddIncomesModal({ show, onClose }) {
     const amountRef = useRef();
@@ -25,8 +26,10 @@ function AddIncomesModal({ show, onClose }) {
             await addIncomeItem(newIncome);        
             descriptionRef.current.value = "";
             amountRef.current.value = "";
+            toast.success("Income added successfully");
         } catch (error) {
-            console.error("Error adding income:", error.message);
+            console.log(error.message);
+            toast.error(error.message);
         }
 
 
@@ -35,8 +38,10 @@ function AddIncomesModal({ show, onClose }) {
     const deleteIncomeEntryHandler = async (incomeId) => {
         try {
             await removeIncomeItem(incomeId);
+            toast.success("Income deleted successfully");
         } catch (error) {
-            console.error("Error deleting income:", error.message);
+            console.log(error.message);
+            toast.error(error.message);
         }
     };    
 

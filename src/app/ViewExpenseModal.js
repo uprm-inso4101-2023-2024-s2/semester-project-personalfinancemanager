@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import { currencyFormatter } from "./utils";
 import { FaRegTrashAlt } from 'react-icons/fa'
 import { financeContext } from "./finance-context";
+import { toast } from 'react-toastify';
 
 function ViewExpenseModal({ show, onClose, expense }) {
     const { deleteExpenseItem, deleteExpenseCategory } =
@@ -11,8 +12,10 @@ function ViewExpenseModal({ show, onClose, expense }) {
     const deleteExpenseHandler = async () => {
       try {
         await deleteExpenseCategory(expense.id);
+        toast.success("Expense deleted successfully");
       } catch (error) {
         console.log(error.message);
+        toast.error(error.message);
       }
     };
   
@@ -28,8 +31,10 @@ function ViewExpenseModal({ show, onClose, expense }) {
         };
   
         await deleteExpenseItem(updatedExpense, expense.id);
+        toast.success("Expense item deleted successfully");
       } catch (error) {
         console.log(error.message);
+        toast.error(error.message);
       }
     };
   
