@@ -37,7 +37,7 @@ body {
   }
 
   input {
-    @apply px-4 py-2 bg-slate-600 rounded-xl;
+    @apply px-4 py-2 bg-slate-500 rounded-xl;
   }
 }
 
@@ -47,7 +47,7 @@ body {
     text-wrap: balance;
   }
   .btn{
-    @apply self-start px-4 py-2 text-sm capitalize rounded-xl;
+    @apply self-start px-4 py-2 text-white text-sm capitalize rounded-xl;
   }
   
   .btn-primary{
@@ -56,6 +56,9 @@ body {
 
   .btn-primary-outline{
     @apply border border-lime-400 text-lime-400;
+  }
+  .btn2-primary-outline{
+    @apply border border-lime-800 text-lime-800;
   }
   .btn-danger{
     @apply border text-white  bg-red-600 border-red-600

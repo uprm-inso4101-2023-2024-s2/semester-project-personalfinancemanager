@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import RenderBarChart from "./barChart";
 import RenderPieChart from "./ExpenseChart"; 
 import RenderDBC from "./divergingBarChart";
@@ -9,34 +9,7 @@ import { currencyFormatter } from './utils';
 import ExpenseCategoryItem from './ExpenseCategoryItem';
 import AddExpensesModal from './AddExpensesModal';
 import AddIncomesModal from './AddIncomesModal';
-
-
-const DUMMY_DATA = [
-  {
-    id: '1',
-    title: 'Family',
-    color: '#f00',
-    amount: 500,
-  },
-  {
-    id: '2',
-    title: 'Education',
-    color: '#ff6',
-    amount: 200,
-  },
-  {
-    id: '3',
-    title: 'Pets',
-    color: '#008f',
-    amount: 1200,
-  },
-  {
-    id: '4',
-    title: 'Cinema',
-    color: '#d07',
-    amount: 800,
-  }
-];
+import { financeContext } from './finance-context';
 
 export default function Home() {
   const [chartType, setChartType] = useState('bar');
@@ -45,7 +18,18 @@ export default function Home() {
   const [showBarChart, setShowBarChart] = useState(false);
   const [showAddIncomeModal, setShowAddIncomeModal] = useState(false);
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
+  const [balance, setBalance] = useState(0);
+  const { expenses, income } = useContext(financeContext);
 
+
+  useEffect((newBalance) => {
+    newBalance = income.reduce((total, i) => {
+      return total + i.amount;
+    }, 0) - expenses.reduce((total, e) => {
+      return total + e.total;
+    }, 0);
+    setBalance(newBalance);
+  }, [expenses, income]);
 
   const [expensesData, setExpensesData] = useState([
     { color: '#014', title: 'housing', total: 300 },
@@ -136,16 +120,16 @@ export default function Home() {
       />
       
       
-      {/* Add Expenses Moda */}
+      {/* Add Expenses Modal */}
       <AddExpensesModal 
         show={showAddExpenseModal} 
         onClose={setShowAddExpenseModal} 
       />
 
-      <main className="container max-w-2x1 px-6 mx-auto">
+      <main className=" container max-w-2x1 px-6 mx-auto">
         <section className="py-3">
-          <small className="text-gray-600 text-md">My Balance</small>
-          <h2 className="text-4x1 font-bold">{currencyFormatter(12345)}</h2>
+          <small className="text-black text text-lg">My Balance</small>
+          <h2 className="text-4x1 text text-3xl font-bold">{currencyFormatter(balance)}</h2>
         </section>
 
         <section className='flex items-center gap-2 py-3'>
@@ -164,7 +148,7 @@ export default function Home() {
         <section className='py-6'>
           <h3 className="text-2xl">My Expenses</h3>
           <div className='flex flex-col gap-4 mt-6'>
-            {DUMMY_DATA.map((expense) => {
+            {expenses.map((expense) => {
               return (
                 <ExpenseCategoryItem 
                   expense={expense}
