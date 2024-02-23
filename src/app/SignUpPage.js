@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faKey } from '@fortawesome/free-solid-svg-icons';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { faPhone } from '@fortawesome/free-solid-svg-icons';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 function SignUpPage({ onSignUp }) {
@@ -27,32 +31,42 @@ function SignUpPage({ onSignUp }) {
             <div className="flex flex-col gap-4">
                 <div>
                     <label className="block">Full name:</label>
-                    <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} className="border px-3 py-1 rounded text-black" />
+                    <div className="relative">
+                        <FontAwesomeIcon icon={faUser} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                        <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} className="pl-10 border px-3 py-1 rounded text-black" />
+                    </div>
                 </div>
                 <div>
                     <label className="block">Email address:</label>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="border px-3 py-1 rounded text-black" />
+                    <div className="relative">
+                        <FontAwesomeIcon icon={faEnvelope} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10 border px-3 py-1 rounded text-black" />
+                    </div>
                 </div>
                 <div>
-                <label className="block">Password:</label>
-          <div className="relative">
-            <input
-              type={showPassword ? 'text' : 'password'}
-              value={password}
-              
-              onChange={(e) => setPassword(e.target.value)}
-              className="border px-3 py-1 rounded text-black" // Added padding-right to prevent text overlap
-            />
-            <FontAwesomeIcon
-              icon={showPassword ? faEye : faEyeSlash}
-              className="eye-icon px-2"
-              onClick={toggleShowPassword}
-            />
+                    <label className="block">Password:</label>
+                    <div className="relative">
+                        <FontAwesomeIcon icon={faKey} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                        <input
+                            type={showPassword ? 'text' : 'password'}
+                            value={password}
+                            
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="pl-10 border px-3 py-1 rounded text-black" // Added padding-right to prevent text overlap
+                        />
+                        <FontAwesomeIcon
+                            icon={showPassword ? faEye : faEyeSlash}
+                            className="eye-icon px-2"
+                            onClick={toggleShowPassword}
+                        />
                     </div>
                 </div>
                 <div>
                     <label className="block">Mobile phone number:</label>
-                    <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="border px-3 py-1 rounded text-black" />
+                    <div className="relative">
+                        <FontAwesomeIcon icon={faPhone} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                        <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="pl-10 border px-3 py-1 rounded text-black" />
+                    </div>
                 </div>
                 <label className="block" style={{ marginBottom: '-14px' }}>Date of birth:</label> 
                  <div className="flex gap-3">
