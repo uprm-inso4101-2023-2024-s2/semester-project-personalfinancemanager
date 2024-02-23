@@ -107,7 +107,7 @@ function SignUpPage({ onSignUp }) {
             </div>
             <button onClick={handleSignUp} className="bg-blue-500 text-white px-4 py-2 rounded mt-7">Sign Up</button>
             <div>
-            <button onClick={handleLoginClick} className="text-blue-500 hover:underline">Already have an account? Log in</button>
+            Already have an account? <button onClick={handleLoginClick} className="text-blue-500 py-6 hover:underline">Log in</button>
             </div>
         </div>
         )}

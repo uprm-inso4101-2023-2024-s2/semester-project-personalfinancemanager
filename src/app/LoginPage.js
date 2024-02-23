@@ -4,10 +4,13 @@ function LoginPage({ onLogin }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoginPage, setLoginPage] = useState(true);
+
+
 
     const handleLogin = () => {
-        // Other login logic, for now, just the email
         onLogin(email);
+        onSuccessfulLogin();
     };
 
     const toggleShowPassword = () => {
@@ -15,6 +18,8 @@ function LoginPage({ onLogin }) {
     };
 
     return (
+        <>
+        {isLoginPage && (
         <div className="flex flex-col items-center justify-centerh-screen">
             <h2 className="text-2xl font-semibold mb-3">Login Page</h2>
             <div className="flex flex-col gap-4">
@@ -32,6 +37,8 @@ function LoginPage({ onLogin }) {
             </div>
             <button onClick={handleLogin} className="bg-green-500 text-white px-4 py-2 rounded mt-3">Login</button>
         </div>
+        )}
+        </>
     );
 }
 
