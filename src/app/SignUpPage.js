@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faGenderless } from '@fortawesome/free-solid-svg-icons';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { faPhone } from '@fortawesome/free-solid-svg-icons';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faVenus } from '@fortawesome/free-solid-svg-icons';
+import { faMars } from '@fortawesome/free-solid-svg-icons';
+import { faNeuter } from '@fortawesome/free-solid-svg-icons';
 
 function SignUpPage({ onSignUp }) {
     const [fullName, setFullName] = useState('');
@@ -99,13 +102,16 @@ function SignUpPage({ onSignUp }) {
                 </div>
                 <div>
                     <label className="block">Gender (optional):</label>
-                    <select value={gender} onChange={(e) => setGender(e.target.value)} className="border px-3 py-1 rounded text-black">
-                        <option value="">Select...</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
-                        <option value="unknown">Prefer not to say</option>
-                    </select>
+                    <div className="relative">
+                        <FontAwesomeIcon icon={gender == "female" ? faVenus : (gender == "male" ? faMars : faGenderless)} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                        <select value={gender} onChange={(e) => setGender(e.target.value)} className="pl-10 border px-3 py-1 rounded text-black">
+                            <option value="">Select...</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                            <option value="unknown">Prefer not to say</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             <button onClick={handleSignUp} className="bg-blue-500 text-white px-4 py-2 rounded mt-3">Sign Up</button>
