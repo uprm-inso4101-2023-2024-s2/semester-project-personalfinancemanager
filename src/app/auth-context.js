@@ -3,7 +3,7 @@
 import { createContext } from "react"
 
 import {auth} from './index'
-import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth"
+import { GoogleAuthProvider, FacebookAuthProvider, signInWithPopup, signOut } from "firebase/auth"
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 
@@ -27,6 +27,16 @@ export default function AuthContextProvider({ children }) {
     }
   };
 
+  const facebookProvider = new FacebookAuthProvider(auth);
+
+  const facebookLoginHandler = async () => {
+    try {
+      await signInWithPopup(auth, facebookProvider);
+    } catch (error) {
+      throw error;
+    }
+  }  // FIXME
+
   const logout = () => {
     signOut(auth);
   };
@@ -35,6 +45,7 @@ export default function AuthContextProvider({ children }) {
     user,
     loading,
     googleLoginHandler,
+    facebookLoginHandler,
     logout,
   };
 
