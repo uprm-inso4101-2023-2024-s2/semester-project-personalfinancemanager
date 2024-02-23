@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 function LoginPage({ onLogin }) {
     const [email, setEmail] = useState('');
@@ -32,8 +33,23 @@ function LoginPage({ onLogin }) {
                     <label className="block">Password:</label>
                     <div className="relative">
                         <FontAwesomeIcon icon={faKey} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                        {/*
                         <input type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} className="pl-10 border px-3 py-1 rounded text-black" />
                         <button className="absolute top-1/2 right-2 transform -translate-y-1/2 text-black" onClick={toggleShowPassword}>{showPassword ? 'Hide' : 'Show'}</button>
+                        */}
+
+                        <input
+                            type={showPassword ? 'text' : 'password'}
+                            value={password}
+                            
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="pl-10 border px-3 py-1 rounded text-black" // Added padding-right to prevent text overlap
+                        />
+                        <FontAwesomeIcon
+                            icon={showPassword ? faEye : faEyeSlash}
+                            className="eye-icon px-2"
+                            onClick={toggleShowPassword}
+                        />
                     </div>
                 </div>
             </div>
