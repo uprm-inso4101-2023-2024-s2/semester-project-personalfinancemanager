@@ -4,12 +4,15 @@ import { useState, useRef, useEffect, useContext } from "react";
 import { FaRegTrashAlt } from 'react-icons/fa'
 import { db } from './index.js';
 import { financeContext } from './finance-context';
+import { authContext } from "./auth-context";
 import { toast } from 'react-toastify';
 
 function AddIncomesModal({ show, onClose }) {
     const amountRef = useRef();
     const descriptionRef = useRef();
     const { income, addIncomeItem, removeIncomeItem } = useContext(financeContext);
+
+    const { user } = useContext(authContext);
    
 
     // Función para manejar la adición de ingresos
@@ -20,6 +23,7 @@ function AddIncomesModal({ show, onClose }) {
             amount: +amountRef.current.value,
             description: descriptionRef.current.value,
             createdAt: new Date(),
+            uid: user.uid,
         };
 
         try {
