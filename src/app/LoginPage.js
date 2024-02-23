@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faL } from '@fortawesome/free-solid-svg-icons';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
@@ -8,13 +8,15 @@ function LoginPage({ onLogin }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [isLoginPage, setLoginPage] = useState(true);
+    // const [isLoginPage, setLoginPage] = useState(true); #Old function, commented out because we're adding a general way of changing pages before doing something more broad.
+    const [currentPage, setPage] = useState('login');
 
 
 
     const handleLogin = () => {
         onLogin(email);
-        onSuccessfulLogin();
+        setPage('login');
+        // onSuccessfulLogin();
     };
 
     const toggleShowPassword = () => {
@@ -23,7 +25,7 @@ function LoginPage({ onLogin }) {
 
     return (
         <>
-        {isLoginPage && (
+        {currentPage=='login' && (
         <div className="flex flex-col items-center justify-centerh-screen">
             <h2 className="text-2xl font-semibold mb-3">Login Page</h2>
             <div className="flex flex-col gap-4">

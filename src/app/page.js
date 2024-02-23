@@ -13,6 +13,7 @@ export default function Home() {
   const [isLoginPage, setLoginPage] = useState(false);
   const [isSignUpPage, setSignUpPage] = useState(false);
   const [displayExpenses, setDisplayExpenses] = useState(true); 
+  const [currentPage, setPage] = useState(''); // New method to change pages in-progess, save it as a page, instead of multiple functions.
 
   const [expensesData, setExpensesData] = useState([
     { color: '#014', title: 'housing', total: 300 },

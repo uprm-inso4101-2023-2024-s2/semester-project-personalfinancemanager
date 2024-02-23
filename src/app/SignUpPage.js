@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
@@ -19,8 +19,37 @@ function SignUpPage({ onSignUp }) {
     const [gender, setGender] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [isLoginPage, setLoginPage] = useState(false);
+    const [isEmailValid, setIsEmailValid] = useState(true);
+    const [passwordErrors, setPasswordErrors] = useState([]);
+    const [isPasswordValid, setIsPasswordValid] = useState(true);
+    const [currentPage, setPage] = useState('signup');
+    let errors = [];
 
-    
+    useEffect(() => {
+        if (email) {
+            setIsEmailValid(/^.+@.+\..+$/.test(email));
+        }
+
+        if (password.length < 8) {
+            errors.push("Your password needs to be at least 8 characters long.");
+        }
+        if (!/[A-Z]/.test(password)) {
+            errors.push("Your password needs an uppercase character.");
+        }
+        if (!/[a-z]/.test(password)) {
+            errors.push("Your password needs a lowercase character.");
+        }
+        if (!/\d/.test(password)) {
+            errors.push("Your password needs a number.");
+        }
+        if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+            errors.push("Your password needs a special character.");
+        }
+        if (password) {
+            setPasswordErrors(errors);
+        }
+    }, [email, password, errors]);
+
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
     };
@@ -30,15 +59,15 @@ function SignUpPage({ onSignUp }) {
     };
 
     const handleLoginClick = () => {
-        setLoginPage(true); 
+        setPage('login')
     };
 
     return (
         <>
-        {isLoginPage && (
+        {currentPage=='login' && (
             <LoginPage onLogin={handleLoginClick} />
             )}
-        {!isLoginPage && (
+        {currentPage=='signup' && (
         <div className="flex flex-col items-center justify-center h-screen" style={{ backgroundColor: 'black',  color: 'white', margin: '-10vh' }}>
             <h2 className="text-2xl font-semibold mb-3">Create Account</h2>
             <div className="flex flex-col gap-4">
@@ -53,8 +82,14 @@ function SignUpPage({ onSignUp }) {
                     <label className="block">Email address:</label>
                     <div className="relative">
                         <FontAwesomeIcon icon={faEnvelope} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10 border px-3 py-1 rounded text-black" />
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className={`pl-10 border px-3 py-1 rounded text-black ${!isEmailValid ? 'border-red-500' : ''}`} // Agrega estilos de error condicionalmente.
+                        />
                     </div>
+                    {!isEmailValid && <p className="text-red-500 mt-2">Email is invalid</p>} {/* Mensaje de error */}
                 </div>
                 <div>
                     <label className="block">Password:</label>
@@ -63,16 +98,22 @@ function SignUpPage({ onSignUp }) {
                         <input
                             type={showPassword ? 'text' : 'password'}
                             value={password}
-                            
                             onChange={(e) => setPassword(e.target.value)}
-                            className="pl-10 border px-3 py-1 rounded text-black" // Added padding-right to prevent text overlap
+                            className={`pl-10 border px-3 py-1 rounded text-black ${passwordErrors.length > 0 ? 'border-red-500' : ''}`}
                         />
                         <FontAwesomeIcon
                             icon={showPassword ? faEye : faEyeSlash}
-                            className="eye-icon px-2"
                             onClick={toggleShowPassword}
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
                         />
                     </div>
+                    {passwordErrors.length > 0 && (
+                        <ul className="text-red-500 mt-2">
+                            {passwordErrors.map((error, index) => (
+                                <li key={index}>{error}</li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
                 <div>
                     <label className="block">Mobile phone number:</label>
