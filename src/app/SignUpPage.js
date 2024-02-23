@@ -39,7 +39,7 @@ function SignUpPage({ onSignUp }) {
             <LoginPage onLogin={handleLoginClick} />
             )}
         {!isLoginPage && (
-        <div className="flex flex-col items-center justify-center h-screen" style={{ backgroundColor: 'white',  color: 'black', margin: '-10vh' }}>
+        <div className="flex flex-col items-center justify-center h-screen" style={{ backgroundColor: 'black',  color: 'white', margin: '-10vh' }}>
             <h2 className="text-2xl font-semibold mb-3">Create Account</h2>
             <div className="flex flex-col gap-4">
                 <div>
