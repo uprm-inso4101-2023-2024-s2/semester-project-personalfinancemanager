@@ -26,6 +26,7 @@ ChartJS.register(
 export default function Home() {
   const [chartType, setChartType] = useState('bar');
   const [displayExpenses, setDisplayExpenses] = useState(true); 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showBarChart, setShowBarChart] = useState(false);
   const [showAddIncomeModal, setShowAddIncomeModal] = useState(false);
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
@@ -73,11 +74,20 @@ export default function Home() {
     });
   }
   const handleLoginButtonClick = () => {
-    setLoginPage(true); // Show the login page when the button is clicked
+    if (isLoggedIn) {
+      setIsLoggedIn(false); // If user is logged in, log them out
+    } else {
+      setLoginPage(true); // Show the login page when the button is clicked
+    }
   };
 
   const handleLogin = (email) => {
     setLoginPage(false);
+    setIsLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
   };
 
   const toggleDisplay = () => {
