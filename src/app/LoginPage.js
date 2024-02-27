@@ -4,18 +4,16 @@ import { faEnvelope, faL } from '@fortawesome/free-solid-svg-icons';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
-function LoginPage({ onLogin }) {
+function LoginPage({ onLogin, currentPage }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     // const [isLoginPage, setLoginPage] = useState(true); #Old function, commented out because we're adding a general way of changing pages before doing something more broad.
-    const [currentPage, setPage] = useState('login');
 
 
 
     const handleLogin = () => {
         onLogin(email);
-        setPage('login');
         // onSuccessfulLogin();
     };
 

@@ -10,7 +10,7 @@ import { faVenus } from '@fortawesome/free-solid-svg-icons';
 import { faMars } from '@fortawesome/free-solid-svg-icons';
 import { faGenderless } from '@fortawesome/free-solid-svg-icons';
 
-function SignUpPage({ onSignUp }) {
+function SignUpPage({ onSignUp, currentPage, setCurrentPage }) {
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -22,12 +22,14 @@ function SignUpPage({ onSignUp }) {
     const [isEmailValid, setIsEmailValid] = useState(true);
     const [passwordErrors, setPasswordErrors] = useState([]);
     const [isPasswordValid, setIsPasswordValid] = useState(true);
-    const [currentPage, setPage] = useState('signup');
     let errors = [];
 
     useEffect(() => {
         if (email) {
             setIsEmailValid(/^.+@.+\..+$/.test(email));
+        }
+        if (email.length==0) {
+            setIsEmailValid(true);
         }
 
         if (password.length < 8) {
@@ -45,6 +47,9 @@ function SignUpPage({ onSignUp }) {
         if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
             errors.push("Your password needs a special character.");
         }
+        if (password.length==0) {
+            setPasswordErrors([]);
+        }
         if (password) {
             setPasswordErrors(errors);
         }
@@ -58,14 +63,15 @@ function SignUpPage({ onSignUp }) {
         onSignUp({ fullName, email, password, phone, birthDate, gender });
     };
 
-    const handleLoginClick = () => {
-        setPage('login')
+    const handleLoginClick = (L) => {
+        setCurrentPage('login');
+        
     };
 
     return (
         <>
         {currentPage=='login' && (
-            <LoginPage onLogin={handleLoginClick} />
+            <LoginPage onLogin currentPage={currentPage} />
             )}
         {currentPage=='signup' && (
         <div className="flex flex-col items-center justify-center h-screen" style={{ backgroundColor: 'black',  color: 'white', margin: '-10vh' }}>

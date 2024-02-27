@@ -10,10 +10,8 @@ import SignUpPage from './SignUpPage';
 
 export default function Home() {
   const [chartType, setChartType] = useState('bar');
-  const [isLoginPage, setLoginPage] = useState(false);
-  const [isSignUpPage, setSignUpPage] = useState(false);
   const [displayExpenses, setDisplayExpenses] = useState(true); 
-  const [currentPage, setPage] = useState(''); // New method to change pages in-progess, save it as a page, instead of multiple functions.
+  const [currentPage, setCurrentPage] = useState('home'); // New method to change pages in-progess, save it as a page, instead of multiple functions.
 
   const [expensesData, setExpensesData] = useState([
     { color: '#014', title: 'housing', total: 300 },
@@ -44,21 +42,20 @@ export default function Home() {
   }
 
   const handleLoginButtonClick = () => {
-    setLoginPage(true); // Show the login page when the button is clicked
+    setCurrentPage('login');
   };
 
   const handleLogin = (email) => {
-    setLoginPage(false);
+    setCurrentPage('home');
   };
 
   const handleSignUpButtonClick = () => {
-    setSignUpPage(true);
-    setLoginPage(false); // Ensure login page is closed when opening sign up
+    setCurrentPage('signup');
   };
 
   const handleSignUp = (userInfo) => {
     console.log(userInfo); // Here you would handle the user info, e.g., send it to a server
-    setSignUpPage(false);
+    setCurrentPage('home');
   };
 
   const toggleDisplay = () => {
@@ -81,13 +78,13 @@ export default function Home() {
   }
   return (
     <>
-      {isLoginPage && (
-        <LoginPage onLogin={handleLogin} />
+      {currentPage=='login' && (
+        <LoginPage onLogin={handleLogin} currentPage={currentPage}/>
       )}
-      {isSignUpPage && (
-        <SignUpPage onSignUp={handleSignUp} />
+      {currentPage=='signup' && (
+        <SignUpPage onSignUp={handleSignUp} currentPage={currentPage} setCurrentPage={setCurrentPage}/>
       )}
-      {!isLoginPage && !isSignUpPage && (
+      {currentPage=='home' && (
         // Main container code...
         <main className="container max-w-2x1 px-6 mx-auto">
           <button className="bg-green-500 text-white px-4 py-2 rounded absolute top-0 right-20 m-7" onClick={handleLoginButtonClick}>Login</button>
