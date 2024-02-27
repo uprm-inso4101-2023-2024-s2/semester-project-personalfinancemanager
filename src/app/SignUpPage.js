@@ -81,7 +81,7 @@ function SignUpPage({ onSignUp, currentPage, setCurrentPage }) {
                     <label className="block">Full name:</label>
                     <div className="relative">
                         <FontAwesomeIcon icon={faUser} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                        <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} className="pl-10 border px-3 py-1 rounded text-black" />
+                        <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} className="pl-10 pr-10 border px-3 py-1 rounded text-black" />
                     </div>
                 </div>
                 <div>
@@ -92,7 +92,7 @@ function SignUpPage({ onSignUp, currentPage, setCurrentPage }) {
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className={`pl-10 border px-3 py-1 rounded text-black ${!isEmailValid ? 'border-red-500' : ''}`} // Agrega estilos de error condicionalmente.
+                            className={`pl-10 pr-10 border px-3 py-1 rounded text-black ${!isEmailValid ? 'border-red-500' : ''}`} // Agrega estilos de error condicionalmente.
                         />
                     </div>
                     {!isEmailValid && <p className="text-red-500 mt-2">Email is invalid</p>} {/* Mensaje de error */}
@@ -105,7 +105,7 @@ function SignUpPage({ onSignUp, currentPage, setCurrentPage }) {
                             type={showPassword ? 'text' : 'password'}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className={`pl-10 border px-3 py-1 rounded text-black ${passwordErrors.length > 0 ? 'border-red-500' : ''}`}
+                            className={`pl-10 pr-10 border px-3 py-1 rounded text-black ${passwordErrors.length > 0 ? 'border-red-500' : ''}`}
                         />
                         <FontAwesomeIcon
                             icon={showPassword ? faEye : faEyeSlash}
@@ -125,13 +125,13 @@ function SignUpPage({ onSignUp, currentPage, setCurrentPage }) {
                     <label className="block">Mobile phone number:</label>
                     <div className="relative">
                         <FontAwesomeIcon icon={faPhone} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                        <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="pl-10 border px-3 py-1 rounded text-black" />
+                        <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="pl-10 pr-10 border px-3 py-1 rounded text-black" />
                     </div>
                 </div>
                 <label className="block" style={{ marginBottom: '-14px' }}>Date of birth:</label> 
                  <div className="flex gap-3">
                     <div>
-                        <select value={birthDate.day} onChange={(e) => setBirthDate({...birthDate, day: e.target.value})} className="border px-3 py-1 rounded text-black">
+                        <select value={birthDate.day} onChange={(e) => setBirthDate({...birthDate, day: e.target.value})} className="border px-4 py-1 rounded text-black">
                             <option value="">DD</option>
                             {[...Array(31)].map((_, index) => {
                                 const day = index + 1;
