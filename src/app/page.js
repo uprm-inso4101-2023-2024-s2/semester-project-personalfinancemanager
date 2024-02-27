@@ -5,15 +5,26 @@ import RenderPieChart from "./ExpenseChart";
 import RenderDBC from "./divergingBarChart";
 import RenderLineChart from './lineChart';
 import LoginPage from './LoginPage';
+import { authContext } from './auth-context';
 import { currencyFormatter } from './utils';
 import ExpenseCategoryItem from './ExpenseCategoryItem';
 import AddExpensesModal from './AddExpensesModal';
 import AddIncomesModal from './AddIncomesModal';
 import { financeContext } from './finance-context';
 
+import { Bar } from "react-chartjs-2";
+import { Chart as ChartJS, Tooltip, LinearScale, CategoryScale, BarElement, Legend} from "chart.js";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Tooltip,
+  Legend
+);
+
 export default function Home() {
   const [chartType, setChartType] = useState('bar');
-  const [isLoginPage, setLoginPage] = useState(false);
   const [displayExpenses, setDisplayExpenses] = useState(true); 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showBarChart, setShowBarChart] = useState(false);
@@ -21,6 +32,7 @@ export default function Home() {
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
   const [balance, setBalance] = useState(0);
   const { expenses, income } = useContext(financeContext);
+
 
 
   useEffect((newBalance) => {
@@ -50,6 +62,8 @@ export default function Home() {
 
   const totalExpenses = calculateTotal(expensesData);
   const totalIncomes = calculateTotal(incomesData);
+  const [isLoginPage, setLoginPage] = useState(false);
+  const { user } = useContext(authContext);
 
   const toggleChartType = () => {
     setChartType(prevType => {
@@ -94,35 +108,15 @@ export default function Home() {
         return null;
     }
   }
+
+  
+
+  if (!user) {
+    return <LoginPage/>
+  }
   return (
     <>
-      { isLoginPage ? (
-        <LoginPage onLogin={handleLogin} />
-      ) :  (
         <main className="container max-w-2x1 px-6 mx-auto">
-        <button className="bg-green-500 text-white px-4 py-2 rounded absolute top-0 right-20 m-7" onClick={handleLoginButtonClick}>{isLoggedIn ? 'Sign out' : 'Login'}</button>
-        {/* <section className="py-3">
-            <small className="text-black-400 text-md">My Balance</small>
-            <h2 className="text-4x1 font-bold">${totalIncomes - totalExpenses}</h2>
-        </section> */}
-
-          {/* Add Expenses feature
-          <section>
-            <small className="text-black-400 text-md">My {displayExpenses ? 'Expenses' : 'Incomes'}</small>
-            <h2 className="text-4x1 font-bold">${displayExpenses ? totalExpenses : totalIncomes}</h2>
-          <div className='flex flex-col gap-2 mt-6'>
-            {displayExpenses ? (
-              expensesData.map((item, index) => (
-                <AddCategoryItem key={index} color={item.color} title={item.title} total={item.total} />
-              ))
-            ) : (
-              incomesData.map((item, index) => (
-                <AddCategoryItem key={index} color={item.color} title={item.title} total={item.total} />
-              ))
-            )}
-          </div>
-         </section> */}
-
          {/* Add Income Modal */}
       <AddIncomesModal 
         show={showAddIncomeModal} 
@@ -171,7 +165,7 @@ export default function Home() {
               
         {/* <button style={{ margin: '25px 0' }} className="bg-blue-500 text-white px-4 py-2 rounded" onClick={toggleDisplay}>{displayExpenses ? 'Show Incomes' : 'Show Expenses'}</button> */}
 
-          <div className="mt-2 group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 flex justify-between">
+          {/* <div className="mt-2 group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 flex justify-between">
             <button style={{ margin: '0 5px' }} onClick={() => setChartType('bar')}>
               <img src="https://cdn.pixabay.com/photo/2014/03/25/16/26/bar-chart-297122_1280.png" alt="Bar Chart" style={{ width: '100px', height: 'auto' }} />
             </button>
@@ -184,13 +178,36 @@ export default function Home() {
             <button style={{ margin: '0 5px' }} onClick={() => setChartType('divergence')}>
               <img src="https://www.xelplus.com/wp-content/uploads/2019/04/Charting-Survey-Results-727a6c.png" alt="Diverging Bar Chart" style={{ width: '100px', height: 'auto' }} />
             </button>
-          </div>
+          </div> */}
 
-          <section className='max-w-2x1 px-6 mx-auto'>
+          {/* <section className='max-w-2x1 px-6 mx-auto '>
             {renderChart()}
+          </section> */}
+
+          <section className='py-6'>
+            <h3 className='text-2x1'>Expenses</h3>
+            <div className='w-1/2 mx-auto'>
+            <Bar
+              data={{
+                labels: expenses.map((expense) => expense.title),
+                datasets: [
+                  {
+                    label: "Expenses",
+                    data: expenses.map((expense) => expense.total),
+                    backgroundColor: expenses.map((expense) => expense.color),
+                    borderColor: expenses.map((expense) => expense.color),
+                    borderWidth: 1,
+                  },
+                ],
+              }}
+              options={{
+                
+              }}
+            />
+
+            </div>
           </section>
         </main>
-      )}
     </>
   );
 }

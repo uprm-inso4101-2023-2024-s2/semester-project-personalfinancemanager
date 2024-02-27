@@ -1,4 +1,5 @@
 'use client'
+import { financeContext } from './finance-context';
 import React, {useState, useRef, useEffect} from 'react';
 import * as d3 from 'd3';
 
@@ -48,6 +49,7 @@ export default function RenderBarChart() {
       .attr('transform', 'translate(0,' + (h) + ')');
     svg.append('g')
       .call(yAxis);
+      
     //seting the svg data
     svg.selectAll('.bar')
       .data(data)
