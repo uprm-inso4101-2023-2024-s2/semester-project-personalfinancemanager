@@ -14,14 +14,14 @@ function SignUpPage({ onSignUp, currentPage, setCurrentPage }) {
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [phone, setPhone] = useState('');
     const [birthDate, setBirthDate] = useState({ day: '', month: '', year: '' });
     const [gender, setGender] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [isLoginPage, setLoginPage] = useState(false);
     const [isEmailValid, setIsEmailValid] = useState(true);
     const [passwordErrors, setPasswordErrors] = useState([]);
-    const [isPasswordValid, setIsPasswordValid] = useState(true);
+    const [confirmPasswordErrors, setConfirmPasswordErrors] = useState([]);
     let errors = [];
 
     useEffect(() => {
@@ -53,7 +53,12 @@ function SignUpPage({ onSignUp, currentPage, setCurrentPage }) {
         if (password) {
             setPasswordErrors(errors);
         }
-    }, [email, password, errors]);
+        if (password && confirmPassword && password !== confirmPassword) {
+            setConfirmPasswordErrors("The passwords do not match.");
+        } else {
+            setConfirmPasswordErrors('');
+        }
+    }, [email, password, confirmPassword, errors]);
 
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
@@ -121,6 +126,26 @@ function SignUpPage({ onSignUp, currentPage, setCurrentPage }) {
                         </ul>
                     )}
                 </div>
+                {password.length > 1 && ( /* Confirm Password Feature */
+                    <div>
+                        <label className="block">Confirm Password:</label>
+                        <div className="relative">
+                            <FontAwesomeIcon icon={faKey} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                            <input
+                                type={showPassword ? 'text' : 'password'}
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                className={`pl-10 pr-10 border px-3 py-1 rounded text-black ${confirmPasswordErrors ? 'border-red-500' : ''}`}
+                            />
+                            <FontAwesomeIcon
+                                icon={showPassword ? faEye : faEyeSlash}
+                                onClick={toggleShowPassword}
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+                            />
+                        </div>
+                        {confirmPasswordErrors && <p className="text-red-500 mt-2">{confirmPasswordErrors}</p>}
+                    </div>
+                )}
                 <div>
                     <label className="block">Mobile phone number:</label>
                     <div className="relative">
