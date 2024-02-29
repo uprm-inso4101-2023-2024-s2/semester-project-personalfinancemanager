@@ -3,6 +3,7 @@ import React, {useState, useRef, useEffect} from 'react';
 import * as d3 from 'd3';
 
 export default function RenderDBC( {
+    data = [],
     x = d => d.value, // given d in data, returns the (quantitative) x-value
     y = d => d.category, // given d in data, returns the (ordinal) y-value
     title, // given d in data, returns the title text
@@ -23,22 +24,11 @@ export default function RenderDBC( {
     colors = ["red", "steelblue"] // [negative, …, positive] colors
   } = {}) {
     // Compute values.
-    const [data] = useState([
-        { value: 300, category: "Jobs" },
-        { value: -125, category: "Bank" },
-        { value: -200, category: "Car" },
-        { value: 250, category: "Properties" },
-        { value: 100, category: "Stocks" },
-        { value: -75, category: "Jewelry" },
-        { value: 25, category: "Betting" },
-        { value: -180, category: "Food" },
-        { value: -80, category: "House" },
-        { value: 201, category: "Bonds" },
-        { value: 34, category: "Investments" }
-      ]);
     const svgRef = useRef();
 
     useEffect(() => {
+        d3.select(svgRef.current).selectAll('*').remove();
+
         const X = d3.map(data, x);
         const Y = d3.map(data, y);
     
