@@ -88,20 +88,19 @@ export default function RenderDBC( {
                 .attr("text-anchor", "center")
                 .text(xLabel));
     
-        const bar = svg.append("g")
-            .selectAll("rect")
+        const bar = svg.append('g')
+            .selectAll('rect')
             .data(I)
-            .join("rect")
-            .attr("fill", i => colors[X[i] > 0 ? colors.length - 1 : 0])
-            .attr("x", i => Math.min(xScale(0), xScale(X[i])))
-            .attr("y", i => yScale(Y[i]))
-            .attr("width", i => Math.abs(xScale(X[i]) - xScale(0)))
-            .attr("height", yScale.bandwidth());
-    
-        if (titleFunction) {
-            bar.append("title")
-                .text((_, i) => titleFunction(i));
-        }
+            .join('rect')
+            .attr('fill', i => colors[X[i] > 0 ? colors.length - 1 : 0])
+            .attr('x', i => Math.min(xScale(0), xScale(X[i])))
+            .attr('y', i => yScale(Y[i]))
+            .attr('height', yScale.bandwidth()) // Transition to final height
+            .attr('width', 0) // Set initial height to 0 for animation
+            .transition() // Apply transition to bars
+            .duration(500) // Set duration of transition
+            .attr('width', i => Math.abs(xScale(X[i]) - xScale(0)))
+            .attr('x', i => Math.min(xScale(0), xScale(X[i])));
     
         svg.append("g")
             .attr("text-anchor", "end")
