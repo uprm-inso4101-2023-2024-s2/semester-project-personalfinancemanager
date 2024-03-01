@@ -13,7 +13,6 @@ import AddIncomesModal from './AddIncomesModal';
 import { financeContext } from './finance-context';
 import Calendar from './Calendar'; // Import Calendar component
 
-import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, Tooltip, LinearScale, CategoryScale, BarElement, Legend} from "chart.js";
 
 ChartJS.register(
@@ -188,29 +187,6 @@ export default function Home() {
             {renderChart()}
           </section> }
 
-          <section className='py-6'>
-            <h3 className='text-2x1'>Expenses</h3>
-            {/*<div className='w-1/2 mx-auto'>
-            <Bar
-              data={{
-                labels: expenses.map((expense) => expense.title),
-                datasets: [
-                  {
-                    label: "Expenses",
-                    data: expenses.map((expense) => expense.total),
-                    backgroundColor: expenses.map((expense) => expense.color),
-                    borderColor: expenses.map((expense) => expense.color),
-                    borderWidth: 1,
-                  },
-                ],
-              }}
-              options={{
-                
-              }}
-            />
-
-            </div>*/}
-          </section>
           {/* Calendar */}
           <section className='py-6'>
             <h3 className='text-2xl'>Calendar System</h3>
