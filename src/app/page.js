@@ -27,7 +27,6 @@ export default function Home() {
   const [chartType, setChartType] = useState('bar');
   const [displayExpenses, setDisplayExpenses] = useState(true); 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [showBarChart, setShowBarChart] = useState(false);
   const [showAddIncomeModal, setShowAddIncomeModal] = useState(false);
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
   const [balance, setBalance] = useState(0);
