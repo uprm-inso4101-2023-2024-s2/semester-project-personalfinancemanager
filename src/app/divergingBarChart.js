@@ -6,7 +6,6 @@ export default function RenderDBC( {
     data = [],
     x = d => d.value, // given d in data, returns the (quantitative) x-value
     y = d => d.category, // given d in data, returns the (ordinal) y-value
-    title, // given d in data, returns the title text
     marginTop = 50, 
     marginRight = 40, 
     marginBottom = 10, 
@@ -14,12 +13,10 @@ export default function RenderDBC( {
     width = 640, // outer width of chart, in pixels
     height, // the outer height of the chart, in pixels
     xType = d3.scaleLinear, // type of x-scale
-    xDomain, // [xmin, xmax]
     xRange = [marginLeft, width - marginRight], // [left, right]
     xFormat, // a format specifier string for the x-axis
     xLabel, // a label for the x-axis
     yPadding = 0.1, 
-    yDomain, // an array of (ordinal) y-values
     yRange, // [top, bottom]
     colors = ["red", "steelblue"] // [negative, …, positive] colors
   } = {}) {
@@ -33,26 +30,22 @@ export default function RenderDBC( {
         const Y = d3.map(data, y);
     
         // Compute default domains, and unique the y-domain.
-        let xDomainComputed = xDomain;
-        if (xDomainComputed === undefined) xDomainComputed = d3.extent(X);
-        let yDomainComputed = yDomain;
-        if (yDomainComputed === undefined) yDomainComputed = Y;
-        yDomainComputed = Array.from(new Set(yDomainComputed));
+        const xDomain = d3.extent(X);
+        let yDomain = Y;
+        yDomain = Array.from(new Set(yDomain));
     
         // Omit any data not present in the y-domain.
         // Lookup the x-value for a given y-value.
-        const I = d3.range(X.length).filter(i => yDomainComputed.includes(Y[i]));
+        const I = d3.range(X.length).filter(i => yDomain.includes(Y[i]));
         const YX = d3.rollup(I, ([i]) => X[i], i => Y[i]);
     
         // Compute the default height.
-        let heightComputed = height;
-        if (heightComputed === undefined) heightComputed = Math.ceil((yDomainComputed.length + yPadding) * 25) + marginTop + marginBottom;
-        let yRangeComputed = yRange;
-        if (yRangeComputed === undefined) yRangeComputed = [marginTop, heightComputed - marginBottom];
+        const height = Math.ceil((yDomain.length + yPadding) * 25) + marginTop + marginBottom;
+        const yRange = [marginTop, height - marginBottom];
     
         // Construct scales, axes, and formats.
-        const xScale = xType().domain(xDomainComputed).range(xRange);
-        const yScale = d3.scaleBand().domain(yDomainComputed).range(yRangeComputed).padding(yPadding);
+        const xScale = xType().domain(xDomain).range(xRange);
+        const yScale = d3.scaleBand().domain(yDomain).range(yRange).padding(yPadding);
         const xAxis = d3.axisTop(xScale).ticks(width / 80).tickFormat(xFormat);
         const yAxis = d3.axisLeft(yScale).tickSize(0).tickPadding(6);
         const format = xScale.tickFormat(100, xFormat);
@@ -60,8 +53,8 @@ export default function RenderDBC( {
     
         const svg = d3.select(svgRef.current)
             .attr("width", width)
-            .attr("height", heightComputed)
-            .attr("viewBox", [0, 0, width, heightComputed])
+            .attr("height", height)
+            .attr("viewBox", [0, 0, width, height])
             .attr("style", "max-width: 100%; height: auto; height: intrinsic;")
             .style('margin-bottom', '20px')
             .style('margin-top', '20px');
@@ -71,7 +64,7 @@ export default function RenderDBC( {
             .call(xAxis)
             .call(g => g.select(".domain").remove())
             .call(g => g.selectAll(".tick line").clone()
-                .attr("y2", heightComputed - marginTop - marginBottom)
+                .attr("y2", height - marginTop - marginBottom)
                 .attr("stroke-opacity", 0.1))
             .call(g => g.append("text")
                 .attr("x", xScale(0))
@@ -87,10 +80,10 @@ export default function RenderDBC( {
             .attr('fill', i => colors[X[i] > 0 ? colors.length - 1 : 0])
             .attr('x', i => xScale(0))
             .attr('y', i => yScale(Y[i]))
-            .attr('height', yScale.bandwidth()) // Transition to final height
-            .attr('width', 0) // Set initial height to 0 for animation
-            .transition() // Apply transition to bars
-            .duration(500) // Set duration of transition
+            .attr('height', yScale.bandwidth()) 
+            .attr('width', 0) 
+            .transition() 
+            .duration(500) 
             .attr('width', i => Math.abs(xScale(X[i]) - xScale(0)))
             .attr('x', i => Math.min(xScale(0), xScale(X[i])));
     
@@ -115,7 +108,7 @@ export default function RenderDBC( {
                 .filter(y => YX.get(y) < 0)
                 .attr("text-anchor", "start")
                 .attr("x", 6));
-    }, [data, xDomain, yDomain, height, width, xRange, yRange, xLabel, xFormat, xType, marginTop, marginRight, marginBottom, marginLeft, yPadding, title, colors]);
+    }, [data, height, width, xRange, yRange, xLabel, xFormat, xType, marginTop, marginRight, marginBottom, marginLeft, yPadding, colors]);
     
     return (
         <div className="divergingBarChart">
