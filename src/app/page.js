@@ -11,6 +11,7 @@ import ExpenseCategoryItem from './ExpenseCategoryItem';
 import AddExpensesModal from './AddExpensesModal';
 import AddIncomesModal from './AddIncomesModal';
 import { financeContext } from './finance-context';
+import Calendar from './Calendar'; // Import Calendar component
 
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, Tooltip, LinearScale, CategoryScale, BarElement, Legend} from "chart.js";
@@ -205,6 +206,13 @@ export default function Home() {
               }}
             />
 
+            </div>
+          </section>
+          {/* Calendar */}
+          <section className='py-6'>
+            <h3 className='text-2xl'>Calendar System</h3>
+            <div>
+              <Calendar />
             </div>
           </section>
         </main>
