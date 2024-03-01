@@ -105,7 +105,7 @@ export default function Home() {
         return <RenderLineChart />;
       case 'divergence':
         return <RenderDBC data = {[...modifiedExpenses.map(item => ({ value: item.total, category: item.title })),
-           ...income.map(item => ({ value: item.amount, category: 'Profit' }))]} /> 
+           ...income.map(item => ({ value: item.amount, category: item.description}))]} /> 
            //"Profit" is used due to income not having a name for its category
       default:
         return null;
