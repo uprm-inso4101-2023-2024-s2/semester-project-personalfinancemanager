@@ -57,14 +57,6 @@ export default function RenderDBC( {
         const yAxis = d3.axisLeft(yScale).tickSize(0).tickPadding(6);
         const format = xScale.tickFormat(100, xFormat);
     
-        // Compute titles.
-        let titleFunction = null;
-        if (title === undefined) {
-            titleFunction = i => `${data[i].category}\n${format(X[i])}`;
-        } else if (title !== null) {
-            const O = d3.map(data, d => d);
-            titleFunction = i => title(O[i], i, data);
-        }
     
         const svg = d3.select(svgRef.current)
             .attr("width", width)
@@ -93,7 +85,7 @@ export default function RenderDBC( {
             .data(I)
             .join('rect')
             .attr('fill', i => colors[X[i] > 0 ? colors.length - 1 : 0])
-            .attr('x', i => Math.min(xScale(0), xScale(X[i])))
+            .attr('x', i => xScale(0))
             .attr('y', i => yScale(Y[i]))
             .attr('height', yScale.bandwidth()) // Transition to final height
             .attr('width', 0) // Set initial height to 0 for animation
