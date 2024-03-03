@@ -2,6 +2,28 @@
 import React, {useRef, useEffect} from 'react';
 import * as d3 from 'd3';
 
+/**
+ * Constructs a Diverging Bar Chart using an array of values and categories. 
+ * Negative and positive values are displayed on opposite directions. All values
+ * except the data parameter have preset values.
+ * 
+ * @see https://react.dev/reference/react/useState
+ * @see https://react.dev/reference/react/useRef
+ * @see https://react.dev/reference/react/useEffect
+ * @see https://d3js.org
+ * 
+ * @param {Array} data - An array of objects with each data point holding a value and a category.
+ * @param {number} [marginTop=50] - The margin on the top of the chart.
+ * @param {number} [marginRight=40] - The margin on the right side of the chart.
+ * @param {number} [marginBottom=10] - The margin on the bottom of the chart.
+ * @param {number} [marginLeft=40] - The margin on the left side of the chart.
+ * @param {number} [width=640] - The width of the chart.
+ * @param {string} xFormat - A format specifier string for the x-axis.
+ * @param {string} xLabel - A label for the x-axis.
+ * @param {number} [yPadding=0.1] - The padding between y-values (categories) in the chart.
+ * @param {Array} [colors=["red", "steelblue"]] - An array of colors for pos and neg values.
+ * @returns The drawing of the dynamic bar chart svg.
+ */
 export default function RenderDBC( {
     data = [],
     x = d => d.value, // given d in data, returns the (quantitative) x-value
@@ -11,13 +33,11 @@ export default function RenderDBC( {
     marginBottom = 10, 
     marginLeft = 40, 
     width = 640, // outer width of chart, in pixels
-    height, // the outer height of the chart, in pixels
     xType = d3.scaleLinear, // type of x-scale
     xRange = [marginLeft, width - marginRight], // [left, right]
     xFormat, // a format specifier string for the x-axis
     xLabel, // a label for the x-axis
     yPadding = 0.1, 
-    yRange, // [top, bottom]
     colors = ["red", "steelblue"] // [negative, …, positive] colors
   } = {}) {
     // Compute values.
@@ -128,7 +148,7 @@ export default function RenderDBC( {
                 .filter(y => YX.get(y) < 0)
                 .attr("text-anchor", "start")
                 .attr("x", 6));
-    }, [data, height, width, xRange, yRange, xLabel, xFormat, xType, marginTop, marginRight, marginBottom, marginLeft, yPadding, colors]);
+    }, [data, width, xRange,  xLabel, xFormat, xType, marginTop, marginRight, marginBottom, marginLeft, yPadding, colors]);
     
     return (
         <div className="divergingBarChart">
