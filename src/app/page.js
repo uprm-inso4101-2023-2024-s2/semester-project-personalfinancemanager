@@ -72,8 +72,6 @@ export default function Home() {
   };
 
 
-  //In order to display the expenses in the opposite direction from income, the expenses are modified into negative values.
-  const modifiedExpenses = expenses.map(item => ({ ...item, total: -item.total }));
   const renderChart = () => {
     switch (chartType) {
       case 'bar':
@@ -83,9 +81,7 @@ export default function Home() {
       case 'line':
         return <RenderLineChart />;
       case 'divergence':
-        return <RenderDBC data = {[...modifiedExpenses.map(item => ({ value: item.total, category: item.title })),
-           ...income.map(item => ({ value: item.amount, category: item.description}))]} /> 
-           //"Profit" is used due to income not having a name for its category
+        return <RenderDBC expensesData ={expenses} incomeData = {income} /> 
       default:
         return null;
     }

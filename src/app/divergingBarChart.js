@@ -24,7 +24,8 @@ import * as d3 from 'd3';
  * @returns The drawing of the dynamic bar chart svg.
  */
 export default function RenderDBC( {
-    data = [],
+    expensesData = [],
+    incomeData = [],
     x = d => d.value, // given d in data, returns the (quantitative) x-value
     y = d => d.category, // given d in data, returns the (ordinal) y-value
     marginTop = 50, 
@@ -42,11 +43,32 @@ export default function RenderDBC( {
     // Compute values.
     const svgRef = useRef();
 
+    const unduplicatedData = {};
+    expensesData.forEach(item => {
+        const category = item.title;
+        if(!unduplicatedData[category]){
+            unduplicatedData[category] = -item.total;
+        } else {
+            unduplicatedData[category] -= item.total;
+        }
+    })
+
+    incomeData.forEach(item => {
+        const category = item.description;
+        if(!unduplicatedData[category]){
+            unduplicatedData[category] = item.amount;
+        } else {
+            unduplicatedData[category] += item.amount;
+        }
+    })
+
+    const processedData = Object.keys(unduplicatedData).map(category => ({category, value: unduplicatedData[category]}));
+
     useEffect(() => {
         d3.select(svgRef.current).selectAll('*').remove();
 
-        const X = d3.map(data, x);
-        const Y = d3.map(data, y);
+        const X = d3.map(processedData, x);
+        const Y = d3.map(processedData, y);
     
         // Compute default domains, and unique the y-domain.
         const xDomain = d3.extent(X);
@@ -136,7 +158,7 @@ export default function RenderDBC( {
                 .filter(y => YX.get(y) < 0)
                 .attr("text-anchor", "start")
                 .attr("x", 6));
-    }, [data, width, xRange,  xLabel, xFormat, xType, marginTop, marginRight, marginBottom, marginLeft, yPadding, colors]);
+    }, [expensesData, incomeData, width, xRange,  xLabel, xFormat, xType, marginTop, marginRight, marginBottom, marginLeft, yPadding, colors]);
     
     return (
         <div className="divergingBarChart">
