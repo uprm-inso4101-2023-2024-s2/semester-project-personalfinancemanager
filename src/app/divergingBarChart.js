@@ -82,6 +82,26 @@ export default function RenderDBC( {
             .attr('y', i => yScale(Y[i]))
             .attr('height', yScale.bandwidth()) 
             .attr('width', 0) 
+            .on('mouseover', function(event, i) {
+                d3.select(this)
+                  .attr('fill', 'orange')
+                
+                svg.selectAll("text")
+                  .filter(d => d === Y[i])
+                  .transition()
+                  .duration(300)
+                  .attr("font-size", "16px");
+            })
+            .on('mouseout', function(event, i) {
+                d3.select(this)
+                  .attr('fill', i => colors[X[i] > 0 ? colors.length - 1 : 0])
+    
+                  svg.selectAll('text')
+                  .filter(d => d === Y[i])
+                  .transition()
+                  .duration(300)
+                  .attr("font-size", "10px");
+            })
             .transition() 
             .duration(500) 
             .attr('width', i => Math.abs(xScale(X[i]) - xScale(0)))
