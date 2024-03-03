@@ -100,7 +100,7 @@ export default function Home() {
       case 'bar':
         return <RenderBarChart />;
       case 'pie':
-        return <RenderPieChart expensesData={expensesData} />;
+        return <RenderPieChart expensesData={expenses} />;
       case 'line':
         return <RenderLineChart />;
       case 'divergence':
