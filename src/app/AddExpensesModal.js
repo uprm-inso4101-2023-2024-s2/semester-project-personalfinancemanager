@@ -1,3 +1,13 @@
+/**
+ * This component represents a modal for adding expenses.
+ * It allows users to input expense amounts, select expense categories,
+ * create new categories, and add expenses with selected categories and dates.
+ * 
+ * @param {object} props - The props object containing show and onClose properties.
+ * @param {boolean} props.show - Indicates whether the modal is shown or not.
+ * @param {function} props.onClose - Callback function to close the modal.
+ * @returns {JSX.Element} - Returns JSX for the AddExpensesModal component.
+ */
 import Modal from "@/app/modal";
 import { useState, useContext, useRef } from "react";
 import { financeContext } from './finance-context';
@@ -5,6 +15,30 @@ import AddCategoryItem from "./addcategoryItem";
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
 
+/**
+ * Function to format a date object to a string in the format 'YYYY-MM-DDTHH:MM'.
+ * 
+ * @param {Date} date - The date object to be formatted.
+ * @returns {string} - Returns the formatted date string.
+ */
+function formatDate(date) {
+    const year = date.getFullYear();
+    const month = `${date.getMonth() + 1}`.padStart(2, '0');
+    const day = `${date.getDate()}`.padStart(2, '0');
+    const hours = `${date.getHours()}`.padStart(2, '0');
+    const minutes = `${date.getMinutes()}`.padStart(2, '0');
+    
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
+/**
+ * Component for adding expenses modal.
+ * 
+ * @param {object} props - The props object containing show and onClose properties.
+ * @param {boolean} props.show - Indicates whether the modal is shown or not.
+ * @param {function} props.onClose - Callback function to close the modal.
+ * @returns {JSX.Element} - Returns JSX for the AddExpensesModal component.
+ */
 function AddExpensesModal({ show, onClose }) {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [expenseAmount, setExpenseAmount] = useState("");
@@ -14,6 +48,9 @@ function AddExpensesModal({ show, onClose }) {
     const titleRef = useRef();
     const colorRef = useRef();
 
+    /**
+     * Handles adding an expense item.
+     */
     const AddCategoryItemHandler = async () => {
         const expense = expenses.find((e) => e.id === selectedCategory);
 
@@ -43,6 +80,9 @@ function AddExpensesModal({ show, onClose }) {
         }
     };
 
+    /**
+     * Handles adding a new expense category.
+     */
     const addCategoryHandler = async () => {
         const title = titleRef.current.value;
         const color = colorRef.current.value;
@@ -112,12 +152,14 @@ function AddExpensesModal({ show, onClose }) {
 
             {expenseAmount > 0 && selectedCategory && (
                 <div className="mt-6">
-                    {/* Date Input Field */}
-                    <label>Select Date:</label>
-                    <input
-                        type="date"
-                        value={selectedDate.toISOString().split('T')[0]} // Format ISO date to string
+                {/* Date Input Field */}
+                    <label htmlFor="date">Select Date and Time</label>
+                    <input 
+                        type="datetime-local" 
+                        name="date"
+                        value={formatDate(selectedDate)} // Format ISO date to string
                         onChange={(e) => setSelectedDate(new Date(e.target.value))}
+                        required
                     />
                     <button className="btn btn-primary" onClick={AddCategoryItemHandler}>Add Expense</button>
                 </div>

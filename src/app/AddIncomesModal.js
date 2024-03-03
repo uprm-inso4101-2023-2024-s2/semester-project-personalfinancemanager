@@ -21,6 +21,7 @@ function AddIncomesModal({ show, onClose }) {
     const amountRef = useRef();
     const descriptionRef = useRef();
     const [selectedDate, setSelectedDate] = useState(new Date()); // State for selected date
+    const [entryAdded, setEntryAdded] = useState(false); // State to track if entry is added
     const { income, addIncomeItem, removeIncomeItem } = useContext(financeContext);
     const { user } = useContext(authContext);
 
@@ -40,6 +41,7 @@ function AddIncomesModal({ show, onClose }) {
             descriptionRef.current.value = "";
             amountRef.current.value = "";
             setSelectedDate(new Date()); // Reset selected date
+            setEntryAdded(true); // Indicate entry added
             toast.success("Income added successfully");
         } catch (error) {
             console.log(error.message);
@@ -97,7 +99,6 @@ function AddIncomesModal({ show, onClose }) {
                         required
                     />
                 </div>
-
                 <button type="submit" className='btn btn-primary'>
                     Add entry
                 </button>
@@ -115,15 +116,7 @@ function AddIncomesModal({ show, onClose }) {
                                     {new Date(i.createdAt).toLocaleString()}
                                 </small>
                             </div>
-                            <div className="mt-6">
-                                {/* Date Input Field */}
-                                <label>Select Date:</label>
-                                <input
-                                    type="date"
-                                    value={formatDate(selectedDate)} // Format ISO date to string
-                                    onChange={(e) => setSelectedDate(new Date(e.target.value))}
-                                />
-                            </div>
+
                             <p className="flex items-center justify-between">
                                 {currencyFormatter(i.amount)}
                                 <button onClick={() => { deleteIncomeEntryHandler(i.id) }}>
