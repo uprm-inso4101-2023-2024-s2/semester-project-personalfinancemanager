@@ -116,7 +116,6 @@ function AddIncomesModal({ show, onClose }) {
                                     {new Date(i.createdAt).toLocaleString()}
                                 </small>
                             </div>
-
                             <p className="flex items-center justify-between">
                                 {currencyFormatter(i.amount)}
                                 <button onClick={() => { deleteIncomeEntryHandler(i.id) }}>
