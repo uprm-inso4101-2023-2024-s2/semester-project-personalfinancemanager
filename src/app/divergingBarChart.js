@@ -3,11 +3,10 @@ import React, {useRef, useEffect} from 'react';
 import * as d3 from 'd3';
 
 /**
- * Constructs a Diverging Bar Chart using an array of values and categories. 
+ * Constructs a Diverging Bar Chart using an array of objects, each with a value and category. 
  * Negative and positive values are displayed on opposite directions. All values
  * except the data parameter have preset values.
  * 
- * @see https://react.dev/reference/react/useState
  * @see https://react.dev/reference/react/useRef
  * @see https://react.dev/reference/react/useEffect
  * @see https://d3js.org
@@ -70,7 +69,7 @@ export default function RenderDBC( {
         const yAxis = d3.axisLeft(yScale).tickSize(0).tickPadding(6);
         const format = xScale.tickFormat(100, xFormat);
     
-    
+        //Create the SVG.
         const svg = d3.select(svgRef.current)
             .attr("width", width)
             .attr("height", height)
@@ -79,6 +78,7 @@ export default function RenderDBC( {
             .style('margin-bottom', '20px')
             .style('margin-top', '20px');
     
+        //Draw the X-axis.
         svg.append("g")
             .attr("transform", `translate(0,${marginTop})`)
             .call(xAxis)
@@ -92,7 +92,8 @@ export default function RenderDBC( {
                 .attr("fill", "currentColor")
                 .attr("text-anchor", "center")
                 .text(xLabel));
-    
+        
+        //Draw the bars
         const bar = svg.append('g')
             .selectAll('rect')
             .data(I)
@@ -127,20 +128,7 @@ export default function RenderDBC( {
             .attr('width', i => Math.abs(xScale(X[i]) - xScale(0)))
             .attr('x', i => Math.min(xScale(0), xScale(X[i])));
     
-        svg.append("g")
-            .attr("text-anchor", "end")
-            .attr("font-family", "sans-serif")
-            .attr("font-size", 10)
-            .selectAll("text")
-            .data(I)
-            .join("text")
-            .attr("text-anchor", i => X[i] < 0 ? "end" : "start")
-            .attr("x", i => xScale(X[i]) + Math.sign(X[i] - 0) * 4)
-            .attr("y", i => yScale(Y[i]) + yScale.bandwidth() / 2)
-            .attr("dy", "0.35em")
-            .attr("fill", "#808080")
-            .text(i => format(X[i]));
-    
+        //Draw the bar labels. 
         svg.append("g")
             .attr("transform", `translate(${xScale(0)},0)`)
             .call(yAxis)
