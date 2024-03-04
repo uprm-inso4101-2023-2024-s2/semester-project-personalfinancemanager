@@ -149,6 +149,21 @@ export default function RenderDBC( {
             .duration(500) 
             .attr('width', i => Math.abs(xScale(X[i]) - xScale(0)))
             .attr('x', i => Math.min(xScale(0), xScale(X[i])));
+
+            //Add individual bar values.
+            svg.append("g")
+            .attr("text-anchor", "end")
+            .attr("font-family", "sans-serif")
+            .attr("font-size", 10)
+            .selectAll("text")
+            .data(I)
+            .join("text")
+            .attr("text-anchor", i => X[i] < 0 ? "end" : "start")
+            .attr("x", i => xScale(X[i]) + Math.sign(X[i] - 0) * 4)
+            .attr("y", i => yScale(Y[i]) + yScale.bandwidth() / 2)
+            .attr("dy", "0.35em")
+            .attr("fill", "#808080")
+            .text(i => format(X[i]));
     
         //Draw the bar labels. 
         svg.append("g")
