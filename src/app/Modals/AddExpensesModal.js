@@ -1,7 +1,7 @@
-import Modal from "@/app/modal";
+import Modal from "@/app/Modals/modal";
 import { useState, useContext, useRef } from "react";
-import { financeContext } from './finance-context';
-import AddCategoryItem from "./addcategoryItem";
+import { financeContext } from '../Finance-Context/finance-context';
+import AddCategoryItem from "../Page-Functionality/addcategoryItem";
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
 

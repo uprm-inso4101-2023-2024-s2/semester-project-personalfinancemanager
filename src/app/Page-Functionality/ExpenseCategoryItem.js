@@ -1,5 +1,5 @@
-import {currencyFormatter} from './utils.js';
-import ViewExpenseModal from './ViewExpenseModal.js';
+import {currencyFormatter} from '../Finance-Context/utils.js';
+import ViewExpenseModal from '../Modals/ViewExpenseModal.js';
 import {useState} from 'react';
 
 

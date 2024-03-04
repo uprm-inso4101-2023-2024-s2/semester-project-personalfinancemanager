@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { authContext } from './auth-context';
+import { authContext } from '../Page-Functionality/Login/auth-context';
 
 function LoginPage() {
     const { googleLoginHandler, facebookLoginHandler } = useContext(authContext);
