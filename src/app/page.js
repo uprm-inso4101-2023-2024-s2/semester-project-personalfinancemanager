@@ -11,6 +11,7 @@ import ExpenseCategoryItem from './Page-Functionality/ExpenseCategoryItem';
 import AddExpensesModal from './Modals/AddExpensesModal';
 import AddIncomesModal from './Modals/AddIncomesModal';
 import { financeContext } from './Finance-Context/finance-context';
+import Calendar from './Page-Functionality/Calendar';
 
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, Tooltip, LinearScale, CategoryScale, BarElement, Legend} from "chart.js";
@@ -99,7 +100,7 @@ export default function Home() {
       case 'bar':
         return <RenderBarChart />;
       case 'pie':
-        return <RenderPieChart expensesData={expensesData} />;
+        return <RenderPieChart expensesData={expenses} />;
       case 'line':
         return <RenderLineChart />;
       case 'divergence':
@@ -163,9 +164,9 @@ export default function Home() {
         </section>
         </main>
               
-        {/* <button style={{ margin: '25px 0' }} className="bg-blue-500 text-white px-4 py-2 rounded" onClick={toggleDisplay}>{displayExpenses ? 'Show Incomes' : 'Show Expenses'}</button> */}
+        { <button style={{ margin: '25px 0' }} className="bg-blue-500 text-white px-4 py-2 rounded" onClick={toggleDisplay}>{displayExpenses ? 'Show Incomes' : 'Show Expenses'}</button> }
 
-          {/* <div className="mt-2 group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 flex justify-between">
+          { <div className="mt-2 group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 flex justify-between">
             <button style={{ margin: '0 5px' }} onClick={() => setChartType('bar')}>
               <img src="https://cdn.pixabay.com/photo/2014/03/25/16/26/bar-chart-297122_1280.png" alt="Bar Chart" style={{ width: '100px', height: 'auto' }} />
             </button>
@@ -178,11 +179,11 @@ export default function Home() {
             <button style={{ margin: '0 5px' }} onClick={() => setChartType('divergence')}>
               <img src="https://www.xelplus.com/wp-content/uploads/2019/04/Charting-Survey-Results-727a6c.png" alt="Diverging Bar Chart" style={{ width: '100px', height: 'auto' }} />
             </button>
-          </div> */}
+          </div> }
 
-          {/* <section className='max-w-2x1 px-6 mx-auto '>
+          { <section className='max-w-2x1 px-6 mx-auto '>
             {renderChart()}
-          </section> */}
+          </section> }
 
           <section className='py-6'>
             <h3 className='text-2x1'>Expenses</h3>
@@ -205,6 +206,13 @@ export default function Home() {
               }}
             />
 
+            </div>
+          </section>
+          {/* Calendar */}
+          <section className='py-6'>
+            <h3 className='text-2xl'>Calendar System</h3>
+            <div>
+              <Calendar />
             </div>
           </section>
         </main>
