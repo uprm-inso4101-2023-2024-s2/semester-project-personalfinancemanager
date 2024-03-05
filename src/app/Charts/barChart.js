@@ -1,5 +1,5 @@
 'use client'
-import { financeContext } from './finance-context';
+import { financeContext } from '../Finance-Context/finance-context';
 import React, {useState, useRef, useEffect} from 'react';
 import * as d3 from 'd3';
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Home from "./page.js";
+import Home from "../../page.js";
 
 function PwdChangePage({ onReturnHome }) {
   const [mainPage, setMainPage] = useState(false);
