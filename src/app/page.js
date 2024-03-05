@@ -98,7 +98,7 @@ export default function Home() {
   const renderChart = () => {
     switch (chartType) {
       case 'bar':
-        return <RenderBarChart />;
+        return <RenderBarChart expensesData={expenses} />;
       case 'pie':
         return <RenderPieChart expensesData={expenses} />;
       case 'line':
@@ -184,30 +184,6 @@ export default function Home() {
           { <section className='max-w-2x1 px-6 mx-auto '>
             {renderChart()}
           </section> }
-
-          <section className='py-6'>
-            <h3 className='text-2x1'>Expenses</h3>
-            <div className='w-1/2 mx-auto'>
-            <Bar
-              data={{
-                labels: expenses.map((expense) => expense.title),
-                datasets: [
-                  {
-                    label: "Expenses",
-                    data: expenses.map((expense) => expense.total),
-                    backgroundColor: expenses.map((expense) => expense.color),
-                    borderColor: expenses.map((expense) => expense.color),
-                    borderWidth: 1,
-                  },
-                ],
-              }}
-              options={{
-                
-              }}
-            />
-
-            </div>
-          </section>
           {/* Calendar */}
           <section className='py-6'>
             <h3 className='text-2xl'>Calendar System</h3>
