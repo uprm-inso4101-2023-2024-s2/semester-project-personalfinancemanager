@@ -7,6 +7,8 @@ import * as d3 from 'd3';
 const Calendar = () => {
     const svgRef = useRef(null);
     const [currentTime, setCurrentTime] = useState(new Date());
+    const [selectedDay, setSelectedDay] = useState(null);
+    const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
 
     useEffect(() => {
         const timerID = setInterval(() => tick(), 1000); // Update every second
@@ -91,7 +93,9 @@ const Calendar = () => {
                     return 'white'; // Future days
                 }
             })
-            .attr('stroke', 'black');
+            .attr('stroke', 'black')
+            .on('click', handleClick)
+            .style('cursor', "pointer");
     
         // Add day labels
         svg.selectAll('.day-label')
@@ -103,6 +107,7 @@ const Calendar = () => {
             .attr('text-anchor', 'middle')
             .attr('dominant-baseline', 'middle')
             .text(d => d.getDate());
+            
     
         // Add month and year label
         svg.append('text')
@@ -138,8 +143,26 @@ const Calendar = () => {
             .attr('font-size', '25')
             .attr('fill', 'black')
             .text(d3.timeFormat('%H:%M:%S')(currentTime)); // Display current time
+
+        if(selectedDay !== null) {
+            renderPanel(selectedDay);
+        }
     };
     
+    // Handles the click event on a day button
+    const handleClick = (day) => {
+        console.log('Clicked day:', day);
+        setSelectedDay(day);
+    };
+
+    const renderPanel = (selectedDay) => {
+        return (
+            <div className="flex flex-col gap-4">
+                <label className="input-ground"> Select an option: </label>
+            </div>
+        )
+    };
+
     return (
         <div id="calendar-container">
             <svg ref={svgRef}></svg>
