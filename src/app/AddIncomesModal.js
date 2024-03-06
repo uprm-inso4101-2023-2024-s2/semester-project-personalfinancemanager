@@ -1,19 +1,29 @@
 import { currencyFormatter } from "./utils.js";
 import Modal from "@/app/modal";
-import { useState, useRef, useEffect, useContext } from "react";
+import { useState, useRef, useContext } from "react";
 import { FaRegTrashAlt } from 'react-icons/fa'
-import { db } from './index.js';
 import { financeContext } from './finance-context';
 import { authContext } from "./auth-context";
 import { toast } from 'react-toastify';
 
+// Define the formatDate function
+function formatDate(date) {
+    const year = date.getFullYear();
+    const month = `${date.getMonth() + 1}`.padStart(2, '0');
+    const day = `${date.getDate()}`.padStart(2, '0');
+    const hours = `${date.getHours()}`.padStart(2, '0');
+    const minutes = `${date.getMinutes()}`.padStart(2, '0');
+    
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
 function AddIncomesModal({ show, onClose }) {
     const amountRef = useRef();
     const descriptionRef = useRef();
+    const [selectedDate, setSelectedDate] = useState(new Date()); // State for selected date
+    const [entryAdded, setEntryAdded] = useState(false); // State to track if entry is added
     const { income, addIncomeItem, removeIncomeItem } = useContext(financeContext);
-
     const { user } = useContext(authContext);
-   
 
     // Función para manejar la adición de ingresos
     const addIncomeHandler = async (e) => {
@@ -22,7 +32,7 @@ function AddIncomesModal({ show, onClose }) {
         const newIncome = {
             amount: +amountRef.current.value,
             description: descriptionRef.current.value,
-            createdAt: new Date(),
+            createdAt: selectedDate, // Assign selected date
             uid: user.uid,
         };
 
@@ -30,13 +40,13 @@ function AddIncomesModal({ show, onClose }) {
             await addIncomeItem(newIncome);        
             descriptionRef.current.value = "";
             amountRef.current.value = "";
+            setSelectedDate(new Date()); // Reset selected date
+            setEntryAdded(true); // Indicate entry added
             toast.success("Income added successfully");
         } catch (error) {
             console.log(error.message);
             toast.error(error.message);
         }
-
-
     };
 
     const deleteIncomeEntryHandler = async (incomeId) => {
@@ -78,6 +88,17 @@ function AddIncomesModal({ show, onClose }) {
                     />
                 </div>
 
+                {/* Date Input Field */}
+                <div className="input-ground"> 
+                    <label htmlFor="date">Select Date and Time</label>
+                    <input 
+                        type="datetime-local" 
+                        name="date"
+                        value={formatDate(selectedDate)} // Format ISO date to string
+                        onChange={(e) => setSelectedDate(new Date(e.target.value))}
+                        required
+                    />
+                </div>
                 <button type="submit" className='btn btn-primary'>
                     Add entry
                 </button>
@@ -85,17 +106,20 @@ function AddIncomesModal({ show, onClose }) {
 
             <div className="flex flex-col gap-4 mt-6">
                 <h3 className="text-2xl font-bold"> Income History</h3>
-                { income.map(i => {
+                {income.map(i => {
                     return (
-                        <div className="flex justify-between item-center" key= {i.id}>
+                        <div className="flex justify-between item-center" key={i.id}>
                             <div>
                                 <p className="font-semibold">{i.description}</p>
-                                <small className="text-xs">{i.createdAt ? i.createdAt.toISOString() : null}</small>
+                                <small className="text-xs">
+                                    {/* Display Date and Time */}
+                                    {new Date(i.createdAt).toLocaleString()}
+                                </small>
                             </div>
                             <p className="flex items-center justify-between">
-                                { currencyFormatter( i.amount) }
+                                {currencyFormatter(i.amount)}
                                 <button onClick={() => { deleteIncomeEntryHandler(i.id) }}>
-                                    <FaRegTrashAlt/>
+                                    <FaRegTrashAlt />
                                 </button>
                             </p>
                         </div>

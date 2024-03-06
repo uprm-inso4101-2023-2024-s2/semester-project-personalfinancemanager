@@ -54,8 +54,24 @@ function ViewExpenseModal({ show, onClose, expense }) {
             <div key={item.id} className="flex items-center justify-between">
               <small>
                 {item.createdAt && item.createdAt.toMillis
-                  ? new Date(item.createdAt.toMillis()).toISOString()
-                  : item.createdAt && item.createdAt.toISOString()}
+                  ? new Date(item.createdAt.toMillis()).toLocaleString('en-US', {
+                      month: 'numeric',
+                      day: 'numeric',
+                      year: 'numeric',
+                      hour: 'numeric',
+                      minute: 'numeric',
+                      second: 'numeric',
+                      hour12: true
+                    })
+                  : item.createdAt && new Date(item.createdAt).toLocaleString('en-US', {
+                      month: 'numeric',
+                      day: 'numeric',
+                      year: 'numeric',
+                      hour: 'numeric',
+                      minute: 'numeric',
+                      second: 'numeric',
+                      hour12: true
+                    })}
               </small>
               <p className="flex items-center gap-2 justify-end">
                 <button
