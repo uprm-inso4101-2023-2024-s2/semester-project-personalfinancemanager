@@ -13,7 +13,6 @@ import AddIncomesModal from './AddIncomesModal';
 import { financeContext } from './finance-context';
 import Calendar from './Calendar'; // Import Calendar component
 
-import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, Tooltip, LinearScale, CategoryScale, BarElement, Legend} from "chart.js";
 
 ChartJS.register(
@@ -28,7 +27,6 @@ export default function Home() {
   const [chartType, setChartType] = useState('bar');
   const [displayExpenses, setDisplayExpenses] = useState(true); 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [showBarChart, setShowBarChart] = useState(false);
   const [showAddIncomeModal, setShowAddIncomeModal] = useState(false);
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
   const [balance, setBalance] = useState(0);
@@ -45,24 +43,6 @@ export default function Home() {
     setBalance(newBalance);
   }, [expenses, income]);
 
-  const [expensesData, setExpensesData] = useState([
-    { color: '#014', title: 'housing', total: 300 },
-    { color: '#032', title: 'transportation', total: 125 },
-    { color: '#121', title: 'food', total: 200 },
-  ]);
-
-  const [incomesData, setIncomesData] = useState([
-    { color: '#123', title: 'investments', total: 500 },
-    { color: '#456', title: 'salary', total: 250 },
-    { color: '#789', title: 'loan', total: 150 },
-  ]);
-
-  const calculateTotal = (data) => {
-    return data.reduce((sum, item) => sum + item.total, 0);
-  };
-
-  const totalExpenses = calculateTotal(expensesData);
-  const totalIncomes = calculateTotal(incomesData);
   const [isLoginPage, setLoginPage] = useState(false);
   const { user } = useContext(authContext);
 
@@ -91,9 +71,6 @@ export default function Home() {
     setIsLoggedIn(false);
   };
 
-  const toggleDisplay = () => {
-    setDisplayExpenses((prevDisplay) => !prevDisplay); 
-  };
 
   const renderChart = () => {
     switch (chartType) {
@@ -104,7 +81,7 @@ export default function Home() {
       case 'line':
         return <RenderLineChart />;
       case 'divergence':
-        return <RenderDBC />
+        return <RenderDBC expensesData ={expenses} incomeData = {income} /> 
       default:
         return null;
     }
@@ -164,8 +141,6 @@ export default function Home() {
         </section>
         </main>
               
-        { <button style={{ margin: '25px 0' }} className="bg-blue-500 text-white px-4 py-2 rounded" onClick={toggleDisplay}>{displayExpenses ? 'Show Incomes' : 'Show Expenses'}</button> }
-
           { <div className="mt-2 group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 flex justify-between">
             <button style={{ margin: '0 5px' }} onClick={() => setChartType('bar')}>
               <img src="https://cdn.pixabay.com/photo/2014/03/25/16/26/bar-chart-297122_1280.png" alt="Bar Chart" style={{ width: '100px', height: 'auto' }} />
@@ -185,29 +160,6 @@ export default function Home() {
             {renderChart()}
           </section> }
 
-          <section className='py-6'>
-            <h3 className='text-2x1'>Expenses</h3>
-            <div className='w-1/2 mx-auto'>
-            <Bar
-              data={{
-                labels: expenses.map((expense) => expense.title),
-                datasets: [
-                  {
-                    label: "Expenses",
-                    data: expenses.map((expense) => expense.total),
-                    backgroundColor: expenses.map((expense) => expense.color),
-                    borderColor: expenses.map((expense) => expense.color),
-                    borderWidth: 1,
-                  },
-                ],
-              }}
-              options={{
-                
-              }}
-            />
-
-            </div>
-          </section>
           {/* Calendar */}
           <section className='py-6'>
             <h3 className='text-2xl'>Calendar System</h3>
