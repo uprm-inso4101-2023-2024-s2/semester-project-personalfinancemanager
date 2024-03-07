@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
+import './Calendar.css'
 
 /**
  * Represents a calendar component rendered using D3.js.
@@ -9,6 +10,13 @@ const Calendar = () => {
     const [currentTime, setCurrentTime] = useState(new Date());
     const [selectedDay, setSelectedDay] = useState(null);
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+    const [inputMode, setInputMode] = useState(false);
+    const [dayInput, setDayInput] = useState({});
+    const [submittedData, setSubmittedData] = useState({});
+    const [expectedExpenses, setExpectedExpenses] = useState({});
+    const [daysWithData, setDaysWithData] = useState([]);
+
+
 
     useEffect(() => {
         const timerID = setInterval(() => tick(), 1000); // Update every second
@@ -26,7 +34,7 @@ const Calendar = () => {
 
     useEffect(() => {
         renderCalendar();
-    }, [currentTime]); // Re-render whenever currentTime changes
+    }, [currentTime, submittedData]); // Re-render whenever currentTime changes
 
     /**
      * Renders the calendar using D3.js.
@@ -79,23 +87,25 @@ const Calendar = () => {
         svg.selectAll('.day')
             .data(daysInCurrentMonth)
             .enter().append('rect')
-            .attr('class', 'day')
+            .attr('class', (d) => `day${daysWithData.some(date => date.toDateString() === d.toDateString()) ? ' with-data' : ''}`)
             .attr('width', xScale.bandwidth())
             .attr('height', yScale.bandwidth())
-            .attr('x', d => xScale(dayLabels[d.getDay()]))
-            .attr('y', d => yScale(d3.timeWeek.count(d3.timeMonth(d), d)) + yScale.bandwidth())
-            .attr('fill', d => {
+            .attr('x', (d) => xScale(dayLabels[d.getDay()]))
+            .attr('y', (d) => yScale(d3.timeWeek.count(d3.timeMonth(d), d)) + yScale.bandwidth())
+            .attr('fill', (d) => {
                 if (d.getDate() < currentTime.getDate()) {
-                    return '#d3d3d3'; // Day has passed
+                    return '#d3d3d3'; 
                 } else if (d.getDate() === currentTime.getDate()) {
-                    return 'lime'; // Highlight current day
+                    return 'lime'; 
                 } else {
-                    return 'white'; // Future days
+                    return 'white'; 
                 }
             })
             .attr('stroke', 'black')
-            .on('click', handleClick)
-            .style('cursor', "pointer");
+            .on('click', (event, d) => handleClick(event, d))
+            .style('cursor', 'pointer');
+
+
     
         // Add day labels
         svg.selectAll('.day-label')
@@ -149,22 +159,79 @@ const Calendar = () => {
         }
     };
     
-    // Handles the click event on a day button
-    const handleClick = (day) => {
-        console.log('Clicked day:', day);
+    const handleClick = (event, day) => {
         setSelectedDay(day);
+    
+        const hasInput = dayInput[day] || submittedData[day];
+    
+        setInputMode(!hasInput);
+    
+        if (hasInput) {
+            setDayInput({ ...dayInput, [day]: '' });
+        }
+    
+        setDaysWithData((prevDaysWithData) => {
+            if (hasInput && !prevDaysWithData.some(date => date.toDateString() === day.toDateString())) {
+                return [...prevDaysWithData, day];
+            } else if (!hasInput && prevDaysWithData.some(date => date.toDateString() === day.toDateString())) {
+                return prevDaysWithData.filter((d) => d.toDateString() !== day.toDateString());
+            }
+            return prevDaysWithData;
+        });
+    };    
+    
+
+    const handleInputChange = (event) => {
+        setDayInput({ ...dayInput, [selectedDay]: event.target.value });
     };
 
-    const renderPanel = (selectedDay) => {
+    const handleExpensesChange = (event) => {
+        setExpectedExpenses({ ...expectedExpenses, [selectedDay]: event.target.value });
+    };
+
+    const handleSubmit = () => {
+        setSubmittedData({ ...submittedData, [selectedDay]: dayInput[selectedDay] });
+        setDayInput({ ...dayInput, [selectedDay]: '' }); 
+    };
+
+    const renderPanel = () => {
         return (
-            <div className="flex flex-col gap-4">
-                <label className="input-ground"> Select an option: </label>
+            <div className="panel">
+                <label className="input-ground"> Event of the day: </label>
+                {inputMode && (
+                    <>
+                        <textarea
+                            className="input-ground textarea"
+                            value={dayInput[selectedDay] || ''}
+                            onChange={handleInputChange}
+                            placeholder="Write something..."
+                        />
+                        <button onClick={handleSubmit} className="submit-button">
+                            Submit
+                        </button>
+                    </>
+                )}
+                {!inputMode && (dayInput[selectedDay] || submittedData[selectedDay]) && (
+                    <div className={`input-ground${submittedData[selectedDay] ? ' with-border' : ''}`}>
+                        {dayInput[selectedDay] || submittedData[selectedDay]}
+                    </div>
+                )}
+
+                <label className="input-ground"> Expected Expenses: </label>
+                <input
+                    type="text"
+                    className="input-ground"
+                    value={expectedExpenses[selectedDay] || ''}
+                    onChange={handleExpensesChange}
+                    placeholder="Enter expected expenses..."
+                />
             </div>
-        )
+        );
     };
 
     return (
         <div id="calendar-container">
+            {renderPanel()}
             <svg ref={svgRef}></svg>
         </div>
     );
