@@ -91,7 +91,11 @@ const Calendar = () => {
         svg.selectAll('.day')
             .data(daysInCurrentMonth)
             .enter().append('rect')
-            .attr('class', (d) => `day${daysWithData.some(date => date.toDateString() === d.toDateString()) ? ' with-data' : ''}`)
+            .attr('class', (d) => {
+                const hasData = daysWithData.some(date => date.toDateString() === d.toDateString());
+                const hasSubmittedData = submittedData[d] !== undefined;
+                return `day${hasData ? ' with-data' : ''}${hasSubmittedData ? ' submitted' : ''}`;
+            })
             .attr('width', xScale.bandwidth())
             .attr('height', yScale.bandwidth())
             .attr('x', (d) => xScale(dayLabels[d.getDay()]))
@@ -100,12 +104,18 @@ const Calendar = () => {
                 if (d.getDate() < currentTime.getDate()) {
                     return '#d3d3d3'; 
                 } else if (d.getDate() === currentTime.getDate()) {
-                    return 'lime'; 
+                    return 'lime';  
                 } else {
                     return 'white'; 
                 }
             })
-            .attr('stroke', 'black')
+            .attr('stroke', (d) => {
+                if (d.getDate() === currentTime.getDate()) {
+                    return 'lime'; 
+                } else {
+                    return 'black'; 
+                }
+            })
             .on('click', (event, d) => handleClick(event, d))
             .style('cursor', 'pointer');
 
@@ -129,7 +139,7 @@ const Calendar = () => {
             .attr('x', width / 2)
             .attr('y', -30)
             .attr('text-anchor', 'middle')
-            .text(`${currentMonth + 1}/${currentYear}`); // Display month and year
+            .text(`${currentMonth + 1}/${currentYear}`); 
     
         // Add text for the month name
         svg.append('text')
@@ -194,16 +204,43 @@ const Calendar = () => {
     };
 
     const handleSubmit = () => {
-        setSubmittedData({ ...submittedData, [selectedDay]: dayInput[selectedDay] });
-        setDayInput({ ...dayInput, [selectedDay]: '' }); 
+        setSubmittedData({
+            ...submittedData,
+            [selectedDay]: {
+                event: dayInput[selectedDay] || '',
+                expenses: expectedExpenses[selectedDay] || ''
+            }
+        });
+        setDayInput({ ...dayInput, [selectedDay]: '' });
+        setExpectedExpenses({ ...expectedExpenses, [selectedDay]: '' });
     };
 
     const renderPanel = () => {
+        const submittedInfo = submittedData[selectedDay];
+
+        const shouldRenderForm = selectedDay !== null && !inputMode;
+
         return (
             <div className="panel">
-                <label className="input-ground"> Event of the day: </label>
-                {inputMode && (
+                {shouldRenderForm && (
                     <>
+                        <label className="input-ground"> Event of the day: </label>
+                        <div className={`input-ground${submittedInfo && submittedInfo.expenses ? ' with-border' : ''}`}>
+                            <div>
+                                <strong>Event:</strong> {submittedInfo && submittedInfo.event}
+                            </div>
+                            {submittedInfo && submittedInfo.expenses && (
+                                <div>
+                                    <strong>Expected Expenses:</strong> {submittedInfo.expenses}
+                                </div>
+                            )}
+                        </div>
+                    </>
+                )}
+
+                {inputMode && selectedDay !== null && (
+                    <>
+                        <label className="input-ground"> Event of the day: </label>
                         <textarea
                             className="input-ground textarea"
                             value={dayInput[selectedDay] || ''}
@@ -213,22 +250,17 @@ const Calendar = () => {
                         <button onClick={handleSubmit} className="submit-button">
                             Submit
                         </button>
+
+                        <label className="input-ground"> Expected Expenses: </label>
+                        <input
+                            type="text"
+                            className="input-ground"
+                            value={expectedExpenses[selectedDay] || ''}
+                            onChange={handleExpensesChange}
+                            placeholder="Enter expected expenses..."
+                        />
                     </>
                 )}
-                {!inputMode && (dayInput[selectedDay] || submittedData[selectedDay]) && (
-                    <div className={`input-ground${submittedData[selectedDay] ? ' with-border' : ''}`}>
-                        {dayInput[selectedDay] || submittedData[selectedDay]}
-                    </div>
-                )}
-
-                <label className="input-ground"> Expected Expenses: </label>
-                <input
-                    type="text"
-                    className="input-ground"
-                    value={expectedExpenses[selectedDay] || ''}
-                    onChange={handleExpensesChange}
-                    placeholder="Enter expected expenses..."
-                />
             </div>
         );
     };
