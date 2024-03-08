@@ -90,27 +90,30 @@ const Calendar = () => {
             .attr('class', (d) => {
                 const hasData = daysWithData.some(date => date.toDateString() === d.toDateString());
                 const hasSubmittedData = submittedData[d] !== undefined;
-                return `day${hasData ? ' with-data' : ''}${hasSubmittedData ? ' submitted' : ''}`;
+                const isToday = d.getDate() === currentTime.getDate();
+                const hasEvent = hasSubmittedData && submittedData[d].event;
+                return `day${hasData ? ' with-data' : ''}${hasSubmittedData ? ' submitted' : ''}${isToday && hasEvent ? ' orange-fill' : ''}`;
             })
             .attr('width', xScale.bandwidth())
             .attr('height', yScale.bandwidth())
             .attr('x', (d) => xScale(dayLabels[d.getDay()]))
             .attr('y', (d) => yScale(d3.timeWeek.count(d3.timeMonth(d), d)) + yScale.bandwidth())
             .attr('fill', (d) => {
+                const isToday = d.getDate() === currentTime.getDate();
+                const hasEvent = submittedData[d] && submittedData[d].event;
+                
                 if (d.getDate() < currentTime.getDate()) {
                     return '#d3d3d3'; 
-                } else if (d.getDate() === currentTime.getDate()) {
-                    return 'lime';  
+                } else if (isToday && hasEvent) {
+                    return 'orange'; 
+                } else if (isToday) {
+                    return 'lime'; 
                 } else {
                     return 'white'; 
                 }
             })
             .attr('stroke', (d) => {
-                if (d.getDate() === currentTime.getDate()) {
-                    return 'lime'; 
-                } else {
-                    return 'black'; 
-                }
+                return 'black'; 
             })
             .on('click', (event, d) => handleClick(event, d))
             .style('cursor', 'pointer');
@@ -200,15 +203,17 @@ const Calendar = () => {
     };
 
     const handleSubmit = () => {
-        setSubmittedData({
-            ...submittedData,
-            [selectedDay]: {
-                event: dayInput[selectedDay] || '',
-                expenses: expectedExpenses[selectedDay] || ''
-            }
-        });
-        setDayInput({ ...dayInput, [selectedDay]: '' });
-        setExpectedExpenses({ ...expectedExpenses, [selectedDay]: '' });
+        if ((dayInput[selectedDay] ?? '').trim() !== '') {
+            setSubmittedData({
+                ...submittedData,
+                [selectedDay]: {
+                    event: dayInput[selectedDay] || '',
+                    expenses: expectedExpenses[selectedDay] || ''
+                }
+            });
+            setDayInput({ ...dayInput, [selectedDay]: '' });
+            setExpectedExpenses({ ...expectedExpenses, [selectedDay]: '' });
+        }
     };
 
     const renderPanel = () => {

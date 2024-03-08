@@ -44,3 +44,7 @@
 .submitted {
     fill: yellow; 
   }
+
+.orange-fill {
+    fill: orange !important;
+}
