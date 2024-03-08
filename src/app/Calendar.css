@@ -34,14 +34,13 @@
 }
 
 .with-border {
-    border: 2px solid yellow;
-}
-
-.day.with-data {
-    stroke: yellow; /* Yellow border */
-    stroke-width: 2; /* Adjust the border width as needed */
+    border: 2px solid rgb(255, 255, 255);
 }
 
 .hidden {
     display: none;
 }
+
+.submitted {
+    fill: yellow; 
+  }
