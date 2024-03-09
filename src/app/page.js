@@ -12,6 +12,7 @@ import AddExpensesModal from './AddExpensesModal';
 import AddIncomesModal from './AddIncomesModal';
 import { financeContext } from './finance-context';
 import Calendar from './Calendar'; // Import Calendar component
+import TableAnalisisModal from './tableAnalisisModal';
 
 import { Chart as ChartJS, Tooltip, LinearScale, CategoryScale, BarElement, Legend} from "chart.js";
 
@@ -29,6 +30,7 @@ export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showAddIncomeModal, setShowAddIncomeModal] = useState(false);
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
+  const [showTableAnalisis, setShowTableAnalisis] = useState(false);
   const [balance, setBalance] = useState(0);
   const { expenses, income } = useContext(financeContext);
 
@@ -101,11 +103,16 @@ export default function Home() {
         onClose={setShowAddIncomeModal}
       />
       
-      
       {/* Add Expenses Modal */}
       <AddExpensesModal 
         show={showAddExpenseModal} 
         onClose={setShowAddExpenseModal} 
+      />
+
+      {/* Table Analisis */}
+      <TableAnalisisModal 
+        show={showTableAnalisis} 
+        onClose={setShowTableAnalisis}
       />
 
       <main className=" container max-w-2x1 px-6 mx-auto">
@@ -123,6 +130,11 @@ export default function Home() {
           <button 
             onClick={() => {setShowAddIncomeModal(true);}}
             className='btn btn-primary'>+ Income
+          </button>
+
+          <button 
+            onClick={() => {setShowTableAnalisis(true);}}
+            className='btn btn-primary'>+ Table Analisis
           </button>
         </section>
 
