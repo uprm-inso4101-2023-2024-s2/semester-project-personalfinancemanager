@@ -7,6 +7,10 @@ import * as d3 from 'd3';
 const Calendar = () => {
     const svgRef = useRef(null);
     const [currentTime, setCurrentTime] = useState(new Date());
+    const [isCalendarVisible, setCalendarVisibility] = useState(true);
+    const toggleVisibility = () => {
+        setCalendarVisibility(!isCalendarVisible);
+    }
 
     useEffect(() => {
         const timerID = setInterval(() => tick(), 1000); // Update every second
@@ -141,9 +145,19 @@ const Calendar = () => {
     };
     
     return (
-        <div id="calendar-container">
-            <svg ref={svgRef}></svg>
-        </div>
+        // Use a fragment to wrap Calendar div and hide/show button as one component
+        <>
+            {/* This vaiable checks whether the calendar should be visible or not, and renders it only if its true */}
+            { isCalendarVisible && (
+                <div id="calendar-container">
+                <svg ref={svgRef}></svg>
+            </div> 
+            )} 
+            {/* Button that changes visibility state when pressed.  */}
+            <button onClick={ toggleVisibility }>
+                { isCalendarVisible ? 'Hide' : 'Show'} Calendar
+            </button>
+        </>
     );
 };
 
