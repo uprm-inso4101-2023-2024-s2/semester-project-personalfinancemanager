@@ -1,19 +1,5 @@
 'use client'
 import React, { useState, useContext, useEffect } from 'react';
-<<<<<<< HEAD
-import RenderBarChart from "./barChart";
-import RenderPieChart from "./ExpenseChart"; 
-import RenderDBC from "./divergingBarChart";
-import RenderLineChart from './lineChart';
-import LoginPage from './LoginPage';
-import { authContext } from './auth-context';
-import { currencyFormatter } from './utils';
-import ExpenseCategoryItem from './ExpenseCategoryItem';
-import AddExpensesModal from './AddExpensesModal';
-import AddIncomesModal from './AddIncomesModal';
-import { financeContext } from './finance-context';
-import Calendar from './Calendar'; // Import Calendar component
-=======
 import RenderBarChart from "./Charts/barChart";
 import RenderPieChart from "./Charts/ExpenseChart"; 
 import RenderDBC from "./Charts/divergingBarChart";
@@ -26,7 +12,6 @@ import AddExpensesModal from './Modals/AddExpensesModal';
 import AddIncomesModal from './Modals/AddIncomesModal';
 import { financeContext } from './Finance-Context/finance-context';
 import Calendar from './Page-Functionality/Calendar';
->>>>>>> 114b9cca4976312c1a95123dac9aa51437d687ef
 
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, Tooltip, LinearScale, CategoryScale, BarElement, Legend} from "chart.js";
