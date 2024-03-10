@@ -8,6 +8,10 @@ import './Calendar.css'
 const Calendar = () => {
     const svgRef = useRef(null);
     const [currentTime, setCurrentTime] = useState(new Date());
+    const [isCalendarVisible, setCalendarVisibility] = useState(true);
+    const toggleVisibility = () => {
+        setCalendarVisibility(!isCalendarVisible);
+    }
     const [selectedDay, setSelectedDay] = useState(null);
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
     const [inputMode, setInputMode] = useState(false);
@@ -15,12 +19,6 @@ const Calendar = () => {
     const [submittedData, setSubmittedData] = useState({});
     const [expectedExpenses, setExpectedExpenses] = useState({});
     const [daysWithData, setDaysWithData] = useState([]);
-
-
-    const [isCalendarVisible, setCalendarVisibility] = useState(true);
-    const toggleVisibility = () => {
-        setCalendarVisibility(!isCalendarVisible);
-    }
 
     useEffect(() => {
         const timerID = setInterval(() => tick(), 1000); // Update every second
@@ -276,12 +274,12 @@ const Calendar = () => {
             {/* This vaiable checks whether the calendar should be visible or not, and renders it only if its true */}
             { isCalendarVisible && (
                 <div id="calendar-container">
-            {renderPanel()}
-                <svg ref={svgRef}></svg>
+                {renderPanel()}
+            <svg ref={svgRef}></svg>
             </div> 
             )} 
             {/* Button that changes visibility state when pressed.  */}
-            <button class='btn btn-primary'onClick={ toggleVisibility }>
+            <button onClick={ toggleVisibility }>
                 { isCalendarVisible ? 'Hide' : 'Show'} Calendar
             </button>
         </>
