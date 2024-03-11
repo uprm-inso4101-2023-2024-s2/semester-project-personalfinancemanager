@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
+import './Calendar.css'
 
 /**
  * Represents a calendar component rendered using D3.js.
@@ -7,7 +8,13 @@ import * as d3 from 'd3';
 const Calendar = () => {
     const svgRef = useRef(null);
     const [currentTime, setCurrentTime] = useState(new Date());
+    const [selectedDay, setSelectedDay] = useState(null);
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+    const [inputMode, setInputMode] = useState(false);
+    const [dayInput, setDayInput] = useState({});
+    const [submittedData, setSubmittedData] = useState({});
+    const [expectedExpenses, setExpectedExpenses] = useState({});
+    const [daysWithData, setDaysWithData] = useState([]);
     const [showMonthSelectorPanel, setShowMonthSelectorPanel] = useState(false);
 
     useEffect(() => {
@@ -26,7 +33,7 @@ const Calendar = () => {
 
     useEffect(() => {
         renderCalendar();
-    }, [currentTime, currentMonth]); // Re-render whenever currentTime changes
+    }, [currentTime, submittedData, currentMonth]); // Re-render whenever currentTime changes
 
     /**
      * Renders the calendar using D3.js.
@@ -78,21 +85,40 @@ const Calendar = () => {
         svg.selectAll('.day')
             .data(daysInCurrentMonth)
             .enter().append('rect')
-            .attr('class', 'day')
+            .attr('class', (d) => {
+                const hasData = daysWithData.some(date => date.toDateString() === d.toDateString());
+                const hasSubmittedData = submittedData[d] !== undefined;
+                const isToday = d.getDate() === currentTime.getDate();
+                const hasEvent = hasSubmittedData && submittedData[d].event;
+                return `day${hasData ? ' with-data' : ''}${hasSubmittedData ? ' submitted' : ''}${isToday && hasEvent ? ' orange-fill' : ''}`;
+            })
             .attr('width', xScale.bandwidth())
             .attr('height', yScale.bandwidth())
-            .attr('x', d => xScale(dayLabels[d.getDay()]))
-            .attr('y', d => yScale(d3.timeWeek.count(d3.timeMonth(d), d)) + yScale.bandwidth())
-            .attr('fill', d => {
+            .attr('x', (d) => xScale(dayLabels[d.getDay()]))
+            .attr('y', (d) => yScale(d3.timeWeek.count(d3.timeMonth(d), d)) + yScale.bandwidth())
+            .attr('fill', (d) => {
+                const isToday = d.getDate() === currentTime.getDate();
+                const hasEvent = submittedData[d] && submittedData[d].event;
                 if ((d.getDate() < currentTime.getDate() && d.getMonth() === currentTime.getMonth()) || (d.getMonth() < currentTime.getMonth())) {
                     return '#d3d3d3'; // Day has passed
-                } else if (d.getDate() === currentTime.getDate() && d.getMonth() === currentTime.getMonth()) {
-                    return 'lime'; // Highlight current day
+                } else if (isToday && d.getMonth() === currentTime.getMonth()) {
+                    if(hasEvent) {
+                        return 'orange'; // Highlight current day with event
+                    }
+                    else {
+                        return 'lime'; // Highlight current day
+                    }
                 } else {
-                    return 'white'; // Future days
+                    return 'white'; 
                 }
             })
-            .attr('stroke', 'black');
+            .attr('stroke', (d) => {
+                return 'black'; 
+            })
+            .on('click', (event, d) => handleClick(event, d))
+            .style('cursor', 'pointer');
+
+
     
         // Add day labels
         svg.selectAll('.day-label')
@@ -104,6 +130,7 @@ const Calendar = () => {
             .attr('text-anchor', 'middle')
             .attr('dominant-baseline', 'middle')
             .text(d => d.getDate());
+            
     
         // Add month and year label
         svg.append('text')
@@ -111,7 +138,7 @@ const Calendar = () => {
             .attr('x', width / 2)
             .attr('y', -30)
             .attr('text-anchor', 'middle')
-            .text(`${currentMonth + 1}/${currentYear}`); // Display month and year
+            .text(`${currentMonth + 1}/${currentYear}`); 
     
         // Add text for the month name
         svg.append('text')
@@ -139,6 +166,104 @@ const Calendar = () => {
             .attr('font-size', '25')
             .attr('fill', 'black')
             .text(d3.timeFormat('%H:%M:%S')(currentTime)); // Display current time
+
+        if(selectedDay !== null) {
+            renderPanel(selectedDay);
+        }
+    };
+    
+    const handleClick = (event, day) => {
+        setSelectedDay(day);
+    
+        const hasInput = dayInput[day] || submittedData[day];
+    
+        setInputMode(!hasInput);
+    
+        if (hasInput) {
+            setDayInput({ ...dayInput, [day]: '' });
+        }
+    
+        setDaysWithData((prevDaysWithData) => {
+            if (hasInput && !prevDaysWithData.some(date => date.toDateString() === day.toDateString())) {
+                return [...prevDaysWithData, day];
+            } else if (!hasInput && prevDaysWithData.some(date => date.toDateString() === day.toDateString())) {
+                return prevDaysWithData.filter((d) => d.toDateString() !== day.toDateString());
+            }
+            return prevDaysWithData;
+        });
+    };    
+    
+
+    const handleInputChange = (event) => {
+        setDayInput({ ...dayInput, [selectedDay]: event.target.value });
+    };
+
+    const handleExpensesChange = (event) => {
+        setExpectedExpenses({ ...expectedExpenses, [selectedDay]: event.target.value });
+    };
+
+    const handleSubmit = () => {
+        if ((dayInput[selectedDay] ?? '').trim() !== '') {
+            setSubmittedData({
+                ...submittedData,
+                [selectedDay]: {
+                    event: dayInput[selectedDay] || '',
+                    expenses: expectedExpenses[selectedDay] || ''
+                }
+            });
+            setDayInput({ ...dayInput, [selectedDay]: '' });
+            setExpectedExpenses({ ...expectedExpenses, [selectedDay]: '' });
+        }
+    };
+
+    const renderPanel = () => {
+        const submittedInfo = submittedData[selectedDay];
+
+        const shouldRenderForm = selectedDay !== null && !inputMode;
+
+        return (
+            <div className="panel">
+                {shouldRenderForm && (
+                    <>
+                        <label className="input-ground"> Event of the day: </label>
+                        <div className={`input-ground${submittedInfo && submittedInfo.expenses ? ' with-border' : ''}`}>
+                            <div>
+                                <strong>Event:</strong> {submittedInfo && submittedInfo.event}
+                            </div>
+                            {submittedInfo && submittedInfo.expenses && (
+                                <div>
+                                    <strong>Expected Expenses:</strong> {submittedInfo.expenses}
+                                </div>
+                            )}
+                        </div>
+                    </>
+                )}
+
+                {inputMode && selectedDay !== null && (
+                    <>
+                        <label className="input-ground"> Event of the day: </label>
+                        <textarea
+                            className="input-ground textarea"
+                            value={dayInput[selectedDay] || ''}
+                            onChange={handleInputChange}
+                            placeholder="Write something..."
+                        />
+                        <button onClick={handleSubmit} className="submit-button">
+                            Submit
+                        </button>
+
+                        <label className="input-ground"> Expected Expenses: </label>
+                        <input
+                            type="text"
+                            className="input-ground"
+                            value={expectedExpenses[selectedDay] || ''}
+                            onChange={handleExpensesChange}
+                            placeholder="Enter expected expenses..."
+                        />
+                    </>
+                )}
+            </div>
+        );
     };
 
     const changeMonth = (month) => {
@@ -194,6 +319,7 @@ const Calendar = () => {
                 )}
             </div>
             <div id="calendar-container">
+                {renderPanel()}
                 <svg ref={svgRef}></svg>
             </div>
         </div>
