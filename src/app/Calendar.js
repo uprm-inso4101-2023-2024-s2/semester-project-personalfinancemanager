@@ -7,6 +7,8 @@ import * as d3 from 'd3';
 const Calendar = () => {
     const svgRef = useRef(null);
     const [currentTime, setCurrentTime] = useState(new Date());
+    const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+    const [showMonthSelectorPanel, setShowMonthSelectorPanel] = useState(false);
 
     useEffect(() => {
         const timerID = setInterval(() => tick(), 1000); // Update every second
@@ -24,7 +26,7 @@ const Calendar = () => {
 
     useEffect(() => {
         renderCalendar();
-    }, [currentTime]); // Re-render whenever currentTime changes
+    }, [currentTime, currentMonth]); // Re-render whenever currentTime changes
 
     /**
      * Renders the calendar using D3.js.
@@ -48,7 +50,6 @@ const Calendar = () => {
     
         // Get the current date
         const currentYear = currentTime.getFullYear();
-        const currentMonth = currentTime.getMonth();
     
         // Set the range of days for the current month
         const daysInCurrentMonth = d3.timeDays(new Date(currentYear, currentMonth, 1), new Date(currentYear, currentMonth + 1, 1));
@@ -83,9 +84,9 @@ const Calendar = () => {
             .attr('x', d => xScale(dayLabels[d.getDay()]))
             .attr('y', d => yScale(d3.timeWeek.count(d3.timeMonth(d), d)) + yScale.bandwidth())
             .attr('fill', d => {
-                if (d.getDate() < currentTime.getDate()) {
+                if ((d.getDate() < currentTime.getDate() && d.getMonth() === currentTime.getMonth()) || (d.getMonth() < currentTime.getMonth())) {
                     return '#d3d3d3'; // Day has passed
-                } else if (d.getDate() === currentTime.getDate()) {
+                } else if (d.getDate() === currentTime.getDate() && d.getMonth() === currentTime.getMonth()) {
                     return 'lime'; // Highlight current day
                 } else {
                     return 'white'; // Future days
@@ -120,7 +121,7 @@ const Calendar = () => {
             .attr('font-size', '25')
             .attr('text-anchor', 'middle')
             .text(d3.timeFormat('%B')(new Date(currentYear, currentMonth))); // Display month name
-        
+    
         // Add text for the year
         svg.append('text')
             .attr('class', 'year-label')
@@ -139,10 +140,62 @@ const Calendar = () => {
             .attr('fill', 'black')
             .text(d3.timeFormat('%H:%M:%S')(currentTime)); // Display current time
     };
-    
+
+    const changeMonth = (month) => {
+        setCurrentMonth(month);
+    };
+
+    const toggleMonthPanel = () => {
+        setShowMonthSelectorPanel(!showMonthSelectorPanel); // Toggle the state
+    };
+
     return (
-        <div id="calendar-container">
-            <svg ref={svgRef}></svg>
+        <div>
+            <div>
+                <button className="btn btn-primary" onClick={toggleMonthPanel}>MONTHS</button> {/* Button to toggle month panel visibility */}
+                {showMonthSelectorPanel && (
+                    <div className="month-panel">
+                        <div className="year-label">{currentTime.getFullYear()}</div>
+                        <div className="month-grid">
+                            <div className="top-row">
+                                {Array.from({ length: 6 }, (_, i) => {
+                                    const monthIndex = i;
+                                    const monthName = d3.timeFormat('%B')(new Date(currentTime.getFullYear(), monthIndex));
+                                    const isCurrentMonth = currentMonth === monthIndex;
+                                    return (
+                                        <button
+                                            key={monthIndex}
+                                            className={`month-tile ${isCurrentMonth ? 'current-month' : ''}`}
+                                            onClick={() => changeMonth(monthIndex)}
+                                        >
+                                            {monthName}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                            <div className="bottom-row">
+                                {Array.from({ length: 6 }, (_, i) => {
+                                    const monthIndex = i + 6;
+                                    const monthName = d3.timeFormat('%B')(new Date(currentTime.getFullYear(), monthIndex));
+                                    const isCurrentMonth = currentMonth === monthIndex;
+                                    return (
+                                        <button
+                                            key={monthIndex}
+                                            className={`month-tile ${isCurrentMonth ? 'current-month' : ''}`}
+                                            onClick={() => changeMonth(monthIndex)}
+                                        >
+                                            {monthName}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+            <div id="calendar-container">
+                <svg ref={svgRef}></svg>
+            </div>
         </div>
     );
 };

@@ -86,3 +86,39 @@ body {
     height: 400;
   }
 }
+
+.month-panel {
+  text-align: center;
+}
+
+.year-label {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.month-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.month-tile {
+  background-color: lightblue;
+  padding: 10px; 
+  margin: 5px;
+  cursor: pointer;
+}
+
+.top-row {
+  display: flex;
+  justify-content: center;
+}
+
+.bottom-row {
+  display: flex;
+  justify-content: center;
+}
+
+.current-month {
+  background-color: lime;
+}
