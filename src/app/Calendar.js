@@ -279,7 +279,7 @@ const Calendar = () => {
             </div> 
             )} 
             {/* Button that changes visibility state when pressed.  */}
-            <button onClick={ toggleVisibility }>
+            <button class='btn btn-primary'onClick={ toggleVisibility }>
                 { isCalendarVisible ? 'Hide' : 'Show'} Calendar
             </button>
         </>
