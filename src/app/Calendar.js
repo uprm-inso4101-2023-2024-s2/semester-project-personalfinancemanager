@@ -304,6 +304,9 @@ const Calendar = () => {
             <div className="panel">
                 {shouldRenderForm && (
                     <>
+                        <button onClick={() => setSelectedDay(null)} className="close-button">
+                            X
+                        </button>
                         <label className="input-ground"> Events of {selectedDay.toLocaleDateString()}: </label>
 
                         {/* Container for events with optional border based on submitted expenses */}
@@ -334,6 +337,9 @@ const Calendar = () => {
 
                 {inputMode && selectedDay !== null && (
                     <>
+                        <button onClick={() => setSelectedDay(null)} className="close-button" >
+                            X
+                        </button>
                         <label className="input-ground"> Events for {selectedDay.toLocaleDateString()}: </label>
                         <textarea
                             className="input-ground textarea"
@@ -352,9 +358,6 @@ const Calendar = () => {
                         <button onClick={handleSubmit} className="submit-button">
                             Submit
                         </button>
-                        <button onClick={() => setSelectedDay(null)} className="close-button">
-                            Close
-                        </button>
                     </>
                 )}
 
@@ -366,9 +369,6 @@ const Calendar = () => {
                         </button>
                         <button onClick={handleRemoveEvent} className="remove-event-button">
                                 Remove Last Event
-                        </button>
-                        <button onClick={() => setSelectedDay(null)} className="close-button">
-                            Close
                         </button>
                     </div>
                 )}

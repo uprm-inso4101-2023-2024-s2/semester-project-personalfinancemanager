@@ -43,6 +43,7 @@
     padding: 10px 20px; 
     border-radius: 5px;
     margin-bottom: 10px; 
+    margin-left: 10px;
 }
 
 .with-border {
@@ -51,11 +52,7 @@
 
 .close-button {
     cursor: pointer;
-    background-color: #e74c3c; 
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+    color: #fc0000;
 }
 
 .submitted {
