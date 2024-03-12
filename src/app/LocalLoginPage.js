@@ -7,7 +7,6 @@ function LocalLoginPage({ onLogin }) {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [isForgotPassword, setShowForgotPassword] = useState(false); // New state for rendering ForgotPassword
-    const [isLoginPage, setLoginPage] = useState(true);
 
     const handleLogin = () => {
         // Other login logic, for now, just the email
@@ -20,10 +19,13 @@ function LocalLoginPage({ onLogin }) {
 
     const handleForgotPasswordClick = () => {
         setShowForgotPassword(true);
-        setLoginPage(false);
     };
 
-    return (isLoginPage ? (
+    if (isForgotPassword) {
+        return (<ForgotPassword/>)
+    }
+    else {
+    return (
         <div className="flex flex-col items-center h-screen mx-4 sm:mx-auto sm:w-full md:w-2/3 lg:w-1/2">
             <h2 className="text-2xl font-semibold mb-3">Login Page</h2>
             <div className="flex flex-col gap-4 w-full">
@@ -45,10 +47,8 @@ function LocalLoginPage({ onLogin }) {
                 No account? <button className="underline" onClick={() => console.log("Create an account")}>Create One</button>
             </div>
         </div>
-    ) : (
-        isForgotPassword && <ForgotPassword/>
-    )
     );
+    }
 }
 
 export default LocalLoginPage;

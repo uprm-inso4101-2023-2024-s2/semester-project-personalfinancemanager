@@ -18,26 +18,27 @@ function ForgotPasswordPage({ onReturnHome }) {
     if(passwordChanged){
         return <PwdChangePage onReturnHome={onReturnHome} />;
     }
-
+    else {
     return (
-        <div className="flex flex-col items-center h-screen">
+        <div className="flex flex-col items-center h-screen mx-4 sm:mx-auto sm:w-full md:w-2/3 lg:w-1/2">
             <h2 className="text-2xl font-semibold mb-3">Forgot Password Page</h2>
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 w-full">
                 <div>
                     <label className="block">Enter New Password:</label>
                     <div className="relative">
-                        <input type={showPassword ? 'text' : 'password'} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="border px-3 py-1 rounded text-black" />
+                        <input type={showPassword ? 'text' : 'password'} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="border px-3 py-1 rounded text-black w-full" />
                         <button className="absolute top-1/2 right-2 transform -translate-y-1/2 text-black" onClick={toggleShowPassword}>{showPassword ? 'Hide' : 'Show'}</button>
                     </div>
                 </div>
                 <div>
                     <label className="block">Confirm New Password:</label>
-                    <input type="password" value={confirmNewPassword} onChange={(e) => setConfirmNewPassword(e.target.value)} className="border px-3 py-1 rounded text-black" />
+                    <input type="password" value={confirmNewPassword} onChange={(e) => setConfirmNewPassword(e.target.value)} className="border px-3 py-1 rounded text-black w-full" />
                 </div>
             </div>
             <button onClick={handleConfirmPasswordChange} className="bg-green-500 text-white px-4 py-2 rounded mt-3">Confirm Password Change</button>
         </div>
     );
+    }
 }
 
 export default ForgotPasswordPage;
