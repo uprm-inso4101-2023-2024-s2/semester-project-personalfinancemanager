@@ -1,0 +1,50 @@
+#calendar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.input-ground {
+    width: 300px;
+    padding: 5px;
+}
+
+.textarea {
+    height: 100px;
+    resize: none;
+}
+
+.submit-button {
+    cursor: pointer;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.with-border {
+    border: 2px solid rgb(255, 255, 255);
+}
+
+.hidden {
+    display: none;
+}
+
+.submitted {
+    fill: yellow; 
+  }
+
+.orange-fill {
+    fill: orange !important;
+}

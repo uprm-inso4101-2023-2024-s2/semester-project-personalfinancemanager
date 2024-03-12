@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
+import './globals.css';
 
 const RenderPieChart = ({ expensesData }) => {
   const svgRef = useRef();
@@ -7,7 +8,7 @@ const RenderPieChart = ({ expensesData }) => {
   useEffect(() => {
     d3.select(svgRef.current).selectAll('*').remove();
 
-    const colorScale = d3.scaleOrdinal().range(d3.schemeCategory10);
+    const colorScale = d3.scaleOrdinal().range(expensesData.map(d => d.color));
 
     const width = 400;
     const height = 400;
@@ -31,22 +32,26 @@ const RenderPieChart = ({ expensesData }) => {
       .attr("text-anchor", "middle")
       .attr("dy", "1.5em");
 
-    const updateTotalText = (total, category, amount) => {
-      const textY = 0;
+    const tooltip = d3.select("body").append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
 
-      if (category && amount !== 0) {
-        const percentage = ((amount / total) * 100).toFixed(2);
-        const categoryColor = colorScale(category);
-        percentageText.text(`${percentage}%`)
-          .style("fill", categoryColor)
-          .style("font-size", "20px")
-          .attr("dy", `${textY}em`);
-        totalText.text("");
-      } else {
-        totalText.text(`Total: $${total.toFixed(2)}`)
-          .attr("dy", `${textY}em`);
-        percentageText.text("");
-      }
+    const updateTotalText = (total, category, amount) => {
+        const textY = 0;
+      
+        if (category && amount !== 0) {
+          const percentage = ((amount / total) * 100).toFixed(2);
+          const categoryColor = colorScale(category);
+          percentageText.text(`${percentage}%`)
+            .style("fill", categoryColor)
+            .style("font-size", "20px")
+            .attr("dy", `${textY}em`);
+          totalText.text("");
+        } else {
+          totalText.text(`Total: $${total.toFixed(2)}`)
+            .attr("dy", `${textY}em`);
+          percentageText.text("");
+        }
     };
 
     const pie = d3.pie()
@@ -68,48 +73,41 @@ const RenderPieChart = ({ expensesData }) => {
       .on("mousemove", function (event, d) {
         const originalColor = colorScale(d.data.title);
         const brighterColor = d3.color(originalColor).brighter();
-
+      
         d3.select(this)
           .transition()
           .duration(100)
           .attr("fill", brighterColor);
-
+      
         const totalAmount = d3.sum(expensesData, (d) => d.total);
         const categoryAmount = d.data.total;
         const categoryName = d.data.title;
-
+      
         updateTotalText(totalAmount, categoryName, categoryAmount);
+      
+        tooltip.transition()
+          .duration(200)
+          .style("opacity", .9);
+      
+        tooltip.html(`${categoryName}: $${categoryAmount.toFixed(2)}`)
+          .style("left", (event.pageX) + "px")
+          .style("top", (event.pageY - 28) + "px");
       })
       .on("mouseout", function (event, d) {
         const originalColor = colorScale(d.data.title);
-
+      
         d3.select(this)
           .transition()
           .duration(100)
           .attr("fill", originalColor);
-
+      
         updateTotalText(d3.sum(expensesData, (d) => d.total), '', 0);
+      
+        tooltip.transition()
+          .duration(500)
+          .style("opacity", 0);
       });
 
-    const legend = svg.selectAll(".legend")
-      .data(expensesData)
-      .enter()
-      .append("g")
-      .attr("class", "legend")
-      .attr("transform", (d, i) => `translate(${width / 2 + 20},${i * 30 + 20})`);
-
-    legend.append("rect")
-      .attr("width", 18)
-      .attr("height", 18)
-      .style("fill", (d, i) => colorScale(d.title));
-
-    legend.append("text")
-      .attr("x", 24)
-      .attr("y", 9)
-      .attr("dy", ".35em")
-      .style("text-anchor", "start")
-      .style("fill", "#000000")
-      .text(d => `${d.title}: $${d.total.toFixed(2)}`);
   }, [expensesData]);
 
   return (
@@ -120,3 +118,4 @@ const RenderPieChart = ({ expensesData }) => {
 };
 
 export default RenderPieChart;
+
