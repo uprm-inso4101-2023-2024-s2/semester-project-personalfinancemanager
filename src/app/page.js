@@ -75,7 +75,7 @@ export default function Home() {
   const renderChart = () => {
     switch (chartType) {
       case 'bar':
-        return <RenderBarChart />;
+        return <RenderBarChart expensesData={expenses} />;
       case 'pie':
         return <RenderPieChart expensesData={expenses} />;
       case 'line':
@@ -159,7 +159,6 @@ export default function Home() {
           { <section className='max-w-2x1 px-6 mx-auto '>
             {renderChart()}
           </section> }
-
           {/* Calendar */}
           <section className='py-6'>
             <h3 className='text-2xl'>Calendar System</h3>
