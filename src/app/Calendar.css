@@ -1,8 +1,14 @@
 #calendar-container {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    margin-top: 20px;
+    width: 100%;
+    padding: 20px;
+}
+
+svg {
+    margin: auto;
+    display: block; 
 }
 
 .panel {
@@ -34,7 +40,7 @@
 }
 
 .with-border {
-    border: 2px solid rgb(255, 255, 255);
+    border: 2px solid violet;
 }
 
 .hidden {

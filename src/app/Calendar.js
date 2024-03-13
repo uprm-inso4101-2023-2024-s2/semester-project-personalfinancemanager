@@ -40,21 +40,30 @@ const Calendar = () => {
      * Renders the calendar using D3.js.
      */
     const renderCalendar = () => {
-        const svg = d3.select(svgRef.current);
+        const svgContainer = d3.select("#calendar-container");
+        const width = Math.max(svgContainer.node().getBoundingClientRect().width, 300);
+        const svgHeight = 600; 
+        const margin = { top: 50, right: 0, bottom: 50, left: 0 };
     
-        // Clear the SVG content before re-rendering
-        svg.selectAll('*').remove();
+        const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     
-        // Set the dimensions and margins of the SVG
-        const margin = { top: 50, right: 20, bottom: 50, left: 50 };
-        const width = 800 - margin.left - margin.right;
-        const height = 600 - margin.top - margin.bottom;
+        const xScale = d3.scaleBand()
+            .range([margin.left, width - margin.right])
+            .domain(dayLabels)
+            .padding(0.1);
+
+        const yScale = d3.scaleBand()
+            .range([margin.top, svgHeight - margin.bottom])
+            .domain(d3.range(6)) 
+            .padding(0.1);
+
     
-        // Append the SVG element to the div
-        svg.attr('width', width + margin.left + margin.right)
-            .attr('height', height + margin.top + margin.bottom)
-            .append('g')
-            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+        const svg = d3.select(svgRef.current)
+            .attr("viewBox", `0 0 ${width} ${svgHeight}`) 
+            .attr("preserveAspectRatio", "xMidYMid meet");
+    
+        svg.selectAll('*').remove(); // Clear the SVG content
+
     
         // Get the current date
         const currentYear = currentTime.getFullYear();
@@ -63,15 +72,7 @@ const Calendar = () => {
         // Set the range of days for the current month
         const daysInCurrentMonth = d3.timeDays(new Date(currentYear, currentMonth, 1), new Date(currentYear, currentMonth + 1, 1));
     
-        // Set cell size
-        const cellSize = 30;
-    
-        // Create scales
-        const xScale = d3.scaleBand().range([0, width]).domain(['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']);
-        const yScale = d3.scaleBand().range([0, height]).domain(d3.range(0, 7)); // Maximum of 6 weeks in a month
-    
         // Add day labels in the top row
-        const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         svg.selectAll('.day-label-top')
             .data(dayLabels)
             .enter().append('text')
@@ -132,13 +133,14 @@ const Calendar = () => {
             .text(d => d.getDate());
             
     
-        // Add month and year label
+        // Add current time display
         svg.append('text')
-            .attr('class', 'month-year-label')
-            .attr('x', width / 2)
-            .attr('y', -30)
-            .attr('text-anchor', 'middle')
-            .text(`${currentMonth + 1}/${currentYear}`); 
+            .attr('class', 'current-time-label')
+            .attr('x', xScale(dayLabels[0])) // This aligns with the left edge of the 'Sun' cells
+            .attr('y', margin.top / 2) // Adjust the y position as needed
+            .attr('font-size', '25')
+            .attr('text-anchor', 'start') // Anchor text to the start (left)
+            .text(d3.timeFormat('%H:%M')(currentTime));
     
         // Add text for the month name
         svg.append('text')
@@ -152,20 +154,12 @@ const Calendar = () => {
         // Add text for the year
         svg.append('text')
             .attr('class', 'year-label')
-            .attr('x', width / 1.05)
-            .attr('y', 20)
+            .attr('x', xScale(dayLabels[dayLabels.length - 1]) + xScale.bandwidth()) // This aligns with the right edge of the 'Sat' cell
+            .attr('y', margin.top / 2) // Adjust the y position as needed
             .attr('font-size', '25')
-            .attr('text-anchor', 'middle')
-            .text(currentYear); // Display year
-    
-        // Add current time display
-        svg.append('text')
-            .attr('class', 'current-time-label')
-            .attr('x', 10)
-            .attr('y', 20)
-            .attr('font-size', '25')
-            .attr('fill', 'black')
-            .text(d3.timeFormat('%H:%M:%S')(currentTime)); // Display current time
+            .attr('text-anchor', 'end') // Anchor text to the end (right)
+            .text(currentYear);
+        
 
         if(selectedDay !== null) {
             renderPanel(selectedDay);
