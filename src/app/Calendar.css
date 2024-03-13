@@ -20,6 +20,7 @@
 .input-ground {
     width: 100%;
     padding: 10px;
+    color : black;
 }
 
 .expected-expenses {
@@ -33,6 +34,7 @@
     width: 100%;
     height: 100px;
     resize: none;
+    color : black;
 }
 
 .submit-button, .remove-event-button {
@@ -70,4 +72,11 @@
 
 .remove-event-button:hover {
     background-color: #c82333; 
+}
+
+.current-time-label,
+.month-name-label,
+.year-label,
+.day-label-top {
+    fill: white;
 }
