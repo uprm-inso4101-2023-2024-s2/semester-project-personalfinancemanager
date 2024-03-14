@@ -65,8 +65,7 @@ function SignUpPage({ currentPage, setCurrentPage }) {
     };
 
     const handleSignUp = () => {
-        setCurrentPage('');
-        // onSignUp({ fullName, email, password, phone, birthDate, gender });
+        setCurrentPage('home');
     };
 
     const handleLoginClick = () => {

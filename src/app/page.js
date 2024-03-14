@@ -15,6 +15,7 @@ import Calendar from './Calendar'; // Import Calendar component
 import { Chart as ChartJS, Tooltip, LinearScale, CategoryScale, BarElement, Legend} from "chart.js";
 import LoginPage from './LoginPage';
 import SignUpPage from './SignUpPage';
+import Nav from './Navigations';
 
 ChartJS.register(
   CategoryScale,
@@ -62,7 +63,7 @@ export default function Home() {
 
   const handleLogin = () => {
     setIsLoggedIn(true);
-    setCurrentPage('');
+    setCurrentPage('home');
   };
 
   const handleLogout = () => {
@@ -91,7 +92,7 @@ export default function Home() {
         return <LoginPage currentPage={currentPage} setCurrentPage={setCurrentPage} />;
       case 'signup':
         return <SignUpPage currentPage={currentPage} setCurrentPage={setCurrentPage} />;
-      default:
+      case 'home':
         return (
         // Main container code...
         <main className=" container max-w-2x1 px-6 mx-auto">
@@ -157,7 +158,9 @@ export default function Home() {
   }
   return (
     <>
+      {<Nav currentPage={currentPage} />}
       {renderCurrentPage()}
+      {<p>[Debugging] Current Page: {currentPage}</p>}
     </>
   );
 }

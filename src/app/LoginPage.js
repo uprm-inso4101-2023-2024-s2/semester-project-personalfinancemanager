@@ -1,8 +1,7 @@
 import React, { useState, useContext } from 'react';
+import '@fortawesome/fontawesome-svg-core/styles.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faL } from '@fortawesome/free-solid-svg-icons';
-import { faKey } from '@fortawesome/free-solid-svg-icons';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faEye, faKey, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { authContext } from './auth-context';
 
 function LoginPage({ currentPage, setCurrentPage }) {
@@ -11,10 +10,14 @@ function LoginPage({ currentPage, setCurrentPage }) {
     const [showPassword, setShowPassword] = useState(false);
     const { googleLoginHandler, facebookLoginHandler } = useContext(authContext);
 
-    
+
     const handleLogin = () => {
-        setCurrentPage('');
+        setCurrentPage('home');
     };
+
+    const handleSignup = () => {
+        setCurrentPage('signup')
+    }
 
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
@@ -52,10 +55,10 @@ function LoginPage({ currentPage, setCurrentPage }) {
                         </div>
                     </div>
                 </div>
-                <button onClick={setCurrentPage('')} className="bg-green-500 text-white px-4 py-2 rounded mt-3">Login</button>
+                <button onClick={handleLogin} className="bg-green-500 text-white px-4 py-2 rounded mt-3">Login</button>
                 <button onClick={googleLoginHandler} className='flex self-start gap-2 p-4 mx-auto mt-6 font-medium text-white align-middle bg-gray-700 rounded-full'>Google</button>
                 <button onClick={facebookLoginHandler} className='flex self-start gap-2 p-4 mx-auto mt-6 font-medium text-white align-middle bg-gray-700 rounded-full'>Facebook</button> {/* FIXME */}
-                <button onClick={setCurrentPage('signup')} className="text-blue-500 py-6 hover:underline">Don't have an account? Sign up</button>
+                <button onClick={handleSignup} className="text-blue-500 py-6 hover:underline">Don't have an account? Sign up</button>
             </div>
             )}
             </>
