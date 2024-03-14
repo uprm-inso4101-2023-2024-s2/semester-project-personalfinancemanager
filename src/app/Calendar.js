@@ -1,9 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useContext } from 'react';
+import { financeContext } from './finance-context';
 import * as d3 from 'd3';
 import './Calendar.css';
 
 const Calendar = () => {
     const svgRef = useRef(null);
+    const context = useContext(financeContext);
     const [currentTime, setCurrentTime] = useState(new Date());
     /* 
     State variables used to manage the interactive behavior of the calendar component.
@@ -80,6 +82,14 @@ function monthlyIncomeFilter(incomes, month, year) {
     };
     const monthfilter = filterIncomebyMonth(incomes, month, year);
     return monthfilter;
+}
+
+function renderProgressBar({percentage}){
+    return (
+        <div className="progressBar">
+            <div className="progress"style={{ width: `${percentage}%` }}> </div>
+        </div>
+    );
 }
 
     useEffect(() => {
@@ -437,6 +447,7 @@ function monthlyIncomeFilter(incomes, month, year) {
 
     return (
         <div id="calendar-container">
+            {renderProgressBar(50)}
             {renderPanel()}
             <svg ref={svgRef}></svg>
         </div>

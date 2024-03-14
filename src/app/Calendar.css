@@ -71,3 +71,17 @@
 .remove-event-button:hover {
     background-color: #c82333; 
 }
+
+.progressBar {
+    width: 300px; /* Adjust the width as needed */
+    height: 20px; /* Adjust the height as needed */
+    background-color: #000000; /* Adjust the background color */
+    border-radius: 10px; /* Adjust the border-radius to make it rounded */
+    overflow: hidden; /* Clip the content that overflows the rounded borders */
+  }
+  
+  .progress {
+    height: 100%;
+    background-color: #cf1414; /* Adjust the color of the bar */
+    border-radius: 10px;
+  }
