@@ -95,39 +95,54 @@ export default function Home() {
       case 'home':
         return (
         // Main container code...
+        <main className="container max-w-2x1 px-6 mx-auto">
+          {/* Add Income Modal */}
+          <AddIncomesModal
+            show={showAddIncomeModal}
+            onClose={setShowAddIncomeModal}
+          />
+
+
+          {/* Add Expenses Modal */}
+          <AddExpensesModal
+            show={showAddExpenseModal}
+            onClose={setShowAddExpenseModal}
+          />
+
         <main className=" container max-w-2x1 px-6 mx-auto">
-        <section className="py-3">
-          <small className="text-black text text-lg">My Balance</small>
-          <h2 className="text-4x1 text text-3xl font-bold">{currencyFormatter(balance)}</h2>
-        </section>
+          <section className="balance-box">
+            <h3 className="balance-label">My Balance</h3>
+            <h2 className="balance-amount">{currencyFormatter(balance)}</h2>
+          </section>
 
-        <section className='flex items-center gap-2 py-3'>
-          <button 
-            onClick={() => {setShowAddExpenseModal(true);}}
-            className='btn btn-primary'>+ Expenses
-          </button>
-          
-          <button 
-            onClick={() => {setShowAddIncomeModal(true);}}
-            className='btn btn-primary'>+ Income
-          </button>
-        </section>
+            <section className='flex items-center gap-2 py-3'>
+              <button
+                onClick={() => { setShowAddExpenseModal(true); }}
+                className='btn btn-primary'>+ Expenses
+              </button>
 
-        {/** Expenses */}
-        <section className='py-6'>
-          <h3 className="text-2xl">My Expenses</h3>
-          <div className='flex flex-col gap-4 mt-6'>
-            {expenses.map((expense) => {
-              return (
-                <ExpenseCategoryItem 
-                  expense={expense}
-            />
-              );
-            })}
-          </div>
-        </section>
-              
-          { <div className="mt-2 group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 flex justify-between">
+              <button
+                onClick={() => { setShowAddIncomeModal(true); }}
+                className='btn btn-primary'>+ Income
+              </button>
+            </section>
+
+            {/** Expenses */}
+            <section className='py-6'>
+              <h3 className="text-2xl">My Expenses</h3>
+              <div className='flex flex-col gap-4 mt-6'>
+                {expenses.map((expense) => {
+                  return (
+                    <ExpenseCategoryItem
+                      expense={expense}
+                    />
+                  );
+                })}
+              </div>
+            </section>
+          </main>
+
+          {<div className="mt-2 group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 flex justify-between">
             <button style={{ margin: '0 5px' }} onClick={() => setChartType('bar')}>
               <img src="https://cdn.pixabay.com/photo/2014/03/25/16/26/bar-chart-297122_1280.png" alt="Bar Chart" style={{ width: '100px', height: 'auto' }} />
             </button>
@@ -140,11 +155,11 @@ export default function Home() {
             <button style={{ margin: '0 5px' }} onClick={() => setChartType('divergence')}>
               <img src="https://www.xelplus.com/wp-content/uploads/2019/04/Charting-Survey-Results-727a6c.png" alt="Diverging Bar Chart" style={{ width: '100px', height: 'auto' }} />
             </button>
-          </div> }
+          </div>}
 
-          { <section className='max-w-2x1 px-6 mx-auto '>
+          {<section className='max-w-2x1 px-6 mx-auto '>
             {renderChart()}
-          </section> }
+          </section>}
           {/* Calendar */}
           <section className='py-6'>
             <h3 className='text-2xl'>Calendar System</h3>
@@ -152,7 +167,7 @@ export default function Home() {
               <Calendar />
             </div>
           </section>
-          </main>
+        </main>
         )
     }
   }
