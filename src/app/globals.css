@@ -13,8 +13,8 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --background-start-rgb: 32, 35, 40;
+    --background-end-rgb: 32, 35, 40;
   }
 }
 
@@ -139,3 +139,41 @@ body {
     border: 2px solid yellow;
 }
 
+/* Style For Balance Box */
+.balance-box {
+  background-color: #007aff; 
+  border-radius: 10px; 
+  color: white; 
+  font-family:'Helvetica Neue';
+  text-align: center; 
+  width: 100%; 
+  max-width: 300px; 
+  box-sizing: border-box; 
+  margin: 20px auto;
+}
+
+.balance-label {
+  font-size: 1rem; 
+}
+
+.balance-amount {
+  font-size: 2rem;
+  font-weight: 350;
+}
+
+/* Responsive styles for larger screens */
+@media (min-width: 768px) {
+  .balance-box {
+    padding: 30px; 
+    margin-top: 40px;
+    max-width: 400px; 
+  }
+
+  .balance-label {
+    font-size: 1.50rem; 
+  }
+
+  .balance-amount {
+    font-size: 3rem; 
+  }
+}
