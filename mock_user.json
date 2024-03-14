@@ -1,0 +1,102 @@
+{
+    "userInfo":{
+        "name": "User Name",
+        "id": "userID",
+        "dateJoined": "YYYY-MM-DD"
+    },
+    "financialData":{
+        "monthlyDetails":[
+            {
+                "month": "January",
+                "year": 2024,
+                "incomes":[
+                    {
+                        "category": "Salary",
+                        "value": 2000
+                    },
+                    {
+                        "category": "Investments",
+                        "value": 500
+                    }
+                ],
+                "expenses":[
+                    {
+                        "category": "Food",
+                        "value": 300
+                    },
+                    {
+                        "category": "Housing",
+                        "value": 500
+                    },
+                    {
+                        "category": "Entertainment",
+                        "value": 200
+                    },
+                    {
+                        "category": "Others",
+                        "value": 100
+                    }
+                ]
+            },
+            {
+                "month": "February",
+                "year": 2024,
+                "incomes":[
+                    {
+                        "category": "Salary",
+                        "value": 2000
+                    },
+                    {
+                        "category": "Investments",
+                        "value": 500
+                    }
+                ],
+                "expenses":[
+                    {
+                        "category": "Food",
+                        "value": 300
+                    },
+                    {
+                        "category": "Housing",
+                        "value": 500
+                    },
+                    {
+                        "category": "Entertainment",
+                        "value": 200
+                    },
+                    {
+                        "category": "Others",
+                        "value": 100
+                    }
+                ]
+            }
+        ],
+        "chartData":{
+            "categories":[
+                "Salary", "Investments", "Food", "Housing", "Entertainment", "Others"
+            ],
+            "lineChart":{
+                "income":[
+                    {
+                        "month": "January",
+                        "value": 2500
+                    },
+                    {
+                        "month": "February",
+                        "value": 3000
+                    }
+                ],
+                "expenses":[
+                    {
+                        "month": "January",
+                        "value": 1100
+                    },
+                    {
+                        "month": "February",
+                        "value": 1200
+                    }
+                ]
+            }
+        }
+    }
+}

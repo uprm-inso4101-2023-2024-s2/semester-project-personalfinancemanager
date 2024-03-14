@@ -10,7 +10,7 @@ import { faVenus } from '@fortawesome/free-solid-svg-icons';
 import { faMars } from '@fortawesome/free-solid-svg-icons';
 import { faGenderless } from '@fortawesome/free-solid-svg-icons';
 
-function SignUpPage({ onSignUp, currentPage, setCurrentPage }) {
+function SignUpPage({ currentPage, setCurrentPage }) {
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -65,10 +65,11 @@ function SignUpPage({ onSignUp, currentPage, setCurrentPage }) {
     };
 
     const handleSignUp = () => {
-        onSignUp({ fullName, email, password, phone, birthDate, gender });
+        setCurrentPage('');
+        // onSignUp({ fullName, email, password, phone, birthDate, gender });
     };
 
-    const handleLoginClick = (L) => {
+    const handleLoginClick = () => {
         setCurrentPage('login');
         
     };
@@ -76,8 +77,8 @@ function SignUpPage({ onSignUp, currentPage, setCurrentPage }) {
     return (
         <>
         {currentPage=='login' && (
-            <LoginPage onLogin currentPage={currentPage} />
-            )}
+            <LoginPage currentPage={currentPage} setCurrentPage={setCurrentPage} />
+        )}
         {currentPage=='signup' && (
         <div className="flex flex-col items-center justify-center h-screen" style={{ backgroundColor: 'black',  color: 'white', margin: '-10vh' }}>
             <h2 className="text-2xl font-semibold mb-3">Create Account</h2>
