@@ -1,9 +1,9 @@
 {
   "projectName": "personalFinanceManager",
-  "managers": ["diegoq48", "Cruiz102"],
-  "milestoneName": "First set of features - First deadline",
-  "milestoneStartDate": "2024-01-01",
-  "milestoneEndDate": "2024-01-31",
+  "managers": ["diegoq48", "cruiz102"],
+  "milestoneName": "Second Set of Features",
+  "milestoneStartDate": "2024-02-22",
+  "milestoneEndDate": "2024-03-22",
   "groupGrade": 100.0,
   "lectureTopicTaskQuota": 0
 }
