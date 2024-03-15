@@ -43,6 +43,10 @@ export default function Home() {
       return total + e.total;
     }, 0);
     setBalance(newBalance);
+
+    if (user) {
+      setCurrentPage('home');
+    }
   }, [expenses, income]);
 
   const toggleChartType = () => {
@@ -173,7 +177,6 @@ export default function Home() {
   }
   return (
     <>
-      {<Nav currentPage={currentPage} />}
       {renderCurrentPage()}
       {<p>[Debugging] Current Page: {currentPage}</p>}
     </>
