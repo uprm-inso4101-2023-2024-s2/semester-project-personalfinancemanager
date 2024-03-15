@@ -2,6 +2,8 @@
   "projectName": "personalFinanceManager",
   "managers": ["diegoq48", "Cruiz102"],
   "milestoneName": "Second set of features: Milestone2",
+  "milestoneStartDate": "2024-02-22"
+  "milestoneEndDate": "2024-03-22"
   "groupGrade": 100.0,
   "lectureTopicTaskQuota": 0
 }
