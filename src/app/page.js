@@ -34,6 +34,61 @@ export default function Home() {
   const [balance, setBalance] = useState(0);
   const { expenses, income } = useContext(financeContext);
 
+  // Analysis
+  const [meanExpenses, setMeanExpenses] = useState(0);
+  const [medianExpenses, setMedianExpenses] = useState(0);
+  const [modeExpenses, setModeExpenses] = useState(0);
+
+  // Calculate the mean expenses
+  useEffect(() => {
+    if (expenses.length !== 0) {
+      const totalExpenses = expenses.reduce((total, e) => {
+        return total + e.total;
+      }, 0);
+      const meanExpenses = totalExpenses / expenses.length;
+      setMeanExpenses(meanExpenses); // Set the mean expenses
+    }
+  }, [expenses]);
+
+   // Calculate the median expenses
+   useEffect(() => {
+     if (expenses.length !== 0) {
+       const sortedExpenses = [...expenses].sort((a, b) => a.total - b.total);
+       const mid = Math.floor(sortedExpenses.length / 2);
+ 
+       let median;
+       if (sortedExpenses.length % 2 === 0) {
+         median = (sortedExpenses[mid - 1].total + sortedExpenses[mid].total) / 2;
+       } else {
+         median = sortedExpenses[mid].total;
+       }
+ 
+       setMedianExpenses(median); // Set the median expenses
+     }
+   }, [expenses]);
+
+  // Calculate the mode expenses
+  useEffect(() => {
+    if (expenses.length !== 0) {
+      const frequencyMap = {};
+      let maxFrequency = 0;
+      let modes = [];
+
+      for (let i = 0; i < expenses.length; i++) {
+        const value = expenses[i].total;
+        frequencyMap[value] = (frequencyMap[value] || 0) + 1;
+
+        if (frequencyMap[value] > maxFrequency) {
+          maxFrequency = frequencyMap[value];
+          modes = [value];
+        } else if (frequencyMap[value] === maxFrequency) {
+          modes.push(value);
+        }
+      }
+
+      setModeExpenses(modes); // Set the mode expenses
+    }
+  }, [expenses]);
 
 
   useEffect((newBalance) => {
@@ -119,6 +174,9 @@ export default function Home() {
         <section className="py-3">
           <small className="text-black text text-lg">My Balance</small>
           <h2 className="text-4x1 text text-3xl font-bold">{currencyFormatter(balance)}</h2>
+          <h2>Mean Expenses: {meanExpenses}</h2>
+          <h2>Median Expenses: {medianExpenses}</h2>
+          <h2>Mode Expenses: {modeExpenses.join(', ')}</h2>
         </section>
 
         <section className='flex items-center gap-2 py-3'>
