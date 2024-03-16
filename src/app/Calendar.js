@@ -105,12 +105,13 @@ const Calendar = () => {
             .attr('y', (d) => yScale(d3.timeWeek.count(d3.timeMonth(d), d)) + yScale.bandwidth())
             .attr('fill', (d) => {
                 const isToday = d.getDate() === currentTime.getDate();
-                const hasEvent = submittedData[d] && submittedData[d].event;
+                const hasEvent = submittedData[d] && submittedData[d].event && submittedData[d].events.length > 0;
 
                 // Check if the day has been removed
                 const hasRemovedEvents = removedEvents[d];
-                
+
                 // Fill the day depending on if it has events or not
+                
                 if ((d.getDate() < currentTime.getDate() && d.getMonth() === currentTime.getMonth()) || (d.getMonth() < currentTime.getMonth())) {
                     return '#d3d3d3'; // Day has passed
                 } else if (isToday && (d.getMonth() === currentTime.getMonth())) {
@@ -397,6 +398,7 @@ const Calendar = () => {
             </div>
         );
     };
+
 
     return (
         <div>
