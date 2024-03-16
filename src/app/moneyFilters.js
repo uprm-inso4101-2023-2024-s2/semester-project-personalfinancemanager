@@ -109,6 +109,6 @@ export function filterIncomebyYear(incomes, year) {
             return incomedate.getFullYear() === year;
         })
     };
-    const monthfilter = filterIncomebyYear(incomes, year);
-    return monthfilter;
+    const yearFilter = filterIncomebyYear(incomes, year);
+    return yearFilter;
 }
