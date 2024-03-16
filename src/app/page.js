@@ -162,14 +162,14 @@ export default function Home() {
               </button>
             </div>
 
-            <section className="max-w-2x1 px-6 mx-auto">
+            <section className="max-w-2x1 px-6 mx-auto flex justify-center">
               {renderChart()}
             </section>
 
             {/* Calendar */}
             <section className='py-6 pl-6'>
-              <h3 className='text-2xl'>Calendar System</h3>
-              <div>
+              <h3 className='text-2xl text-center'>Calendar System</h3>
+              <div className="flex justify-center">
                 <Calendar />
               </div>
             </section>
