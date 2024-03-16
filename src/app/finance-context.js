@@ -20,6 +20,9 @@ import {
 export const financeContext = createContext({
   income: [],
   expenses: [],
+  monthlyBudget: [],
+  addMonthlyBudget: async () => {},
+  updateMonthlyBudget: async () => {},
   addIncomeItem: async () => {},
   removeIncomeItem: async () => {},
   addExpenseItem: async () => {},
@@ -31,8 +34,57 @@ export const financeContext = createContext({
 export default function FinanceContextProvider({ children }) {
   const [income, setIncome] = useState([]);
   const [expenses, setExpenses] = useState([]);
+  const [monthlyBudget, setBudget] = useState([]);
 
   const { user } = useContext(authContext);
+
+  /** Adds a new monthly budget to the database. It is saved with the document Id and the User Id.
+   * 
+   * @param {integer} newBudget - The budget to be added to the database.
+   */
+  const addMonthlyBudget = async (newBudget) => {
+    try {
+      const collectionRef = collection(db, "monthly_budget");
+      const q = query(collectionRef, where("uid", "==", user.uid));
+      const q_checker = await getDocs(q);
+      if(!q_checker.empty){
+        updateMonthlyBudget(monthlyBudget.id, newBudget);
+        return;
+      }
+      const docSnap = await addDoc(collectionRef, {
+        uid : user.uid,
+        budget : newBudget
+      });
+
+      setBudget((newBudget) => {
+        return {
+          id: docSnap.id,
+          uid : user.uid,
+          budget : newBudget,
+        }
+      })
+    } catch (err) {
+      throw err; 
+    }
+  }
+
+  /** Updates the monthly budget using its document id and a the budget to update it to.
+   * 
+   * @param {string} docID - The string id of the document.
+   * @param {integer} newBudget - The new budget to update to the database.
+   */
+  const updateMonthlyBudget = async (docID, newBudget) => {
+    const docRef = doc(db, "monthly_budget", docID);
+    try {
+      await updateDoc(docRef, {budget : newBudget} );
+      setBudget((prevBudget) => ({
+        ...prevBudget,
+        budget : newBudget
+      }));
+    } catch (err) {
+      throw err;
+    }
+  }
 
   const addCategory = async (category) => {
     try {
@@ -158,6 +210,9 @@ export default function FinanceContextProvider({ children }) {
   const values = {
     income,
     expenses,
+    monthlyBudget,
+    addMonthlyBudget,
+    updateMonthlyBudget,
     addIncomeItem,
     removeIncomeItem,
     addExpenseItem,
@@ -186,6 +241,20 @@ export default function FinanceContextProvider({ children }) {
       setIncome(data);
     };
 
+    const getBudgetData = async () => {
+      const colRef = collection(db, "monthly_budget");
+      const q = query(colRef, where("uid", "==", user.uid));
+      const docSnap = await getDocs(q);
+      const data = docSnap.docs.map((doc) => {
+        return {
+         id : doc.id,
+         user : user.uid,
+         ...doc.data(), 
+        }
+      });
+      setBudget(data);
+    }
+
     const getExpensesData = async () => {
       const collectionRef = collection(db, "expenses");
       const q = query(collectionRef, where("uid", "==", user.uid));
@@ -203,6 +272,7 @@ export default function FinanceContextProvider({ children }) {
 
     getIncomeData();
     getExpensesData();
+    getBudgetData();
   }, [user]);
 
   return (
