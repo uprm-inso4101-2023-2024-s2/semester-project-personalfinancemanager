@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useContext } from 'react';
+import { monthlyIncomeFilter, monthlyExpenseFilter, yearlyExpenseFilter, yearlyIncomeFilter } from './moneyFilters';
 import { financeContext } from './finance-context';
 import * as d3 from 'd3';
 import './Calendar.css';

@@ -7,7 +7,7 @@
  * @param {integer} year  - Year to filter.
  * @returns the expenses that are within that month and year
  */
-export default function montlhlyExpensefilter(expenses, month, year) {
+export default function monthlyExpensefilter(expenses, month, year) {
     const filterExpensesByMonth = (expenses, month, year) => {
         //If expenses are empty, returns empty
         if (!expenses || !Array.isArray(expenses)) return [];
@@ -97,7 +97,7 @@ export function yearlyExpenseFilter(expenses, year) {
  * @param {integer} year - The year you want to find the income for. 
  * @returns The filtered income in the given year.
  */
-export function filterIncomebyYear(incomes, year) {
+export function yearlyIncomeFilter(incomes, year) {
     const filterIncomebyYear = (incomes, year) => {
         //If incomes are empty, return empty
         if (!incomes || !Array.isArray(incomes)) return [];
