@@ -48,3 +48,14 @@
 .orange-fill {
     fill: orange !important;
 }
+
+.month-selector-panel {
+    display: inline-block;
+    margin-right: 20px; /* Adjust as needed */
+    font-size: 25px; /* Match the font size of the clock and year labels */
+  }
+
+.select-input {
+    text-align-last: center;
+    text-align: center;
+}
