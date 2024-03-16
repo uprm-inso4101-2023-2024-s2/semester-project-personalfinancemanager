@@ -20,17 +20,21 @@ import {
 export const financeContext = createContext({
   income: [],
   expenses: [],
+  events: [], // Calendar related
   addIncomeItem: async () => {},
   removeIncomeItem: async () => {},
   addExpenseItem: async () => {},
   addCategory: async () => {},
   deleteExpenseItem: async () => {},
   deleteExpenseCategory: async () => {},
+  addEventItem: async () => {}, // Calendar related
+  submitEventData: async () => {}, // Calendar related
 });
 
 export default function FinanceContextProvider({ children }) {
   const [income, setIncome] = useState([]);
   const [expenses, setExpenses] = useState([]);
+  const [events, setEvents] = useState([]); // Calendar related
 
   const { user } = useContext(authContext);
 
@@ -155,6 +159,36 @@ export default function FinanceContextProvider({ children }) {
     }
   };
 
+  const addEventItem = async (newEvent) => { // calendar related
+
+    try {
+      const collectionRef = collection(db, "event");
+      const docRef = await addDoc(collectionRef, newEvent);
+      setEvents((prevState) => {
+        return [
+          ...prevState,
+          {
+            id: docRef.id,
+            uid: user.uid,
+            ...newEvent,
+          },
+        ];
+      });
+    } catch (error) {
+      console.log(error.message);
+      throw error;
+    }
+  };
+
+  const submitEventData = async (data) => {
+    try {
+      await addEventItem(data);
+    } catch (error) {
+      console.log(error.message);
+      throw error;
+    }
+  };
+
   const values = {
     income,
     expenses,
@@ -164,6 +198,8 @@ export default function FinanceContextProvider({ children }) {
     addCategory,
     deleteExpenseItem,
     deleteExpenseCategory,
+    addEventItem, // Calendar related	
+    submitEventData, // Calendar related
   };
 
   useEffect(() => {
@@ -186,7 +222,25 @@ export default function FinanceContextProvider({ children }) {
       setIncome(data);
     };
 
-    const getExpensesData = async () => {
+    const getEventsData = async () => { // calendar related
+      const collectionRef = collection(db, "event");
+      const q = query(collectionRef, where("uid", "==", user.uid));
+
+      const docsSnap = await getDocs(q);
+
+      const data = docsSnap.docs.map((doc) => {
+        return {
+          id: doc.id,
+          ...doc.data(),
+          start: new Date(doc.data().start.toMillis()),
+          end: new Date(doc.data().end.toMillis()),
+        };
+      });
+
+      setEvents(data);
+    };
+
+    const getExpensesData = async () => { //Calendar related
       const collectionRef = collection(db, "expenses");
       const q = query(collectionRef, where("uid", "==", user.uid));
       const docsSnap = await getDocs(q);
@@ -203,6 +257,7 @@ export default function FinanceContextProvider({ children }) {
 
     getIncomeData();
     getExpensesData();
+    getEventsData(); // calendar related
   }, [user]);
 
   return (

@@ -1,10 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import './Calendar.css';
+import { useContext } from 'react';
+import { financeContext } from './finance-context';
 
 const Calendar = () => {
     const svgRef = useRef(null);
     const [currentTime, setCurrentTime] = useState(new Date());
+    const { submitEventData } = useContext(financeContext);
     /* 
     State variables used to manage the interactive behavior of the calendar component.
 
@@ -272,20 +275,37 @@ const Calendar = () => {
     - Updates events and expected expenses for the selected day.
     - Resets input values for the selected day.
     */
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if ((dayInput[selectedDay] ?? '').trim() !== '') {
-            setSubmittedData({
-                ...submittedData,
-                [selectedDay]: {
-                    events: [
-                        ...(submittedData[selectedDay]?.events || []),
-                        {
-                            event: dayInput[selectedDay] || '',
-                            expenses: expectedExpenses[selectedDay] || ''
-                        }
-                    ],
-                }
-            });
+            // Prepare the data to be submitted
+            const newEvent = {
+              event: dayInput[selectedDay] || '',
+              expenses: expectedExpenses[selectedDay] || ''
+            };
+        
+            const updatedSubmittedData = {
+              ...submittedData,
+              [selectedDay]: {
+                events: [
+                  ...(submittedData[selectedDay]?.events || []),
+                  newEvent
+                ]
+              }
+            };
+        
+            // Set the submitted data locally
+            setSubmittedData(updatedSubmittedData);
+        
+            // Prepare the data object to be passed to the finance context
+            const data = {
+              date: selectedDay,
+              events: updatedSubmittedData[selectedDay]?.events || [],
+            };
+        
+            // Call the submitEventData function with the data
+            await submitEventData(data);
+        
+            // Clear input values if necessary
             setDayInput({ ...dayInput, [selectedDay]: '' });
             setExpectedExpenses({ ...expectedExpenses, [selectedDay]: '' });
         }
