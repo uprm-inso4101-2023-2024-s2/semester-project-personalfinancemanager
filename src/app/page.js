@@ -71,6 +71,8 @@ export default function Home() {
     setIsLoggedIn(false);
   };
 
+  const buttonBaseClass = "btn py-2 px-4 font-semibold rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75";
+  const buttonWidthClass = "w-36 sm:w-44";
 
   const renderChart = () => {
     switch (chartType) {
@@ -114,17 +116,22 @@ export default function Home() {
               <h2 className="balance-amount">{currencyFormatter(balance)}</h2>
             </section>
 
-            <section className='flex items-center gap-2 py-3'>
+            <div className="button-container">
               <button
-                onClick={() => { setShowAddExpenseModal(true); }}
-                className='btn btn-primary'>+ Expenses
+                onClick={() => setShowAddIncomeModal(true)}
+                className={`${buttonBaseClass} ${buttonWidthClass} bg-green-500 hover:bg-green-550`}
+                style={{ margin: 'auto' }} 
+              >
+                Income +
               </button>
-
               <button
-                onClick={() => { setShowAddIncomeModal(true); }}
-                className='btn btn-primary'>+ Income
+                onClick={() => setShowAddExpenseModal(true)}
+                className={`${buttonBaseClass} ${buttonWidthClass} bg-red-500 hover:bg-red-550`}
+                style={{ margin: 'auto' }}
+              >
+                Expenses +
               </button>
-            </section>
+            </div>
 
             {/** Expenses */}
             <section className='py-6'>

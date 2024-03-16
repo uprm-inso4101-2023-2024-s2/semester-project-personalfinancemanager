@@ -168,6 +168,31 @@ body {
   font-weight: 350;
 }
 
+/* Style For 'Expenses' & 'Income' Buttons */
+.button-container {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 10px auto;
+  max-width: 250px;
+  font-size: 1rem;
+}
+
+/* Responsive styles for smaller screens */
+@media (max-width: 396px) {
+  .button-container {
+    flex-direction: column; 
+    gap: 5px; 
+    max-width: 100%; 
+    padding: 0 10px; 
+  }
+
+  .button-container button {
+    width: 75%; 
+    font-size: 0.8rem; 
+  }
+}
+
 /* Responsive styles for larger screens */
 @media (min-width: 768px) {
   .balance-box {
@@ -182,6 +207,14 @@ body {
 
   .balance-amount {
     font-size: 3rem; 
+  }
+
+  .button-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 0 auto;
+    max-width: 400px; 
   }
 }
 
