@@ -1,8 +1,6 @@
-'use client'
 import { useContext } from "react";
-
 import { authContext } from "./auth-context";
-
+import AddMenu from './AddMenu';
 
 function Nav() {
   const { user, loading, logout } = useContext(authContext);
@@ -10,34 +8,21 @@ function Nav() {
   return (
     <header className="container max-w-2x1 px-6 mx-auto mt-3">
       <div className="flex items-center justify-between">
-        {/* User information */}
+        {/* Left side of the navigation */}
         {user && !loading && (
-          <div className="flex items-center gap-2">
-            {/* img */}
-            <div className="h-[40px] w-[40px] rounded-full overflow-hidden">
-              <img
-                className="object-cover w-full h-full"
-                src={user.photoURL}
-                alt={user.displayName}
-                referrerPolicy="no-referrer"
-              />
+          <div className="flex items-center gap-4">
+            <div>
+              <AddMenu />
             </div>
-
-            {/* name */}
-            <small>Hi, {user.displayName}!</small>
           </div>
         )}
 
-        {/* Right side of our navigation */}
+        {/* Right side of the navigation */}
         {user && !loading && (
           <nav className="flex items-center gap-4">
-            <div>
-            </div>
-            <div>
-              <button onClick={logout} className="btn btn-danger">
-                Sign out
-              </button>
-            </div>
+            <button onClick={logout} className="btn btn-danger">
+              Sign out
+            </button>
           </nav>
         )}
       </div>

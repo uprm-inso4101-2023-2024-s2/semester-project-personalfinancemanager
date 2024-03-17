@@ -10,6 +10,9 @@
   },
   "dependencies": {
     "@firebase/firestore": "^4.4.2",
+    "@fortawesome/fontawesome-svg-core": "^6.5.1",
+    "@fortawesome/free-solid-svg-icons": "^6.5.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "chart.js": "^4.4.1",
     "d3": "^7.8.5",
     "firebase": "^10.8.0",
