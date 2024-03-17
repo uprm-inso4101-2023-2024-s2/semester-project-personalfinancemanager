@@ -26,6 +26,21 @@ function AddMenu() {
     console.log("Settings clicked");
   };
 
+  const handleIncomeClick = () => {
+    // Add logic for handling settings click
+    console.log("Settings clicked");
+  };
+
+  const handleBudgetClick = () => {
+    // Add logic for handling settings click
+    console.log("Settings clicked");
+  };
+
+  const handleCalendarClick = () => {
+    // Add logic for handling settings click
+    console.log("Settings clicked");
+  };
+
   const handleSettingsClick = () => {
     // Add logic for handling settings click
     console.log("Settings clicked");
@@ -59,9 +74,9 @@ function AddMenu() {
 
   return (
     <div className="menu relative">
-      <button className="hamburger-menu" onClick={toggleMenu}>
-        <FontAwesomeIcon icon={faBars} size="2x" />
-      </button>
+    <button className="menu-icon" onClick={toggleMenu}>
+      <FontAwesomeIcon icon={faBars} size="2x" className="text-white"/>
+    </button>
       {isOpen && (
         <div className="overlay fixed inset-0 flex items-start justify-start bg-gray-700 bg-opacity-50">{/*White overlay*/}
           <div className="menu-items bg-white p-4 rounded-l-xl shadow-md flex flex-col justify-start h-full w-1/4">
@@ -86,13 +101,19 @@ function AddMenu() {
               <FontAwesomeIcon icon={faTimes} size="xl" />
             </button>
             <div className="mt-20"> {/* Adjust margin top here */}
-              <button onClick={handleExpensesClick} className="block w-full text-left mb-2 text-black z-10">My Expenses</button>
-              <button onClick={handleSettingsClick} className="block w-full text-left mt-80 mb-2 text-black z-10">Settings</button>
+              <div className="text-lg font-bold mb-2 text-black">Income and Expenses</div>
+              <button onClick={handleExpensesClick} className="block w-full text-left mb-2 text-black z-10">My expenses</button>
+              <button onClick={handleIncomeClick} className="block w-full text-left mb-2 text-black z-10">My income</button>
+              <button onClick={handleBudgetClick} className="block w-full text-left mb-2 text-black z-10">Budgeting</button>
+              <button onClick={handleCalendarClick} className="block w-full text-left mb-40 text-black z-10">Calendar</button>
+
+              <div className="text-lg font-bold mb-2 text-black">Help & Settings</div>
+              <button onClick={handleSettingsClick} className="block w-full text-left mb-2 text-black z-10">Settings</button>
               <button onClick={handleHelpClick} className="block w-full text-left mb-2 text-black z-10">Help</button>
               <button onClick={handleAccountClick} className="block w-full text-left mb-2 text-black z-10">Account</button>
-              <button onClick={handleLogOutClick} className="block w-full text-left mb-2 text-black z-10">Log out</button>
+              <button onClick={handleLanguageClick} className="block w-full text-left mb-2 text-black z-10">{language}</button>
               <button onClick={handleSwitchClick} className="block w-full text-left mb-2 text-black z-10">Switch account</button>
-              <button onClick={handleLanguageClick} className="block w-full text-left text-black z-10">{language}</button>
+              <button onClick={handleLogOutClick} className="block w-full text-left text-black z-10">Log out</button>
             </div>
           </div>
         </div>

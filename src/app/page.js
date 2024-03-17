@@ -94,7 +94,7 @@ export default function Home() {
   }
   return (
     <>
-        <main className="container max-w-2x1 px-6 mx-auto">
+        <main className="container max-w-2x1 px-6 mx-auto bg-white">
          {/* Add Income Modal */}
       <AddIncomesModal 
         show={showAddIncomeModal} 
@@ -108,10 +108,10 @@ export default function Home() {
         onClose={setShowAddExpenseModal} 
       />
 
-      <main className=" container max-w-2x1 px-6 mx-auto">
+      <main className="container max-w-2x1 px-6 mx-auto">
         <section className="py-3">
           <small className="text-black text text-lg">My Balance</small>
-          <h2 className="text-4x1 text text-3xl font-bold">{currencyFormatter(balance)}</h2>
+          <h2 className="text-black text-4x1 text text-3xl font-bold">{currencyFormatter(balance)}</h2>
         </section>
 
         <section className='flex items-center gap-2 py-3'>
@@ -128,7 +128,7 @@ export default function Home() {
 
         {/** Expenses */}
         <section className='py-6'>
-          <h3 className="text-2xl">My Expenses</h3>
+          <h3 className="text-black text-2xl">My Expenses</h3>
           <div className='flex flex-col gap-4 mt-6'>
             {expenses.map((expense) => {
               return (
