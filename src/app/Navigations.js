@@ -6,8 +6,11 @@ import Logo from './favicon.ico';
 function Nav() {
   const { user, loading, logout } = useContext(authContext);
 
+  const handleSupportClick = () => {
+    console.log("Account clicked");
+  };
+
   const handleGraphsClick = () => {
-    setLanguage(language === 'Español' ? 'English' : 'Español'); // Toggle language
     console.log("Account clicked");
   };
 
@@ -28,7 +31,7 @@ function Nav() {
         {/* Right side of the navigation */}
         {user && !loading && (
           <nav className="flex items-center gap-4">
-            <button onClick={handleGraphsClick} className="btn-nav">Button</button>
+            <button onClick={handleSupportClick} className="btn-nav">Support</button>
             <button onClick={handleGraphsClick} className="btn-nav">Account</button>
             <button onClick={logout} className="btn btn-danger mr-4">
               Sign out

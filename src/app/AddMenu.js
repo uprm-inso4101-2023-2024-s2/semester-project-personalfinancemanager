@@ -21,56 +21,42 @@ function AddMenu() {
     setIsOpen(false);
   };
 
-  const handleExpensesClick = () => {
-    // Add logic for handling settings click
-    console.log("Settings clicked");
+  const handleClick = (action) => {
+    switch (action) {
+      case 'expenses':
+        // Add logic 
+        break;
+      case 'income':
+        // Add logic 
+        break;
+      case 'budget':
+        // Add logic 
+        break;
+      case 'calendar':
+        // Add logic 
+        break;
+      case 'settings':
+        // Add logic
+        break;
+      case 'help':
+        // Add logic 
+        break;
+      case 'account':
+        // Add logic 
+        break;
+      case 'logout':
+        logout();
+        break;
+      case 'language':
+        setLanguage(language === 'Español' ? 'English' : 'Español'); 
+        break; 
+      case 'switch':
+        // Add logic for handling switch click
+        break;
+      default:
+        break;
+    }
   };
-
-  const handleIncomeClick = () => {
-    // Add logic for handling settings click
-    console.log("Settings clicked");
-  };
-
-  const handleBudgetClick = () => {
-    // Add logic for handling settings click
-    console.log("Settings clicked");
-  };
-
-  const handleCalendarClick = () => {
-    // Add logic for handling settings click
-    console.log("Settings clicked");
-  };
-
-  const handleSettingsClick = () => {
-    // Add logic for handling settings click
-    console.log("Settings clicked");
-  };
-
-  const handleHelpClick = () => {
-    // Add logic for handling help click
-    console.log("Help clicked");
-  };
-
-  const handleAccountClick = () => {
-    // Add logic for handling account click
-    console.log("Account clicked");
-  };
-
-  const handleLogOutClick = () => {
-    logout(); 
-    console.log("Account clicked");
-  };
-
-  const handleSwitchClick = () => {
-    // Add logic for handling account click
-    console.log("Account clicked");
-  };
-
-  const handleLanguageClick = () => {
-    setLanguage(language === 'Español' ? 'English' : 'Español'); // Toggle language
-    console.log("Account clicked");
-  };
-  
 
   return (
     <div className="menu relative">
@@ -102,18 +88,18 @@ function AddMenu() {
             </button>
             <div className="mt-20"> {/* Adjust margin top here */}
               <div className="text-lg font-bold mb-2 text-black">Income and Expenses</div>
-              <button onClick={handleExpensesClick} className="block w-full text-left mb-2 text-black z-10">My expenses</button>
-              <button onClick={handleIncomeClick} className="block w-full text-left mb-2 text-black z-10">My income</button>
-              <button onClick={handleBudgetClick} className="block w-full text-left mb-2 text-black z-10">Budgeting</button>
-              <button onClick={handleCalendarClick} className="block w-full text-left mb-4 text-black z-10">Calendar</button>
+              <button onClick={() => handleClick('expenses')} className="block w-full text-left mb-2 text-black z-10">My expenses</button>
+              <button onClick={() => handleClick('income')} className="block w-full text-left mb-2 text-black z-10">My income</button>
+              <button onClick={() => handleClick('budget')} className="block w-full text-left mb-2 text-black z-10">Budgeting</button>
+              <button onClick={() => handleClick('calendar')} className="block w-full text-left mb-4 text-black z-10">Calendar</button>
 
               <div className="text-lg font-bold mb-2 text-black">Help & Settings</div>
-              <button onClick={handleSettingsClick} className="block w-full text-left mb-2 text-black z-10">Settings</button>
-              <button onClick={handleHelpClick} className="block w-full text-left mb-2 text-black z-10">Help</button>
-              <button onClick={handleAccountClick} className="block w-full text-left mb-2 text-black z-10">Account</button>
-              <button onClick={handleLanguageClick} className="block w-full text-left mb-2 text-black z-10">{language}</button>
-              <button onClick={handleSwitchClick} className="block w-full text-left mb-2 text-black z-10">Switch account</button>
-              <button onClick={handleLogOutClick} className="block w-full text-left text-black z-10">Log out</button>
+              <button onClick={() => handleClick('settings')} className="block w-full text-left mb-2 text-black z-10">Settings</button>
+              <button onClick={() => handleClick('help')} className="block w-full text-left mb-2 text-black z-10">Help</button>
+              <button onClick={() => handleClick('account')} className="block w-full text-left mb-2 text-black z-10">Account</button>
+              <button onClick={() => handleClick('language')} className="block w-full text-left mb-2 text-black z-10">{language}</button>
+              <button onClick={() => handleClick('switch')} className="block w-full text-left mb-2 text-black z-10">Switch account</button>
+              <button onClick={() => handleClick('logout')} className="block w-full text-left text-black z-10">Log out</button>
             </div>
           </div>
         </div>
