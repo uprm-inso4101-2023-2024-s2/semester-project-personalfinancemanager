@@ -91,6 +91,7 @@ function TableAnalisisModal({ show, onClose }) {
         <tbody>
         <thead>
                 <tr>
+                    <th></th>
                     <th>Mean</th>
                     <th>Median</th>
                     <th>Mode</th>
@@ -98,6 +99,19 @@ function TableAnalisisModal({ show, onClose }) {
             </thead>
             <tbody>
                 <tr>
+                    <td><strong>Daily</strong></td>
+                    <td>{(isIncome ? incomesData.mean : expensesData.mean)}</td>
+                    <td>{(isIncome ? incomesData.median : expensesData.median)}</td>
+                    <td>{(isIncome ? incomesData.mode : expensesData.mode)}</td>
+                </tr>
+                <tr>
+                    <td><strong>Weekly</strong></td>
+                    <td>{(isIncome ? incomesData.mean : expensesData.mean)}</td>
+                    <td>{(isIncome ? incomesData.median : expensesData.median)}</td>
+                    <td>{(isIncome ? incomesData.mode : expensesData.mode)}</td>
+                </tr>
+                <tr>
+                    <td><strong>Mothly</strong></td>
                     <td>{(isIncome ? incomesData.mean : expensesData.mean)}</td>
                     <td>{(isIncome ? incomesData.median : expensesData.median)}</td>
                     <td>{(isIncome ? incomesData.mode : expensesData.mode)}</td>
@@ -118,8 +132,7 @@ function TableAnalisisModal({ show, onClose }) {
           border-collapse: collapse;
         }
 
-        th,
-        td {
+        th, td {
           border: 1px solid black;
           padding: 18px;
           text-align: center;
