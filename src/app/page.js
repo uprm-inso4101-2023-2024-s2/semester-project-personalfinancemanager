@@ -144,7 +144,7 @@ export default function Home() {
                 className={`${buttonBaseClass} ${buttonWidthClass} bg-yellow-500 hover:bg-red-550`}
                 style={{ margin: 'auto' }}
               >
-                Table Analisis
+                Table
               </button>
             </div>
 
