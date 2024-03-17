@@ -11,12 +11,19 @@ function AddMenu() {
 
   const [isOpen, setIsOpen] = useState(false);
 
+  const [language, setLanguage] = useState('Español'); // State for language
+
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
   const handleClose = () => {
     setIsOpen(false);
+  };
+
+  const handleExpensesClick = () => {
+    // Add logic for handling settings click
+    console.log("Settings clicked");
   };
 
   const handleSettingsClick = () => {
@@ -38,6 +45,17 @@ function AddMenu() {
     logout(); 
     console.log("Account clicked");
   };
+
+  const handleSwitchClick = () => {
+    // Add logic for handling account click
+    console.log("Account clicked");
+  };
+
+  const handleLanguageClick = () => {
+    setLanguage(language === 'Español' ? 'English' : 'Español'); // Toggle language
+    console.log("Account clicked");
+  };
+  
 
   return (
     <div className="menu relative">
@@ -68,10 +86,13 @@ function AddMenu() {
               <FontAwesomeIcon icon={faTimes} size="xl" />
             </button>
             <div className="mt-20"> {/* Adjust margin top here */}
-              <button onClick={handleSettingsClick} className="block w-full text-left mb-2 text-black z-10">Settings</button>
+              <button onClick={handleExpensesClick} className="block w-full text-left mb-2 text-black z-10">My Expenses</button>
+              <button onClick={handleSettingsClick} className="block w-full text-left mt-80 mb-2 text-black z-10">Settings</button>
               <button onClick={handleHelpClick} className="block w-full text-left mb-2 text-black z-10">Help</button>
-              <button onClick={handleAccountClick} className="block w-full text-left mb-2  text-black z-10">Account</button>
-              <button onClick={handleLogOutClick} className="block w-full text-left text-black z-10">Log out</button>
+              <button onClick={handleAccountClick} className="block w-full text-left mb-2 text-black z-10">Account</button>
+              <button onClick={handleLogOutClick} className="block w-full text-left mb-2 text-black z-10">Log out</button>
+              <button onClick={handleSwitchClick} className="block w-full text-left mb-2 text-black z-10">Switch account</button>
+              <button onClick={handleLanguageClick} className="block w-full text-left text-black z-10">{language}</button>
             </div>
           </div>
         </div>
