@@ -9,7 +9,6 @@ import { authContext } from "./auth-context";
 function AddMenu() {
   const { user, loading, logout } = useContext(authContext); 
 
-
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -35,6 +34,11 @@ function AddMenu() {
     console.log("Account clicked");
   };
 
+  const handleLogOutClick = () => {
+    logout(); 
+    console.log("Account clicked");
+  };
+
   return (
     <div className="menu relative">
       <button className="hamburger-menu" onClick={toggleMenu}>
@@ -53,7 +57,6 @@ function AddMenu() {
                       className="object-cover w-full h-full"
                       src={user.photoURL}
                       alt={user.displayName}
-                      onError={(e) => console.error('Error loading image:', e)}
                     />
                   </div>
                   {/* Hi message */}
@@ -61,13 +64,14 @@ function AddMenu() {
                 </div>
               )}
             </div>
-            <button onClick={handleClose} className="absolute top-4 right-4 text-gray-500">
-              <FontAwesomeIcon icon={faTimes} size="lg" />
+            <button onClick={handleClose} className="absolute top-0 right-4 mt-4 mr-4 text-gray-500"> {/* Position the button */}
+              <FontAwesomeIcon icon={faTimes} size="xl" />
             </button>
             <div className="mt-20"> {/* Adjust margin top here */}
               <button onClick={handleSettingsClick} className="block w-full text-left mb-2 text-black z-10">Settings</button>
               <button onClick={handleHelpClick} className="block w-full text-left mb-2 text-black z-10">Help</button>
-              <button onClick={handleAccountClick} className="block w-full text-left text-black z-10">Account</button>
+              <button onClick={handleAccountClick} className="block w-full text-left mb-2  text-black z-10">Account</button>
+              <button onClick={handleLogOutClick} className="block w-full text-left text-black z-10">Log out</button>
             </div>
           </div>
         </div>
