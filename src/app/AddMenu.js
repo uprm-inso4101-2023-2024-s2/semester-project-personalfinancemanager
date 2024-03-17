@@ -105,7 +105,7 @@ function AddMenu() {
               <button onClick={handleExpensesClick} className="block w-full text-left mb-2 text-black z-10">My expenses</button>
               <button onClick={handleIncomeClick} className="block w-full text-left mb-2 text-black z-10">My income</button>
               <button onClick={handleBudgetClick} className="block w-full text-left mb-2 text-black z-10">Budgeting</button>
-              <button onClick={handleCalendarClick} className="block w-full text-left mb-40 text-black z-10">Calendar</button>
+              <button onClick={handleCalendarClick} className="block w-full text-left mb-4 text-black z-10">Calendar</button>
 
               <div className="text-lg font-bold mb-2 text-black">Help & Settings</div>
               <button onClick={handleSettingsClick} className="block w-full text-left mb-2 text-black z-10">Settings</button>

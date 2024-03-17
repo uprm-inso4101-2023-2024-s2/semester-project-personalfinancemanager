@@ -1,10 +1,15 @@
 import { useContext } from "react";
 import { authContext } from "./auth-context";
 import AddMenu from './AddMenu';
-
+import Logo from './favicon.ico';
 
 function Nav() {
   const { user, loading, logout } = useContext(authContext);
+
+  const handleGraphsClick = () => {
+    setLanguage(language === 'Español' ? 'English' : 'Español'); // Toggle language
+    console.log("Account clicked");
+  };
 
   return (
     <header className="container max-w-full px-20 mx-auto bg-blue-500 py-4">
@@ -15,15 +20,20 @@ function Nav() {
             <div>
               <AddMenu />
             </div>
+            <span className="text-white ml-2">Website Name</span>
+            <img src={Logo} alt="Logo" className="h-8 w-auto ml-4" />
           </div>
         )}
 
         {/* Right side of the navigation */}
         {user && !loading && (
           <nav className="flex items-center gap-4">
-            <button onClick={logout} className="btn btn-danger mr-10">
+            <button onClick={handleGraphsClick} className="btn-nav">Button</button>
+            <button onClick={handleGraphsClick} className="btn-nav">Account</button>
+            <button onClick={logout} className="btn btn-danger mr-4">
               Sign out
             </button>
+            {/* Add more buttons as needed */}
           </nav>
         )}
       </div>
