@@ -32,9 +32,6 @@ function LoginPage() {
                             <button onClick={facebookLoginHandler} className='border-2 border-gray-200 rounded-full p-3 mx-1'>
                                 <FaFacebookF className='text-sm text-gray-400' />
                             </button>
-                            <a href='#' className='border-2 border-gray-200 rounded-full p-3 mx-1'>
-                                <FaLinkedinIn className='text-sm text-gray-400'/>
-                            </a>
                             <button onClick={googleLoginHandler} className='border-2 border-gray-200 rounded-full p-3 mx-1'>
                                 <FaGoogle className='text-sm text-gray-400'/>
                             </button>
