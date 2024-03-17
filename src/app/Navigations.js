@@ -45,10 +45,10 @@ function Nav() {
         {/* Right side of the navigation */}
         {user && !loading && (
           <nav className="flex items-center gap-4">
-            <button onClick={handleClick('calendar')} className="btn-nav mr-2">Calendar</button>
-            <button onClick={handleClick('graphs')} className="btn-nav mr-2">Graphs</button>
-            <button onClick={handleClick('support')} className="btn-nav mr-2">Support</button>
-            <button onClick={handleClick('account')} className="btn-nav">Account</button>
+            <button onClick={handleClick('calendar')} className="btn mr-2">Calendar</button>
+            <button onClick={handleClick('graphs')} className="btn mr-2">Graphs</button>
+            <button onClick={handleClick('support')} className="btn mr-2">Support</button>
+            <button onClick={handleClick('account')} className="btn">Account</button>
             <button onClick={logout} className="btn btn-danger mr-4">
               Sign out
             </button>

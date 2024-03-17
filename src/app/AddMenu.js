@@ -35,6 +35,12 @@ function AddMenu() {
       case 'calendar':
         // Add logic 
         break;
+      case 'notifications':
+        // Add logic 
+        break;
+      case 'verification':
+        // Add logic 
+        break;
       case 'settings':
         // Add logic
         break;
@@ -92,6 +98,10 @@ function AddMenu() {
               <button onClick={() => handleClick('income')} className="block w-full text-left mb-2 text-black z-10">My income</button>
               <button onClick={() => handleClick('budget')} className="block w-full text-left mb-2 text-black z-10">Budgeting</button>
               <button onClick={() => handleClick('calendar')} className="block w-full text-left mb-4 text-black z-10">Calendar</button>
+
+              <div className="text-lg font-bold mb-2 text-black">Services</div>
+              <button onClick={() => handleClick('notification')} className="block w-full text-left mb-2 text-black z-10">Notifications</button>
+              <button onClick={() => handleClick('verification')} className="block w-full text-left mb-4 text-black z-10">2 step verification</button>
 
               <div className="text-lg font-bold mb-2 text-black">Help & Settings</div>
               <button onClick={() => handleClick('settings')} className="block w-full text-left mb-2 text-black z-10">Settings</button>
