@@ -51,7 +51,7 @@ function AddMenu() {
         setLanguage(language === 'Español' ? 'English' : 'Español'); 
         break; 
       case 'switch':
-        // Add logic for handling switch click
+        // Add logic 
         break;
       default:
         break;
@@ -84,7 +84,7 @@ function AddMenu() {
               )}
             </div>
             <button onClick={handleClose} className="absolute top-0 right-4 mt-4 mr-4 text-gray-500"> {/* Position the button */}
-              <FontAwesomeIcon icon={faTimes} size="xl" />
+              <FontAwesomeIcon icon={faTimes} size="xl"  className="text-red-600"/>
             </button>
             <div className="mt-20"> {/* Adjust margin top here */}
               <div className="text-lg font-bold mb-2 text-black">Income and Expenses</div>

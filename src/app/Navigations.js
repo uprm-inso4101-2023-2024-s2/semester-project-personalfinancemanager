@@ -6,12 +6,26 @@ import Logo from './favicon.ico';
 function Nav() {
   const { user, loading, logout } = useContext(authContext);
 
-  const handleSupportClick = () => {
-    console.log("Account clicked");
-  };
-
-  const handleGraphsClick = () => {
-    console.log("Account clicked");
+  const handleClick = (action) => {
+    switch (action) {
+      case 'Graphs':
+        // Add logic 
+        break;
+      case 'support':
+        // Add logic 
+        break;
+      case 'account':
+        // Add logic 
+        break;
+      case 'account':
+        // Add logic 
+        break;
+      case 'calendar':
+        //Add logic
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -23,7 +37,7 @@ function Nav() {
             <div>
               <AddMenu />
             </div>
-            <span className="text-white ml-2">Website Name</span>
+            <span className="text-white ml-2 text-xl">Windle</span>
             <img src={Logo} alt="Logo" className="h-8 w-auto ml-4" />
           </div>
         )}
@@ -31,8 +45,10 @@ function Nav() {
         {/* Right side of the navigation */}
         {user && !loading && (
           <nav className="flex items-center gap-4">
-            <button onClick={handleSupportClick} className="btn-nav">Support</button>
-            <button onClick={handleGraphsClick} className="btn-nav">Account</button>
+            <button onClick={handleClick('calendar')} className="btn-nav mr-2">Calendar</button>
+            <button onClick={handleClick('graphs')} className="btn-nav mr-2">Graphs</button>
+            <button onClick={handleClick('support')} className="btn-nav mr-2">Support</button>
+            <button onClick={handleClick('account')} className="btn-nav">Account</button>
             <button onClick={logout} className="btn btn-danger mr-4">
               Sign out
             </button>
