@@ -141,7 +141,8 @@ export default function Home() {
               </button>
               <button 
                 onClick={() => {setShowTableAnalisis(true);}}
-                className='btn btn-primary'
+                className={`${buttonBaseClass} ${buttonWidthClass} bg-yellow-500 hover:bg-red-550`}
+                style={{ margin: 'auto' }}
               >
                 Table Analisis
               </button>
