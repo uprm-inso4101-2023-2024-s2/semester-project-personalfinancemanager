@@ -1,7 +1,8 @@
 import { useContext } from "react";
 import { authContext } from "./auth-context";
 import AddMenu from './AddMenu';
-import Logo from './favicon.ico';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBezierCurve } from '@fortawesome/free-solid-svg-icons';
 
 function Nav() {
   const { user, loading, logout } = useContext(authContext);
@@ -37,8 +38,8 @@ function Nav() {
             <div>
               <AddMenu />
             </div>
-            <span className="text-white ml-2 text-xl">Windle</span>
-            <img src={Logo} alt="Logo" className="h-8 w-auto ml-4" />
+            <span className="text-white ml-10 text-xl">Windle</span>
+            <FontAwesomeIcon icon={faBezierCurve} size="1x" className="text-white"/> {/*Change logo if needed*/}
           </div>
         )}
 
