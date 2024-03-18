@@ -60,7 +60,7 @@ function AddIncomesModal({ show, onClose }) {
     };    
 
     return (
-        <Modal show={show} onClose={onClose}>
+        <Modal show={show} onClose={onClose} style={{ maxHeight: '50px', overflowY: 'auto' }}>
             <form className="input-ground" onSubmit={addIncomeHandler}>
                 <div className="input-ground"> 
                     <label htmlFor="amount"> Income Amount</label>
@@ -104,7 +104,7 @@ function AddIncomesModal({ show, onClose }) {
                 </button>
             </form>
 
-            <div className="flex flex-col gap-4 mt-6">
+            <div className="flex flex-col gap-4 mt-2" style={{ maxHeight: '70px', overflowY: 'auto', paddingRight: '10px', marginBottom: '-10px' }}>
                 <h3 className="text-2xl font-bold"> Income History</h3>
                 {income.map(i => {
                     return (
