@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useContext } from 'react';
-import { monthlyIncomeFilter, monthlyExpenseFilter, yearlyExpenseFilter, yearlyIncomeFilter } from './moneyFilters';
+import monthlyIncomeFilter from './moneyFilters';
+import monthlyExpensefilter from './moneyFilters';
 import { financeContext } from './finance-context';
 import * as d3 from 'd3';
 import './Calendar.css';
@@ -7,6 +8,7 @@ import './Calendar.css';
 const Calendar = () => {
     const svgRef = useRef(null);
     const context = useContext(financeContext);
+    const {monthlyBudget, addMonthlyBudget, updateMonthlyBudget} = useContext(financeContext);
     const [currentTime, setCurrentTime] = useState(new Date());
     /* 
     State variables used to manage the interactive behavior of the calendar component.
@@ -27,14 +29,17 @@ const Calendar = () => {
     const [daysWithData, setDaysWithData] = useState([]);
     const [removedEvents, setRemovedEvents] = useState({});
 
+    const monthlyIncome = monthlyIncomeFilter(context.income, currentTime.getMonth(), currentTime.getFullYear());
+    const monthlyExpenses = monthlyExpensefilter(context.expenses, currentTime.getMonth(), currentTime.getFullYear());
+    const progress = monthlyExpenses / monthlyBudget.budget;
 
-function renderProgressBar({percentage}){
+    function renderProgressBar(percentage){
     return (
         <div className="progressBar">
             <div className="progress"style={{ width: `${percentage}%` }}> </div>
         </div>
     );
-}
+    }
 
     useEffect(() => {
         const timerID = setInterval(() => tick(), 1000); // Update every second
@@ -392,7 +397,9 @@ function renderProgressBar({percentage}){
     return (
         <div id="calendar-container">
             {renderProgressBar(50)}
-            {renderPanel()}
+            <div className='panel'>
+                {renderPanel()}
+            </div>
             <svg ref={svgRef}></svg>
         </div>
     );
