@@ -97,3 +97,10 @@ svg {
     flex: 1;
     margin-top: 20px;
 }
+
+.budget-button {
+    justify-content: center;
+    bottom: 0;
+    margin-top: 10px;
+    margin-left: 10px;
+}

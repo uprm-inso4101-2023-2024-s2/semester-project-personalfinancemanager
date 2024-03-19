@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useContext } from 'react';
+import { toast } from 'react-toastify';
 import monthlyIncomeFilter from './moneyFilters';
 import monthlyExpensefilter from './moneyFilters';
 import { financeContext } from './finance-context';
@@ -9,6 +10,7 @@ const Calendar = () => {
     const svgRef = useRef(null);
     const context = useContext(financeContext);
     const {monthlyBudget, addMonthlyBudget, updateMonthlyBudget} = useContext(financeContext);
+    const [isBudgetAdded, setIsBudgetAdded] = useState(false);
     const [currentTime, setCurrentTime] = useState(new Date());
     /* 
     State variables used to manage the interactive behavior of the calendar component.
@@ -40,6 +42,27 @@ const Calendar = () => {
         </div>
     );
     }
+
+    debugger;
+    const handleAddOrUpdateBudget = () => {
+        const input = window.prompt("Enter the monthly budget:");
+        if (input !== null) {
+            const budget = parseFloat(input);
+            if (!isNaN(budget)) {
+                if (!isBudgetAdded || !monthlyBudget.id) {
+                    addMonthlyBudget(budget); 
+                    setIsBudgetAdded(true);
+                    toast.success("Budget added successfully.");
+                } else {
+                    updateMonthlyBudget(budget); 
+                    setIsBudgetAdded(true);
+                    toast.success("Budget updated successfully.");
+                }
+            } else {
+                toast.error("Please enter a valid number for the monthly budget.");
+            }
+        }
+    };
 
     useEffect(() => {
         const timerID = setInterval(() => tick(), 1000); // Update every second
@@ -401,6 +424,7 @@ const Calendar = () => {
                 {renderPanel()}
             </div>
             <svg ref={svgRef}></svg>
+            <button onClick={handleAddOrUpdateBudget} className='budget-button'>Add/Update Monthly Budget</button>
         </div>
     );
 };
