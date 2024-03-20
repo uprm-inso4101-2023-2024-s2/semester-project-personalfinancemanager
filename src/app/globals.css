@@ -228,39 +228,11 @@ body, button, input, .btn, .balance-box, .balance-label, .balance-amount, .text-
   /*font-family: 'Nunito', sans-serif;*/
   /*font-family: 'Source Sans Pro', sans-serif;*/
   /*font-family: 'IBM Plex Sans', sans-serif;*/
-  
-}.month-panel {
-  text-align: center;
 }
 
-.year-label {
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-
-.month-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.month-tile {
-  background-color: lightblue;
-  padding: 10px; 
-  margin: 5px;
-  cursor: pointer;
-}
-
-.top-row {
-  display: flex;
-  justify-content: center;
-}
-
-.bottom-row {
-  display: flex;
-  justify-content: center;
-}
-
-.current-month {
-  background-color: lime;
+.current-time-label,
+.month-name-label,
+.year-label,
+.day-label-top {
+    fill: white;
 }
