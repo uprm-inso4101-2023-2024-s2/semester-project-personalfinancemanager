@@ -1,4 +1,4 @@
-import { financeContext } from "./finance-context";
+import { financeContext } from '../Finance-Context/finance-context';
 import { useState, useContext, useEffect } from "react";
 import Modal from "./modal";
 
@@ -6,7 +6,7 @@ import {
   calculateMean,
   calculateMedian,
   calculateMode,
-} from "./dataCalculation";
+} from "../dataCalculation";
 
 function TableAnalisisModal({ show, onClose }) {
   const { expenses, income } = useContext(financeContext);
@@ -26,7 +26,7 @@ function TableAnalisisModal({ show, onClose }) {
       setFunction(result);
     }
   };
-  
+
   useEffect(() => {
     calculateAndSet(expenses, calculateMean, setMeanExpenses);
     calculateAndSet(expenses, calculateMedian, setMedianExpenses);

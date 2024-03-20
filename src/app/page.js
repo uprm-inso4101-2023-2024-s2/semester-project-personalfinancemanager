@@ -14,7 +14,7 @@ import AddExpensesModal from './Modals/AddExpensesModal';
 import AddIncomesModal from './Modals/AddIncomesModal';
 import { financeContext } from './Finance-Context/finance-context';
 import Calendar from './Page-Functionality/Calendar';
-import TableAnalisisModal from './tableAnalisisModal';
+import TableAnalisisModal from './Modals/tableAnalisisModal';
 
 import { Chart as ChartJS, Tooltip, LinearScale, CategoryScale, BarElement, Legend} from "chart.js";
 
