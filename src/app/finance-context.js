@@ -66,8 +66,8 @@ export default function FinanceContextProvider({ children }) {
     }
   }
 
-  /** Updates the monthly budget using its document id and a the budget to update it to.
-   * This looks for the document using the user id.
+  /** Updates the monthly budget using the budget to update it to.
+   * This looks for the document with the user id.
    * 
    * @param {integer} newBudget - The new budget to update to the database.
    */
@@ -76,7 +76,6 @@ export default function FinanceContextProvider({ children }) {
       const colRef = collection(db, "monthly_budget");
       const q = query(colRef, where("uid", "==", user.uid));
       const docSnap = await getDocs(q);
-      debugger;
       if (docSnap.size === 0) {
         await addMonthlyBudget(newBudget);
       } else {
