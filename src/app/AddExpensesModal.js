@@ -48,7 +48,7 @@ function AddExpensesModal({ show, onClose }) {
     const titleRef = useRef();
     const colorRef = useRef();
 
-    /**
+     /**
      * Handles adding an expense item.
      */
     const AddCategoryItemHandler = async () => {
@@ -115,7 +115,7 @@ function AddExpensesModal({ show, onClose }) {
 
             {/* Expenses Category */}
             {expenseAmount > 0 && (
-                <div className= "flex flex-col gap-4 mt-6">
+                <div className= "flex flex-col gap-4 mt-6" style={{ maxHeight: '280px', overflowY: 'auto', paddingBottom: '10px', paddingLeft: '30px', paddingRight: '30px' }}>
                     <div className="flex items-center justify-between">
                         <h3 className="text-2x1 capitalize">Select expense category</h3>
                         <button onClick={() => setShowAddExpense(true)} className="text-lime-800">+ New Category</button>
@@ -152,14 +152,15 @@ function AddExpensesModal({ show, onClose }) {
 
             {expenseAmount > 0 && selectedCategory && (
                 <div className="mt-6">
-                {/* Date Input Field */}
-                    <label htmlFor="date">Select Date and Time</label>
+                    {/* Date Input Field */}
+                    <label htmlFor="date" className="mr-2">Select Date and Time</label>
                     <input 
                         type="datetime-local" 
                         name="date"
                         value={formatDate(selectedDate)} // Format ISO date to string
                         onChange={(e) => setSelectedDate(new Date(e.target.value))}
                         required
+                        className="mr-4" // Adding margin to the right
                     />
                     <button className="btn btn-primary" onClick={AddCategoryItemHandler}>Add Expense</button>
                 </div>
@@ -167,5 +168,4 @@ function AddExpensesModal({ show, onClose }) {
         </Modal>
     );
 }
-
 export default AddExpensesModal;
