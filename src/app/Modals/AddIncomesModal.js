@@ -1,9 +1,10 @@
-import { currencyFormatter } from "./utils.js";
-import Modal from "@/app/modal";
-import { useState, useRef, useContext } from "react";
+import { currencyFormatter } from "../Finance-Context/utils.js";
+import Modal from "@/app/Modals/modal.js";
+import { useState, useRef, useEffect, useContext } from "react";
 import { FaRegTrashAlt } from 'react-icons/fa'
-import { financeContext } from './finance-context';
-import { authContext } from "./auth-context";
+import { db } from '../index.js';
+import { financeContext } from '../Finance-Context/finance-context.js';
+import { authContext } from "../Page-Functionality/Login/auth-context.js";
 import { toast } from 'react-toastify';
 
 // Define the formatDate function

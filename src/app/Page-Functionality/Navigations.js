@@ -1,7 +1,7 @@
 'use client'
 import { useContext } from "react";
 
-import { authContext } from "./auth-context";
+import { authContext } from "./Login/auth-context";
 
 
 function Nav() {
