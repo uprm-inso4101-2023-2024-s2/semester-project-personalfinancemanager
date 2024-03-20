@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState, useContext } from 'react';
 import { toast } from 'react-toastify';
-import monthlyIncomeFilter from './moneyFilters';
-import monthlyExpensefilter from './moneyFilters';
+import monthlyExpensefilter , { monthlyIncomeFilter } from './moneyFilters';
 import { financeContext } from './finance-context';
 import * as d3 from 'd3';
 import './Calendar.css';
@@ -35,9 +34,17 @@ const Calendar = () => {
 
     debugger;
     //Variables to calculate total income, total expenses, and the percentage of the total expenses compared to the monthly budget.
-    const totalIncome = income.reduce((total, item) => total + parseFloat(item.amount), 0);
-    const totalExpenses = expenses.reduce((total, item) => total + parseFloat(item.amount), 0);    
-    const progress = (totalExpenses / monthlyBudget.budget) * 100;
+    const monthlyincome = monthlyIncomeFilter(income, currentTime.getMonth() + 1, currentTime.getFullYear());
+    const monthlyexpenses = monthlyExpensefilter(expenses, currentTime.getMonth() + 1, currentTime.getFullYear());
+    const totalExpenses = monthlyexpenses.reduce((total, category) => {
+        const categoryTotal = category.items.reduce((itemTotal, item) => {
+            return itemTotal + item.amount;
+        }, 0);
+        return total + categoryTotal;
+    }, 0);
+    const totalIncome = monthlyincome.reduce((total, item) => total + item.amount, 0);
+    const monthlyBudgetAmount = monthlyBudget.length > 0 ? monthlyBudget[0].budget : 1;
+    const progress = (totalExpenses / monthlyBudgetAmount) * 100;
 
     function renderProgressBar(percentage){
     return (
@@ -445,7 +452,7 @@ const Calendar = () => {
 
     return (
         <div>
-            <button onClick={handleAddOrUpdateBudget} className='budget-button'>Add/Update Monthly Budget</button>
+            <div><button onClick={handleAddOrUpdateBudget} className='budget-button'>Add/Update Monthly Budget</button></div>
             <div className='month-selector-panel'>
                 {renderMonthSelector()}
             </div>

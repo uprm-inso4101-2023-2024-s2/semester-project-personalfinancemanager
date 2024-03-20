@@ -97,6 +97,7 @@
     position: absolute; 
     top: 0; 
     margin-bottom: 35px;
+    transition: width 3s ease;
   }
   
 .progress {
@@ -111,8 +112,15 @@ svg {
 }
 
 .budget-button {
+    display: flex;
+    text-align: center;
     justify-content: center;
     bottom: 0;
     margin-top: 10px;
-    margin-left: 10px;
+    margin-bottom: 10px;
+    background-color: rgb(150,150,150);
+    color: black;
+    margin-left: 280px;
+    border-radius: 10px;
+    padding: 10px 20px;
 }
