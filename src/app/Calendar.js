@@ -33,7 +33,7 @@ const Calendar = () => {
 
     const monthlyIncome = monthlyIncomeFilter(context.income, currentTime.getMonth(), currentTime.getFullYear());
     const monthlyExpenses = monthlyExpensefilter(context.expenses, currentTime.getMonth(), currentTime.getFullYear());
-    const progress = monthlyExpenses / monthlyBudget.budget;
+    
 
     function renderProgressBar(percentage){
     return (
@@ -43,7 +43,10 @@ const Calendar = () => {
     );
     }
 
-    debugger;
+    /** Handles the budget button. Adds a budget to the database if the user does not already have one. 
+     * If the user has a budget, then it is updated.
+     * 
+     */
     const handleAddOrUpdateBudget = () => {
         const input = window.prompt("Enter the monthly budget:");
         if (input !== null) {
