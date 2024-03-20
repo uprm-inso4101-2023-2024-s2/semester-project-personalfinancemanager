@@ -44,7 +44,8 @@ const Calendar = () => {
     }, 0);
     const totalIncome = monthlyincome.reduce((total, item) => total + item.amount, 0);
     const monthlyBudgetAmount = monthlyBudget.length > 0 ? monthlyBudget[0].budget : 1;
-    const progress = (totalExpenses / monthlyBudgetAmount) * 100;
+    let progress = (totalExpenses / monthlyBudgetAmount) * 100;
+    progress <= 100 ? progress = 0 : progress = progress;
 
     function renderProgressBar(percentage){
     return (
