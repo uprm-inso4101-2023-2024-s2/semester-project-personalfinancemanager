@@ -1,21 +1,31 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import './Calendar.css'
+import './Calendar.css';
 
-/**
- * Represents a calendar component rendered using D3.js.
- */
 const Calendar = () => {
     const svgRef = useRef(null);
     const [currentTime, setCurrentTime] = useState(new Date());
-    const [selectedDay, setSelectedDay] = useState(null);
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+    /* 
+    State variables used to manage the interactive behavior of the calendar component.
+
+    - selectedDay: Represents the currently selected day in the calendar. Initialized to null.
+    - inputMode: Tracks whether the calendar is in input mode, allowing the user to add events. Initialized to false.
+    - dayInput: Holds input data for each day, where the date is the key. Initialized as an empty object.
+    - submittedData: Keeps track of submitted events for each day, with the date as the key. Initialized as an empty object.
+    - expectedExpenses: Stores the expected expenses for each day with the date as the key. Initialized as an empty object.
+    - daysWithData: Keeps a list of days that have associated data. Initialized as an empty array.
+    - removedEvents: Tracks the days from which events have been removed, with the date as the key. Initialized as an empty object.
+    */
+    const [selectedDay, setSelectedDay] = useState(null);
     const [inputMode, setInputMode] = useState(false);
     const [dayInput, setDayInput] = useState({});
     const [submittedData, setSubmittedData] = useState({});
     const [expectedExpenses, setExpectedExpenses] = useState({});
     const [daysWithData, setDaysWithData] = useState([]);
-
+    const [removedEvents, setRemovedEvents] = useState({});
+    const [showMonthSelectorPanel, setShowMonthSelectorPanel] = useState(false);
+    const [shouldRenderCalendar, setShouldRenderCalendar] = useState(true);
 
 
     useEffect(() => {
@@ -23,54 +33,39 @@ const Calendar = () => {
         return function cleanup() {
             clearInterval(timerID);
         };
-    }, []); // Run only once when component mounts
+    }, []); // Run only once when the component mounts
 
-    /**
-     * Updates the current time state.
-     */
     const tick = () => {
         setCurrentTime(new Date()); // Update current time
     };
 
     useEffect(() => {
         renderCalendar();
-    }, [currentTime, submittedData]); // Re-render whenever currentTime changes
+    }, [currentTime, submittedData, currentMonth]); // Re-render whenever currentTime or submittedData changes
 
-    /**
-     * Renders the calendar using D3.js.
-     */
     const renderCalendar = () => {
         const svg = d3.select(svgRef.current);
-    
-        // Clear the SVG content before re-rendering
+
         svg.selectAll('*').remove();
-    
-        // Set the dimensions and margins of the SVG
+
         const margin = { top: 50, right: 20, bottom: 50, left: 50 };
         const width = 800 - margin.left - margin.right;
         const height = 600 - margin.top - margin.bottom;
-    
-        // Append the SVG element to the div
+
         svg.attr('width', width + margin.left + margin.right)
             .attr('height', height + margin.top + margin.bottom)
             .append('g')
             .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-    
-        // Get the current date
+
         const currentYear = currentTime.getFullYear();
-        const currentMonth = currentTime.getMonth();
-    
-        // Set the range of days for the current month
+
         const daysInCurrentMonth = d3.timeDays(new Date(currentYear, currentMonth, 1), new Date(currentYear, currentMonth + 1, 1));
-    
-        // Set cell size
+
         const cellSize = 30;
-    
-        // Create scales
+
         const xScale = d3.scaleBand().range([0, width]).domain(['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']);
-        const yScale = d3.scaleBand().range([0, height]).domain(d3.range(0, 7)); // Maximum of 6 weeks in a month
-    
-        // Add day labels in the top row
+        const yScale = d3.scaleBand().range([0, height]).domain(d3.range(0, 7));
+
         const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         svg.selectAll('.day-label-top')
             .data(dayLabels)
@@ -82,17 +77,27 @@ const Calendar = () => {
             .attr('dominant-baseline', 'middle')
             .attr('font-size', '20')
             .text(d => d);
-    
-        // Create cells for each day
+
         svg.selectAll('.day')
             .data(daysInCurrentMonth)
             .enter().append('rect')
             .attr('class', (d) => {
                 const hasData = daysWithData.some(date => date.toDateString() === d.toDateString());
-                const hasSubmittedData = submittedData[d] !== undefined;
-                const isToday = d.getDate() === currentTime.getDate();
-                const hasEvent = hasSubmittedData && submittedData[d].event;
-                return `day${hasData ? ' with-data' : ''}${hasSubmittedData ? ' submitted' : ''}${isToday && hasEvent ? ' orange-fill' : ''}`;
+                const isToday = d.getDate() === currentTime.getDate() && d.getMonth() === currentTime.getMonth();
+                const hasEvents = submittedData[d] && submittedData[d].events && submittedData[d].events.length > 0;
+
+                // Check if the day has been removed
+                const hasRemovedEvents = removedEvents[d];
+
+                 /*
+                Generates a string representing a combination of CSS classes for a calendar day based on conditions.
+                - "day": Base CSS class always present.
+                - "with-data": Added if there is data for the day.
+                - "submitted": Added if events have been submitted for the day.
+                - "orange-fill": Added if today and events have been submitted.
+                - "removed": Added if events for the day have been removed.
+                */
+                return `day${hasData ? ' with-data' : ''}${hasEvents ? ' submitted' : ''}${isToday && hasEvents  ? ' orange-fill' : ''}${hasRemovedEvents ? ' removed' : ''}`;
             })
             .attr('width', xScale.bandwidth())
             .attr('height', yScale.bandwidth())
@@ -100,39 +105,41 @@ const Calendar = () => {
             .attr('y', (d) => yScale(d3.timeWeek.count(d3.timeMonth(d), d)) + yScale.bandwidth())
             .attr('fill', (d) => {
                 const isToday = d.getDate() === currentTime.getDate();
-                const hasEvent = submittedData[d] && submittedData[d].event;
+                const hasEvent = submittedData[d] && submittedData[d].event && submittedData[d].events.length > 0;
+
+                // Check if the day has been removed
+                const hasRemovedEvents = removedEvents[d];
+
+                // Fill the day depending on if it has events or not
                 
-                if (d.getDate() < currentTime.getDate()) {
-                    return '#d3d3d3'; 
-                } else if (isToday && hasEvent) {
-                    return 'orange'; 
-                } else if (isToday) {
-                    return 'lime'; 
+                if ((d.getDate() < currentTime.getDate() && d.getMonth() === currentTime.getMonth()) || (d.getMonth() < currentTime.getMonth())) {
+                    return '#d3d3d3'; // Day has passed
+                } else if (isToday && (d.getMonth() === currentTime.getMonth())) {
+                    if(hasEvent) {
+                        return 'orange'; // Highlight current day with event
+                    }
+                    else {
+                        return 'lime'; // Highlight current day
+                    }
                 } else {
-                    return 'white'; 
+                    return 'white';
                 }
             })
-            .attr('stroke', (d) => {
-                return 'black'; 
-            })
+            .attr('stroke', (d) => 'black')
             .on('click', (event, d) => handleClick(event, d))
             .style('cursor', 'pointer');
 
-
-    
-        // Add day labels
         svg.selectAll('.day-label')
             .data(daysInCurrentMonth)
             .enter().append('text')
             .attr('class', 'day-label')
             .attr('x', d => xScale(dayLabels[d.getDay()]) + xScale.bandwidth() / 6)
-            .attr('y', d => yScale(d3.timeWeek.count(d3.timeMonth(d), d)) + yScale.bandwidth()*1.2)
+            .attr('y', d => yScale(d3.timeWeek.count(d3.timeMonth(d), d)) + yScale.bandwidth() * 1.2)
             .attr('text-anchor', 'middle')
             .attr('dominant-baseline', 'middle')
             .text(d => d.getDate());
-            
-    
-        // Add month and year label
+
+        const monthYearLabel = `${currentMonth + 1}/${currentYear}`;
         svg.append('text')
             .attr('class', 'month-year-label')
             .attr('x', width / 2)
@@ -140,15 +147,6 @@ const Calendar = () => {
             .attr('text-anchor', 'middle')
             .text(`${currentMonth + 1}/${currentYear}`); 
     
-        // Add text for the month name
-        svg.append('text')
-            .attr('class', 'month-name-label')
-            .attr('x', width / 2)
-            .attr('y', 20)
-            .attr('font-size', '25')
-            .attr('text-anchor', 'middle')
-            .text(d3.timeFormat('%B')(new Date(currentYear, currentMonth))); // Display month name
-        
         // Add text for the year
         svg.append('text')
             .attr('class', 'year-label')
@@ -156,33 +154,53 @@ const Calendar = () => {
             .attr('y', 20)
             .attr('font-size', '25')
             .attr('text-anchor', 'middle')
-            .text(currentYear); // Display year
-    
-        // Add current time display
+            .text(monthYearLabel);
+
+        const currentTimeLabel = d3.timeFormat('%H:%M:%S')(currentTime);
         svg.append('text')
             .attr('class', 'current-time-label')
             .attr('x', 10)
             .attr('y', 20)
             .attr('font-size', '25')
             .attr('fill', 'black')
-            .text(d3.timeFormat('%H:%M:%S')(currentTime)); // Display current time
+            .text(currentTimeLabel);
 
-        if(selectedDay !== null) {
+        if (selectedDay !== null) {
             renderPanel(selectedDay);
         }
     };
-    
+
+    /* 
+    Function to handle clicks on a calendar day.
+    - Updates the selected day.
+    - Manages input mode, enabling it if there's no input or submitted events.
+    - Resets input for the selected day if already present.
+    - Resets removed events when switching to input mode or when no events are left.
+    - Updates the list of days with data based on input presence and day existence.
+    */
     const handleClick = (event, day) => {
         setSelectedDay(day);
-    
+
         const hasInput = dayInput[day] || submittedData[day];
-    
-        setInputMode(!hasInput);
-    
+
+        // Reset input mode when switching between days
+        setInputMode(false);
+
+        if (!hasInput || (hasInput && !submittedData[day]?.events.length)) {
+            setInputMode(true);
+        }
+
         if (hasInput) {
             setDayInput({ ...dayInput, [day]: '' });
         }
-    
+
+        // Reset removed events when switching to input mode or when there are no events left
+        setRemovedEvents((prevRemovedEvents) => {
+            const updatedRemovedEvents = { ...prevRemovedEvents };
+            delete updatedRemovedEvents[day];
+            return updatedRemovedEvents;
+        });
+
         setDaysWithData((prevDaysWithData) => {
             if (hasInput && !prevDaysWithData.some(date => date.toDateString() === day.toDateString())) {
                 return [...prevDaysWithData, day];
@@ -191,48 +209,122 @@ const Calendar = () => {
             }
             return prevDaysWithData;
         });
-    };    
-    
+    };
 
+        /* 
+    Updates the input for the selected day.
+    - Uses event target value to update day input state.
+    */
     const handleInputChange = (event) => {
         setDayInput({ ...dayInput, [selectedDay]: event.target.value });
     };
 
+    /* 
+    Updates the expected expenses for the selected day.
+    - Uses event target value to update expected expenses state.
+    */
     const handleExpensesChange = (event) => {
         setExpectedExpenses({ ...expectedExpenses, [selectedDay]: event.target.value });
     };
 
+    /* 
+    Removes the last submitted event for the selected day.
+    - Checks if there is a selected day with submitted data.
+    - Removes the last event and updates removed events and the SVG element fill color.
+    */
+    const handleRemoveEvent = () => {
+        if (selectedDay && submittedData[selectedDay]) {
+            const updatedSubmittedData = { ...submittedData };
+
+            // Replace with the actual width and height of your SVG container
+            const width = 800;
+            const height = 600;
+
+            const yScale = d3.scaleBand().range([0, height]).domain(d3.range(0, 7));
+            const xScale = d3.scaleBand().range([0, width]).domain(['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']);
+
+            const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+            // Remove the last event
+            const updatedEvents = updatedSubmittedData[selectedDay].events.slice(0, -1);
+            updatedSubmittedData[selectedDay].events = updatedEvents;
+
+            // Set removed events for the selected day
+            setRemovedEvents({ ...removedEvents, [selectedDay]: true });
+
+            // Update the fill color directly in the SVG element
+            const svg = d3.select(svgRef.current);
+            const removedDay = svg.select(`.day[fill='white'][y='${yScale(d3.timeWeek.count(d3.timeMonth(selectedDay), selectedDay)) + yScale.bandwidth()}'][x='${xScale(dayLabels[selectedDay.getDay()])}']`);
+
+            if (removedDay) {
+                removedDay.attr('fill', 'white');
+            }
+
+            setSubmittedData(updatedSubmittedData);
+        }
+    };
+
+    /* 
+    Submits the input data for the selected day.
+    - Checks if the input is not empty before updating the submitted data state.
+    - Updates events and expected expenses for the selected day.
+    - Resets input values for the selected day.
+    */
     const handleSubmit = () => {
         if ((dayInput[selectedDay] ?? '').trim() !== '') {
             setSubmittedData({
                 ...submittedData,
                 [selectedDay]: {
-                    event: dayInput[selectedDay] || '',
-                    expenses: expectedExpenses[selectedDay] || ''
+                    events: [
+                        ...(submittedData[selectedDay]?.events || []),
+                        {
+                            event: dayInput[selectedDay] || '',
+                            expenses: expectedExpenses[selectedDay] || ''
+                        }
+                    ],
                 }
             });
             setDayInput({ ...dayInput, [selectedDay]: '' });
             setExpectedExpenses({ ...expectedExpenses, [selectedDay]: '' });
         }
     };
-
+        
+    // Renders the panel based on the selected day and input mode.
     const renderPanel = () => {
         const submittedInfo = submittedData[selectedDay];
 
+        // Check if the form should be rendered (selected day is not null and not in input mode)
         const shouldRenderForm = selectedDay !== null && !inputMode;
 
         return (
             <div className="panel">
                 {shouldRenderForm && (
                     <>
-                        <label className="input-ground"> Event of the day: </label>
+                        <button onClick={() => setSelectedDay(null)} className="close-button">
+                            X
+                        </button>
+                        <label className="input-ground"> Events of {selectedDay.toLocaleDateString()}: </label>
+
+                        {/* Container for events with optional border based on submitted expenses */}
                         <div className={`input-ground${submittedInfo && submittedInfo.expenses ? ' with-border' : ''}`}>
-                            <div>
-                                <strong>Event:</strong> {submittedInfo && submittedInfo.event}
-                            </div>
+                            {/* Render submitted events if available, otherwise display a message */}
+                            {submittedInfo && submittedInfo.events && submittedInfo.events.length > 0 ? (
+                                submittedInfo.events.map((event, index) => (
+                                    <div key={index}>
+                                        <strong>Event {index + 1}:</strong> {event.event}
+                                        {event.expenses && (
+                                            <span className="expected-expenses"> - Expected Expenses: {event.expenses}</span>
+                                        )}
+                                    </div>
+                                ))
+                            ) : (
+                                <div>No events for this day</div>
+                            )}
+
+                            {/* Display total expenses if available */}
                             {submittedInfo && submittedInfo.expenses && (
                                 <div>
-                                    <strong>Expected Expenses:</strong> {submittedInfo.expenses}
+                                    <strong>Total Expenses:</strong> {submittedInfo.expenses}
                                 </div>
                             )}
                         </div>
@@ -241,35 +333,82 @@ const Calendar = () => {
 
                 {inputMode && selectedDay !== null && (
                     <>
-                        <label className="input-ground"> Event of the day: </label>
+                        <button onClick={() => setSelectedDay(null)} className="close-button" >
+                            X
+                        </button>
+                        <label className="input-ground"> Events for {selectedDay.toLocaleDateString()}: </label>
                         <textarea
                             className="input-ground textarea"
                             value={dayInput[selectedDay] || ''}
                             onChange={handleInputChange}
-                            placeholder="Write something..."
+                            placeholder="Write something... (max 5 words)"
+                            maxLength="60"
                         />
-                        <button onClick={handleSubmit} className="submit-button">
-                            Submit
-                        </button>
-
-                        <label className="input-ground"> Expected Expenses: </label>
                         <input
-                            type="text"
+                            type="number"
                             className="input-ground"
                             value={expectedExpenses[selectedDay] || ''}
                             onChange={handleExpensesChange}
                             placeholder="Enter expected expenses..."
                         />
+                        <button onClick={handleSubmit} className="submit-button">
+                            Submit
+                        </button>
                     </>
+                )}
+
+                {!inputMode && selectedDay !== null && (
+                    <div className="event-display">
+                        {/* Buttons for adding an event, removing the last event, and closing the panel */}
+                        <button onClick={() => setInputMode(true)} className="submit-button">
+                            Add Event
+                        </button>
+                        <button onClick={handleRemoveEvent} className="remove-event-button">
+                                Remove Last Event
+                        </button>
+                    </div>
                 )}
             </div>
         );
     };
 
+    const handleChangeMonth = (event) => {
+        const selectedMonth = parseInt(event.target.value);
+        console.log('Selected month:', selectedMonth);
+        setCurrentMonth(selectedMonth);
+    };
+
+    const renderMonthSelector = () => {
+        return (
+            <div className='month-selector-panel'>
+                <select className='select-input' name='months' id='months' onChange={handleChangeMonth} value={currentMonth}>
+                    <option value="0">January</option>
+                    <option value="1">February</option>
+                    <option value="2">March</option>
+                    <option value="3">April</option>
+                    <option value="4">May</option>
+                    <option value="5">June</option>
+                    <option value="6">July</option>
+                    <option value="7">August</option>
+                    <option value="8">September</option>
+                    <option value="9">October</option>
+                    <option value="10">November</option>
+                    <option value="11">December</option>
+                </select>
+            </div>
+        );
+    };
+
+
     return (
-        <div id="calendar-container">
-            {renderPanel()}
-            <svg ref={svgRef}></svg>
+        <div>
+            <div className='month-selector-panel'>
+                {renderMonthSelector()}
+            </div>
+            <div id="calendar-container">
+                {renderPanel()}
+                <svg ref={svgRef}></svg>
+            </div>
         </div>
     );
 };

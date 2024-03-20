@@ -71,6 +71,8 @@ export default function Home() {
     setIsLoggedIn(false);
   };
 
+  const buttonBaseClass = "btn py-2 px-4 font-semibold rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75";
+  const buttonWidthClass = "w-36 sm:w-44";
 
   const renderChart = () => {
     switch (chartType) {
@@ -90,83 +92,39 @@ export default function Home() {
   
 
   if (!user) {
-    return <LoginPage/>
-  }
-  return (
-    <>
-        <main className="container max-w-2x1 px-6 mx-auto bg-white">
-         {/* Add Income Modal */}
-      <AddIncomesModal 
-        show={showAddIncomeModal} 
-        onClose={setShowAddIncomeModal}
-      />
-      
-      
-      {/* Add Expenses Modal */}
-      <AddExpensesModal 
-        show={showAddExpenseModal} 
-        onClose={setShowAddExpenseModal} 
-      />
 
-      <main className="container max-w-2x1 px-6 mx-auto">
-        <section className="py-3">
-          <small className="text-black text text-lg">My Balance</small>
-          <h2 className="text-black text-4x1 text text-3xl font-bold">{currencyFormatter(balance)}</h2>
-        </section>
+      <main className=" container max-w-2x1 px-6 mx-auto">
 
-        <section className='flex items-center gap-2 py-3'>
-          <button 
-            onClick={() => {setShowAddExpenseModal(true);}}
-            className='btn btn-primary'>+ Expenses
-          </button>
-          
-          <button 
-            onClick={() => {setShowAddIncomeModal(true);}}
-            className='btn btn-primary'>+ Income
-          </button>
-        </section>
-
-        {/** Expenses */}
-        <section className='py-6'>
-          <h3 className="text-black text-2xl">My Expenses</h3>
-          <div className='flex flex-col gap-4 mt-6'>
-            {expenses.map((expense) => {
-              return (
-                <ExpenseCategoryItem 
-                  expense={expense}
-            />
-              );
-            })}
-          </div>
-        </section>
-        </main>
-              
-          { <div className="mt-2 group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 flex justify-between">
-            <button style={{ margin: '0 5px' }} onClick={() => setChartType('bar')}>
-              <img src="https://cdn.pixabay.com/photo/2014/03/25/16/26/bar-chart-297122_1280.png" alt="Bar Chart" style={{ width: '100px', height: 'auto' }} />
-            </button>
-            <button style={{ margin: '0 5px' }} onClick={() => setChartType('pie')}>
-              <img src="https://freesvg.org/img/1529053464.png" alt="Pie Chart" style={{ width: '100px', height: 'auto' }} />
-            </button>
-            <button style={{ margin: '0 5px' }} onClick={() => setChartType('line')}>
-              <img src="https://c.mql5.com/31/4/MAStop_200.png" alt="Line Chart" style={{ width: '100px', height: 'auto' }} />
-            </button>
-            <button style={{ margin: '0 5px' }} onClick={() => setChartType('divergence')}>
-              <img src="https://www.xelplus.com/wp-content/uploads/2019/04/Charting-Survey-Results-727a6c.png" alt="Diverging Bar Chart" style={{ width: '100px', height: 'auto' }} />
-            </button>
-          </div> }
-
-          { <section className='max-w-2x1 px-6 mx-auto '>
-            {renderChart()}
-          </section> }
-          {/* Calendar */}
-          <section className='py-6'>
-            <h3 className='text-2xl'>Calendar System</h3>
-            <div>
-              <Calendar />
+            <div className="button-container">
+              <button
+                onClick={() => setShowAddIncomeModal(true)}
+                className={`${buttonBaseClass} ${buttonWidthClass} bg-green-500 hover:bg-green-550`}
+                style={{ margin: 'auto' }} 
+              >
+                Income +
+              </button>
+              <button
+                onClick={() => setShowAddExpenseModal(true)}
+                className={`${buttonBaseClass} ${buttonWidthClass} bg-red-500 hover:bg-red-550`}
+                style={{ margin: 'auto' }}
+              >
+                Expenses +
+              </button>
             </div>
-          </section>
+              
+            <section className="max-w-2x1 px-6 mx-auto flex justify-center">
+              {renderChart()}
+            </section>
+
+            {/* Calendar */}
+            <section className='py-6 pl-6'>
+              <h3 className='text-2xl text-center'>Calendar System</h3>
+              <div className="flex justify-center">
+                <Calendar />
+              </div>
+            </section>
+         
         </main>
-    </>
-  );
+
+  }
 }
