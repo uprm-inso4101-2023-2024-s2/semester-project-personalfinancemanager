@@ -15,7 +15,6 @@ import Calendar from './Calendar'; // Import Calendar component
 import { Chart as ChartJS, Tooltip, LinearScale, CategoryScale, BarElement, Legend} from "chart.js";
 import LoginPage from './LoginPage';
 import SignUpPage from './SignUpPage';
-import Nav from './Navigations';
 
 ChartJS.register(
   CategoryScale,
@@ -46,8 +45,10 @@ export default function Home() {
 
     if (user) {
       setCurrentPage('home');
+    } else {
+      setCurrentPage('login')
     }
-  }, [expenses, income]);
+  }, [expenses, income, user]);
 
   const toggleChartType = () => {
     setChartType(prevType => {
@@ -57,6 +58,7 @@ export default function Home() {
       else return 'bar';
     });
   }
+
   const handleLoginButtonClick = () => {
     if (isLoggedIn) {
       setIsLoggedIn(false); // If user is logged in, log them out
@@ -95,7 +97,7 @@ export default function Home() {
   const renderCurrentPage = () => {
     switch(currentPage) {
       case 'login':
-        return <LoginPage currentPage={currentPage} setCurrentPage={setCurrentPage} />;
+        return <LoginPage currentPage={currentPage} setCurrentPage={setCurrentPage} user={user} />;
       case 'signup':
         return <SignUpPage currentPage={currentPage} setCurrentPage={setCurrentPage} />;
       case 'home':
