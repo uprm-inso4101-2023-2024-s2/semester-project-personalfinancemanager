@@ -71,3 +71,15 @@
 .remove-event-button:hover {
     background-color: #c82333; 
 }
+
+.month-selector-panel {
+    display: flex;
+    text-align: center;
+    justify-content: center; 
+    font-size: 25px;
+  }
+
+.select-input {
+    text-align: center;
+}
+
