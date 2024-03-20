@@ -2,7 +2,6 @@ import { useContext } from "react";
 import { authContext } from "./auth-context";
 import AddMenu from './AddMenu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBezierCurve } from '@fortawesome/free-solid-svg-icons';
 
 function Nav() {
   const { user, loading, logout } = useContext(authContext);
@@ -13,9 +12,6 @@ function Nav() {
         // Add logic 
         break;
       case 'support':
-        // Add logic 
-        break;
-      case 'account':
         // Add logic 
         break;
       case 'account':
@@ -38,8 +34,7 @@ function Nav() {
             <div>
               <AddMenu />
             </div>
-            <span className="text-white ml-10 text-xl">Windle</span>
-            <FontAwesomeIcon icon={faBezierCurve} size="1x" className="text-white"/> {/*Change logo if needed*/}
+            <span className="text-white ml-10 text-xl">Personal Finance Manager</span>
           </div>
         )}
 

@@ -23,40 +23,16 @@ function AddMenu() {
 
   const handleClick = (action) => {
     switch (action) {
-      case 'expenses':
-        // Add logic 
-        break;
-      case 'income':
-        // Add logic 
-        break;
-      case 'budget':
+      case 'home':
         // Add logic 
         break;
       case 'calendar':
         // Add logic 
         break;
-      case 'notifications':
-        // Add logic 
-        break;
-      case 'verification':
+      case 'graphs':
         // Add logic 
         break;
       case 'settings':
-        // Add logic
-        break;
-      case 'help':
-        // Add logic 
-        break;
-      case 'account':
-        // Add logic 
-        break;
-      case 'logout':
-        logout();
-        break;
-      case 'language':
-        setLanguage(language === 'Español' ? 'English' : 'Español'); 
-        break; 
-      case 'switch':
         // Add logic 
         break;
       default:
@@ -93,23 +69,11 @@ function AddMenu() {
               <FontAwesomeIcon icon={faTimes} size="xl"  className="text-red-600"/>
             </button>
             <div className="mt-20"> {/* Adjust margin top here */}
-              <div className="text-lg font-bold mb-2 text-black">Income and Expenses</div>
-              <button onClick={() => handleClick('expenses')} className="block w-full text-left mb-2 text-black z-10">My expenses</button>
-              <button onClick={() => handleClick('income')} className="block w-full text-left mb-2 text-black z-10">My income</button>
-              <button onClick={() => handleClick('budget')} className="block w-full text-left mb-2 text-black z-10">Budgeting</button>
-              <button onClick={() => handleClick('calendar')} className="block w-full text-left mb-4 text-black z-10">Calendar</button>
+              <button onClick={() => handleClick('expenses')} className="block w-full text-left mb-2 text-black z-10">Home</button>
+              <button onClick={() => handleClick('income')} className="block w-full text-left mb-2 text-black z-10">Calendar</button>
+              <button onClick={() => handleClick('budget')} className="block w-full text-left mb-2 text-black z-10">Graphs</button>
+              <button onClick={() => handleClick('calendar')} className="block w-full text-left mb-4 text-black z-10">Settings</button>
 
-              <div className="text-lg font-bold mb-2 text-black">Services</div>
-              <button onClick={() => handleClick('notification')} className="block w-full text-left mb-2 text-black z-10">Notifications</button>
-              <button onClick={() => handleClick('verification')} className="block w-full text-left mb-4 text-black z-10">2 step verification</button>
-
-              <div className="text-lg font-bold mb-2 text-black">Help & Settings</div>
-              <button onClick={() => handleClick('settings')} className="block w-full text-left mb-2 text-black z-10">Settings</button>
-              <button onClick={() => handleClick('help')} className="block w-full text-left mb-2 text-black z-10">Help</button>
-              <button onClick={() => handleClick('account')} className="block w-full text-left mb-2 text-black z-10">Account</button>
-              <button onClick={() => handleClick('language')} className="block w-full text-left mb-2 text-black z-10">{language}</button>
-              <button onClick={() => handleClick('switch')} className="block w-full text-left mb-2 text-black z-10">Switch account</button>
-              <button onClick={() => handleClick('logout')} className="block w-full text-left text-black z-10">Log out</button>
             </div>
           </div>
         </div>
