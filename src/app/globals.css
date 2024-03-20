@@ -89,7 +89,7 @@ body {
   }
 
   .pie-chart svg {
-    width: 70%;
+    width: 100%;
     height: 400;
   }
 }
@@ -228,4 +228,11 @@ body, button, input, .btn, .balance-box, .balance-label, .balance-amount, .text-
   /*font-family: 'Nunito', sans-serif;*/
   /*font-family: 'Source Sans Pro', sans-serif;*/
   /*font-family: 'IBM Plex Sans', sans-serif;*/
+}
+
+.current-time-label,
+.month-name-label,
+.year-label,
+.day-label-top {
+    fill: white;
 }
