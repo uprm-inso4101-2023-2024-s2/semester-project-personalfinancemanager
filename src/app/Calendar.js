@@ -5,6 +5,7 @@ import './Calendar.css';
 const Calendar = () => {
     const svgRef = useRef(null);
     const [currentTime, setCurrentTime] = useState(new Date());
+    const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
     /* 
     State variables used to manage the interactive behavior of the calendar component.
 
@@ -23,6 +24,9 @@ const Calendar = () => {
     const [expectedExpenses, setExpectedExpenses] = useState({});
     const [daysWithData, setDaysWithData] = useState([]);
     const [removedEvents, setRemovedEvents] = useState({});
+    const [showMonthSelectorPanel, setShowMonthSelectorPanel] = useState(false);
+    const [shouldRenderCalendar, setShouldRenderCalendar] = useState(true);
+
 
     useEffect(() => {
         const timerID = setInterval(() => tick(), 1000); // Update every second
@@ -37,7 +41,7 @@ const Calendar = () => {
 
     useEffect(() => {
         renderCalendar();
-    }, [currentTime, submittedData]); // Re-render whenever currentTime or submittedData changes
+    }, [currentTime, submittedData, currentMonth]); // Re-render whenever currentTime or submittedData changes
 
     const renderCalendar = () => {
         const svg = d3.select(svgRef.current);
@@ -54,7 +58,6 @@ const Calendar = () => {
             .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
         const currentYear = currentTime.getFullYear();
-        const currentMonth = currentTime.getMonth();
 
         const daysInCurrentMonth = d3.timeDays(new Date(currentYear, currentMonth, 1), new Date(currentYear, currentMonth + 1, 1));
 
@@ -80,7 +83,7 @@ const Calendar = () => {
             .enter().append('rect')
             .attr('class', (d) => {
                 const hasData = daysWithData.some(date => date.toDateString() === d.toDateString());
-                const isToday = d.getDate() === currentTime.getDate();
+                const isToday = d.getDate() === currentTime.getDate() && d.getMonth() === currentTime.getMonth();
                 const hasEvents = submittedData[d] && submittedData[d].events && submittedData[d].events.length > 0;
 
                 // Check if the day has been removed
@@ -94,7 +97,7 @@ const Calendar = () => {
                 - "orange-fill": Added if today and events have been submitted.
                 - "removed": Added if events for the day have been removed.
                 */
-                return `day${hasData ? ' with-data' : ''}${hasEvents ? ' submitted' : ''}${isToday && hasEvents ? ' orange-fill' : ''}${hasRemovedEvents ? ' removed' : ''}`;
+                return `day${hasData ? ' with-data' : ''}${hasEvents ? ' submitted' : ''}${isToday && hasEvents  ? ' orange-fill' : ''}${hasRemovedEvents ? ' removed' : ''}`;
             })
             .attr('width', xScale.bandwidth())
             .attr('height', yScale.bandwidth())
@@ -102,18 +105,22 @@ const Calendar = () => {
             .attr('y', (d) => yScale(d3.timeWeek.count(d3.timeMonth(d), d)) + yScale.bandwidth())
             .attr('fill', (d) => {
                 const isToday = d.getDate() === currentTime.getDate();
-                const hasEvents = submittedData[d] && submittedData[d].events && submittedData[d].events.length > 0;
-            
+                const hasEvent = submittedData[d] && submittedData[d].event && submittedData[d].events.length > 0;
+
                 // Check if the day has been removed
                 const hasRemovedEvents = removedEvents[d];
-            
+
                 // Fill the day depending on if it has events or not
-                if (d.getDate() < currentTime.getDate()) {
-                    return '#d3d3d3';
-                } else if (isToday && hasEvents) {
-                    return 'orange';
-                } else if (isToday) {
-                    return 'lime';
+                
+                if ((d.getDate() < currentTime.getDate() && d.getMonth() === currentTime.getMonth()) || (d.getMonth() < currentTime.getMonth())) {
+                    return '#d3d3d3'; // Day has passed
+                } else if (isToday && (d.getMonth() === currentTime.getMonth())) {
+                    if(hasEvent) {
+                        return 'orange'; // Highlight current day with event
+                    }
+                    else {
+                        return 'lime'; // Highlight current day
+                    }
                 } else {
                     return 'white';
                 }
@@ -138,25 +145,16 @@ const Calendar = () => {
             .attr('x', width / 2)
             .attr('y', -30)
             .attr('text-anchor', 'middle')
-            .text(monthYearLabel);
-
-        const monthNameLabel = d3.timeFormat('%B')(new Date(currentYear, currentMonth));
-        svg.append('text')
-            .attr('class', 'month-name-label')
-            .attr('x', width / 2)
-            .attr('y', 20)
-            .attr('font-size', '25')
-            .attr('text-anchor', 'middle')
-            .text(monthNameLabel);
-
-        const yearLabel = currentYear;
+            .text(`${currentMonth + 1}/${currentYear}`); 
+    
+        // Add text for the year
         svg.append('text')
             .attr('class', 'year-label')
             .attr('x', width / 1.05)
             .attr('y', 20)
             .attr('font-size', '25')
             .attr('text-anchor', 'middle')
-            .text(yearLabel);
+            .text(monthYearLabel);
 
         const currentTimeLabel = d3.timeFormat('%H:%M:%S')(currentTime);
         svg.append('text')
@@ -172,7 +170,7 @@ const Calendar = () => {
         }
     };
 
-        /* 
+    /* 
     Function to handle clicks on a calendar day.
     - Updates the selected day.
     - Manages input mode, enabling it if there's no input or submitted events.
@@ -290,8 +288,6 @@ const Calendar = () => {
             setExpectedExpenses({ ...expectedExpenses, [selectedDay]: '' });
         }
     };
-
-
         
     // Renders the panel based on the selected day and input mode.
     const renderPanel = () => {
@@ -376,11 +372,43 @@ const Calendar = () => {
         );
     };
 
+    const handleChangeMonth = (event) => {
+        const selectedMonth = parseInt(event.target.value);
+        console.log('Selected month:', selectedMonth);
+        setCurrentMonth(selectedMonth);
+    };
+
+    const renderMonthSelector = () => {
+        return (
+            <div className='month-selector-panel'>
+                <select className='select-input' name='months' id='months' onChange={handleChangeMonth} value={currentMonth}>
+                    <option value="0">January</option>
+                    <option value="1">February</option>
+                    <option value="2">March</option>
+                    <option value="3">April</option>
+                    <option value="4">May</option>
+                    <option value="5">June</option>
+                    <option value="6">July</option>
+                    <option value="7">August</option>
+                    <option value="8">September</option>
+                    <option value="9">October</option>
+                    <option value="10">November</option>
+                    <option value="11">December</option>
+                </select>
+            </div>
+        );
+    };
+
 
     return (
-        <div id="calendar-container">
-            {renderPanel()}
-            <svg ref={svgRef}></svg>
+        <div>
+            <div className='month-selector-panel'>
+                {renderMonthSelector()}
+            </div>
+            <div id="calendar-container">
+                {renderPanel()}
+                <svg ref={svgRef}></svg>
+            </div>
         </div>
     );
 };
