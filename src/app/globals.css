@@ -27,12 +27,7 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background-color: rgb(29, 28, 33);
 }
 @layer base {
   body {
@@ -147,6 +142,11 @@ body {
     border: 2px solid yellow;
 }
 
+.btn-nav {
+  position: relative;
+  color: white;
+}
+
 /* Style For Balance Box */
 .balance-box {
   background-color: #007aff; 
@@ -238,7 +238,10 @@ body, button, input, .btn, .balance-box, .balance-label, .balance-amount, .text-
     fill: white;
 }
 
-
 .bg-gray-100::placeholder {
   color: #4A4A48;
+}
+
+.bg-custom-gray {
+  background-color: rgb(28, 29, 33);
 }
