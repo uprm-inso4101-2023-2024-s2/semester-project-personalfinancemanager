@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faEye, faKey, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { authContext } from './auth-context';
+import { authContext } from '../Page-Functionality/Login/auth-context';
 
 function LoginPage({ currentPage, setCurrentPage }) {
     const [email, setEmail] = useState('');

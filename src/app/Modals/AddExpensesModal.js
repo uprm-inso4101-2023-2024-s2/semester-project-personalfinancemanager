@@ -1,17 +1,7 @@
-/**
- * This component represents a modal for adding expenses.
- * It allows users to input expense amounts, select expense categories,
- * create new categories, and add expenses with selected categories and dates.
- * 
- * @param {object} props - The props object containing show and onClose properties.
- * @param {boolean} props.show - Indicates whether the modal is shown or not.
- * @param {function} props.onClose - Callback function to close the modal.
- * @returns {JSX.Element} - Returns JSX for the AddExpensesModal component.
- */
-import Modal from "@/app/modal";
+import Modal from "@/app/Modals/modal";
 import { useState, useContext, useRef } from "react";
-import { financeContext } from './finance-context';
-import AddCategoryItem from "./addcategoryItem";
+import { financeContext } from '../Finance-Context/finance-context';
+import AddCategoryItem from "../Page-Functionality/addcategoryItem";
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
 
