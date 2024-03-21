@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable react/jsx-key */
 'use client'
 import React, { useState, useContext, useEffect } from 'react';
 import RenderBarChart from "./Charts/barChart";
@@ -12,6 +14,7 @@ import AddExpensesModal from './Modals/AddExpensesModal';
 import AddIncomesModal from './Modals/AddIncomesModal';
 import { financeContext } from './Finance-Context/finance-context';
 import Calendar from './Page-Functionality/Calendar';
+import TableAnalisisModal from './Modals/tableAnalysisModal';
 
 import { Chart as ChartJS, Tooltip, LinearScale, CategoryScale, BarElement, Legend} from "chart.js";
 
@@ -29,9 +32,9 @@ export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showAddIncomeModal, setShowAddIncomeModal] = useState(false);
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
+  const [showTableAnalisis, setShowTableAnalisis] = useState(false);
   const [balance, setBalance] = useState(0);
   const { expenses, income } = useContext(financeContext);
-
 
 
   useEffect((newBalance) => {
@@ -97,18 +100,23 @@ export default function Home() {
     return (
       <>
         <main className="container max-w-2x1 px-6 mx-auto">
-          {/* Add Income Modal */}
-          <AddIncomesModal
-            show={showAddIncomeModal}
-            onClose={setShowAddIncomeModal}
-          />
+         {/* Add Income Modal */}
+      <AddIncomesModal 
+        show={showAddIncomeModal} 
+        onClose={setShowAddIncomeModal}
+      />
+      
+      {/* Add Expenses Modal */}
+      <AddExpensesModal 
+        show={showAddExpenseModal} 
+        onClose={setShowAddExpenseModal} 
+      />
 
-
-          {/* Add Expenses Modal */}
-          <AddExpensesModal
-            show={showAddExpenseModal}
-            onClose={setShowAddExpenseModal}
-          />
+      {/* Table Analisis */}
+      <TableAnalisisModal 
+        show={showTableAnalisis} 
+        onClose={setShowTableAnalisis}
+      />
 
           <section className="container max-w-2x1 px-6 mx-auto">
             <section className="balance-box">
@@ -130,6 +138,13 @@ export default function Home() {
                 style={{ margin: 'auto' }}
               >
                 Expenses +
+              </button>
+              <button 
+                onClick={() => {setShowTableAnalisis(true);}}
+                className={`${buttonBaseClass} ${buttonWidthClass} bg-yellow-500 hover:bg-red-550`}
+                style={{ margin: 'auto' }}
+              >
+                Table
               </button>
             </div>
 
