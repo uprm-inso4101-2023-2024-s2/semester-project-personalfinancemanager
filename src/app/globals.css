@@ -107,6 +107,7 @@ body {
     flex-direction: column;
     align-items: center;
     margin-top: 20px;
+    color : black;
 }
 
 .panel {
@@ -237,7 +238,10 @@ body, button, input, .btn, .balance-box, .balance-label, .balance-amount, .text-
     fill: white;
 }
 
+.bg-gray-100::placeholder {
+  color: #4A4A48;
+}
+
 .bg-custom-gray {
   background-color: rgb(28, 29, 33);
 }
-

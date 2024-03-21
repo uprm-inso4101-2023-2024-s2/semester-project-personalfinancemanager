@@ -20,6 +20,11 @@ import {
 export const financeContext = createContext({
   income: [],
   expenses: [],
+  monthlyBudget: [],
+  addMonthlyBudget: async () => {},
+  updateMonthlyBudget: async () => {},
+  deleteBudget: async () => {},
+  checkBudgetDuplication: async () => {},
   addIncomeItem: async () => {},
   removeIncomeItem: async () => {},
   addExpenseItem: async () => {},
@@ -31,8 +36,94 @@ export const financeContext = createContext({
 export default function FinanceContextProvider({ children }) {
   const [income, setIncome] = useState([]);
   const [expenses, setExpenses] = useState([]);
+  const [monthlyBudget, setBudget] = useState([]);
 
   const { user } = useContext(authContext);
+
+  /** Adds a new monthly budget document to the database. It is saved with the document Id and the User Id.
+   * 
+   * @param {integer} newBudget - The budget to be added to the database.
+   */
+  const addMonthlyBudget = async (newBudget) => {
+    try {
+      const collectionRef = collection(db, "monthly_budget");
+      const docSnap = await addDoc(collectionRef, {
+        uid : user.uid,
+        budget : newBudget
+      });
+
+      setBudget((newBudget) => {
+        return {
+          id: docSnap.id,
+          uid : user.uid,
+          budget : newBudget,
+        }
+      })
+
+      await checkBudgetDuplication();
+    } catch (err) {
+      throw err; 
+    }
+  }
+
+  /** Updates the monthly budget using the budget to update it to.
+   * This looks for the document with the user id.
+   * 
+   * @param {integer} newBudget - The new budget to update to the database.
+   */
+  const updateMonthlyBudget = async (newBudget) => {
+    try {
+      const colRef = collection(db, "monthly_budget");
+      const q = query(colRef, where("uid", "==", user.uid));
+      const docSnap = await getDocs(q);
+      if (docSnap.size === 0) {
+        await addMonthlyBudget(newBudget);
+      } else {
+        const budgetId = docSnap.docs[0].id;
+        const docRef = doc(db, "monthly_budget", budgetId);
+        await updateDoc(docRef, { budget: newBudget });
+        setBudget((prevBudget) => ({
+          ...prevBudget,
+          budget : newBudget
+        }));
+        await checkBudgetDuplication();
+      } 
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  /** Deletes the monthly budget doc from the database.
+   * 
+   * @param {string} docID - The ID of the document you want to delete in string format. 
+   */
+  const deleteBudget = async (docID) => {
+    try {
+      const docRef = doc(db, "monthly_budget", docID);
+      await deleteDoc(docRef);
+
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  /**
+   * Checks if the documents are duplicated, and keeps deleting documents until there is only one.
+   */
+  const checkBudgetDuplication = async () => {
+    try {
+      const collectionRef = collection(db, "monthly_budget");
+      const q = query(collectionRef, where("uid", "==", user.uid));
+      const docSnap = await getDocs(q);
+      if (docSnap.size > 1) {
+        const docsToDelete = docSnap.docs.slice(1); 
+        const deletePromises = docsToDelete.map((doc) => deleteBudget(doc.id));
+        await Promise.all(deletePromises);
+      }
+    } catch (err) {
+      throw err;
+    }
+  };
 
   const addCategory = async (category) => {
     try {
@@ -158,6 +249,11 @@ export default function FinanceContextProvider({ children }) {
   const values = {
     income,
     expenses,
+    monthlyBudget,
+    addMonthlyBudget,
+    updateMonthlyBudget,
+    deleteBudget,
+    checkBudgetDuplication,
     addIncomeItem,
     removeIncomeItem,
     addExpenseItem,
@@ -186,6 +282,20 @@ export default function FinanceContextProvider({ children }) {
       setIncome(data);
     };
 
+    const getBudgetData = async () => {
+      const colRef = collection(db, "monthly_budget");
+      const q = query(colRef, where("uid", "==", user.uid));
+      const docSnap = await getDocs(q);
+      const data = docSnap.docs.map((doc) => {
+        return {
+         id : doc.id,
+         user : user.uid,
+         ...doc.data(), 
+        }
+      });
+      setBudget(data);
+    }
+
     const getExpensesData = async () => {
       const collectionRef = collection(db, "expenses");
       const q = query(collectionRef, where("uid", "==", user.uid));
@@ -195,6 +305,10 @@ export default function FinanceContextProvider({ children }) {
         return {
           id: doc.id,
           ...doc.data(),
+          items: doc.data().items.map((item) => ({
+            ...item,
+            createdAt: new Date(item.createdAt.toMillis()), 
+        }))
         };
       });
 
@@ -203,6 +317,7 @@ export default function FinanceContextProvider({ children }) {
 
     getIncomeData();
     getExpensesData();
+    getBudgetData();
   }, [user]);
 
   return (
