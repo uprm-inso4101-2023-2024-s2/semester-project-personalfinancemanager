@@ -26,7 +26,7 @@ function Nav() {
   };
 
   return (
-    <header className="container max-w-full px-20 mx-auto bg-blue-500 py-4">
+  <header className="container max-w-full px-20 mx-auto bg-custom-gray py-4">
       <div className="flex items-center justify-between">
         {/* Left side of the navigation */}
         {user && !loading && (

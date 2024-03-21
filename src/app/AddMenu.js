@@ -46,10 +46,10 @@ function AddMenu() {
       <FontAwesomeIcon icon={faBars} size="2x" className="text-white"/>
     </button>
       {isOpen && (
-        <div className="overlay fixed inset-0 flex items-start justify-start bg-gray-700 bg-opacity-50">{/*White overlay*/}
-          <div className="menu-items bg-white p-4 rounded-l-xl shadow-md flex flex-col justify-start h-full w-1/4">
-          <div className="blue-stripe absolute top-0 left-0 h-20 bg-blue-500 w-1/4 m-0 flex items-center justify-center">
-              {/* Blue stripe */}
+        <div className="overlay fixed inset-0 flex items-start justify-start bg-black bg-opacity-50">{/*Black overlay*/}
+        <div className="menu-items bg-black p-4 rounded-l-xl shadow-md flex flex-col justify-start h-full w-1/4">
+          <div className="blue-stripe absolute top-0 left-0 h-20 bg-black w-1/4 m-0 flex items-center justify-center">
+            {/* Black stripe */}
               {user && !loading && (
                 <div className="flex items-center gap-2">
                   {/* User image */}
@@ -69,12 +69,11 @@ function AddMenu() {
               <FontAwesomeIcon icon={faTimes} size="xl"  className="text-red-600"/>
             </button>
             <div className="mt-20"> {/* Adjust margin top here */}
-              <button onClick={() => handleClick('expenses')} className="block w-full text-left mb-2 text-black z-10">Home</button>
-              <button onClick={() => handleClick('income')} className="block w-full text-left mb-2 text-black z-10">Calendar</button>
-              <button onClick={() => handleClick('budget')} className="block w-full text-left mb-2 text-black z-10">Graphs</button>
-              <button onClick={() => handleClick('calendar')} className="block w-full text-left mb-4 text-black z-10">Settings</button>
-
-            </div>
+            <button onClick={() => handleClick('expenses')} className="block w-full text-left mb-4 text-white z-10 rounded-md">Home</button>
+          <button onClick={() => handleClick('income')} className="block w-full text-left mb-4 text-white z-10 rounded-md">Calendar</button>
+          <button onClick={() => handleClick('budget')} className="block w-full text-left mb-4 text-white z-10 rounded-md">Graphs</button>
+          <button onClick={() => handleClick('calendar')} className="block w-full text-left mb-4 text-white z-10 rounded-md">Settings</button>
+                    </div>
           </div>
         </div>
       )}

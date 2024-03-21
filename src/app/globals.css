@@ -27,7 +27,7 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background-color: white;
+  background-color: rgb(29, 28, 33);
 }
 @layer base {
   body {
@@ -236,3 +236,8 @@ body, button, input, .btn, .balance-box, .balance-label, .balance-amount, .text-
 .day-label-top {
     fill: white;
 }
+
+.bg-custom-gray {
+  background-color: rgb(28, 29, 33);
+}
+
