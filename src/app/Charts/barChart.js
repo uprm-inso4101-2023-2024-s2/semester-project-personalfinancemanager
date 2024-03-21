@@ -1,6 +1,6 @@
 'use client'
-import { financeContext } from './finance-context';
-import React, {useState, useRef, useEffect, useContext} from 'react';
+import { financeContext } from '../Finance-Context/finance-context';
+import React, {useState, useRef, useEffect} from 'react';
 import * as d3 from 'd3';
 
 const RenderBarChart = ({expensesData}) => {

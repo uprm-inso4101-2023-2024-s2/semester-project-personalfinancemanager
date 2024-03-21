@@ -1,9 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useContext } from 'react';
+import { toast } from 'react-toastify';
+import monthlyExpensefilter , { monthlyIncomeFilter } from './Filters/moneyFilters';
+import { financeContext } from '../Finance-Context/finance-context';
 import * as d3 from 'd3';
 import './Calendar.css';
 
 const Calendar = () => {
     const svgRef = useRef(null);
+    const {expenses, income, monthlyBudget, addMonthlyBudget, updateMonthlyBudget} = useContext(financeContext);
     const [currentTime, setCurrentTime] = useState(new Date());
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
     /* 
@@ -27,6 +31,50 @@ const Calendar = () => {
     const [showMonthSelectorPanel, setShowMonthSelectorPanel] = useState(false);
     const [shouldRenderCalendar, setShouldRenderCalendar] = useState(true);
 
+    debugger;
+    //Variables to calculate total income, total expenses, and the percentage of the total expenses compared to the monthly budget.
+    const monthlyincome = monthlyIncomeFilter(income, currentTime.getMonth() + 1, currentTime.getFullYear());
+    const monthlyexpenses = monthlyExpensefilter(expenses, currentTime.getMonth() + 1, currentTime.getFullYear());
+    const totalExpenses = monthlyexpenses.reduce((total, category) => {
+        const categoryTotal = category.items.reduce((itemTotal, item) => {
+            return itemTotal + item.amount;
+        }, 0);
+        return total + categoryTotal;
+    }, 0);
+    const totalIncome = monthlyincome.reduce((total, item) => total + item.amount, 0);
+    const monthlyBudgetAmount = monthlyBudget.length > 0 ? monthlyBudget[0].budget : 1;
+    let progress = (totalExpenses / monthlyBudgetAmount) * 100;
+    progress > 100 ? progress = 100 : progress = progress;
+
+    function renderProgressBar(percentage){
+    return (
+        <div className="progressBar">
+            <div className="progress"style={{ width: `${percentage}%` }}> </div>
+        </div>
+    );
+    }
+
+    /** Handles the budget button. Adds a budget to the database if the user does not already have one. 
+     * If the user has a budget, then it is updated.
+     * 
+     */
+    const handleAddOrUpdateBudget = () => {
+        const input = window.prompt("Enter the monthly budget:");
+        if (input !== null) {
+            const budget = parseFloat(input);
+            if (!isNaN(budget)) {
+                if (monthlyBudget.length < 1) {
+                    addMonthlyBudget(budget); 
+                    toast.success("Budget added successfully.");
+                } else {
+                    updateMonthlyBudget(budget); 
+                    toast.success("Budget updated successfully.");
+                }
+            } else {
+                toast.error("Please enter a valid number for the monthly budget.");
+            }
+        }
+    };
 
     useEffect(() => {
         const timerID = setInterval(() => tick(), 1000); // Update every second
@@ -402,11 +450,15 @@ const Calendar = () => {
 
     return (
         <div>
+            <div><button onClick={handleAddOrUpdateBudget} className='budget-button'>Add/Update Monthly Budget</button></div>
             <div className='month-selector-panel'>
                 {renderMonthSelector()}
             </div>
             <div id="calendar-container">
-                {renderPanel()}
+                {renderProgressBar(progress)}
+                <div className='panel'>
+                    {renderPanel()}
+                </div>
                 <svg ref={svgRef}></svg>
             </div>
         </div>
