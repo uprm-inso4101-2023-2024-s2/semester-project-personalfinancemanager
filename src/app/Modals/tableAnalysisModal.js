@@ -15,48 +15,98 @@ function TableAnalisisModal({ show, onClose }) {
   const [medianIncome] = useState(0); // state for median income
   const [modeIncome] = useState(0); // state for mode income
 
-  // Filters
-  const monthlyExpensefilter = (data, month) => {
+  // Expenses Filters
+  const monthlyExpensesfilter = (data, month) => {
     return data.flatMap((item) => {
-      return item.items
-        .filter((item) => {
-          const itemDate = new Date(item.createdAt.seconds * 1000);
-          return itemDate.getMonth() === month;
-        })
-        .map((item) => item.amount);
+      if (item && item.items) {
+        return item.items
+          .filter((item) => {
+            const itemDate = new Date(item.createdAt.seconds * 1000);
+            return itemDate.getMonth() === month;
+          })
+          .map((item) => item.amount);
+      } else {
+        return [];
+      }
     });
   };
-
-  const dailyExpensefilter = (data) => {
+  
+  const dailyExpensesfilter = (data) => {
     const currentDate = new Date();
     const currentDay = currentDate.getDate();
     const currentMonth = currentDate.getMonth();
-
+  
     return data.flatMap((item) => {
-      return item.items
-        .filter((item) => {
-          const itemDate = new Date(item.createdAt.seconds * 1000);
-          return (
-            itemDate.getMonth() === currentMonth &&
-            itemDate.getDate() === currentDay
-          );
-        })
-        .map((item) => item.amount);
+      if (item && item.items) {
+        return item.items
+          .filter((item) => {
+            const itemDate = new Date(item.createdAt.seconds * 1000);
+            return (
+              itemDate.getMonth() === currentMonth &&
+              itemDate.getDate() === currentDay
+            );
+          })
+          .map((item) => item.amount);
+      } else {
+        return [];
+      }
+    });
+  };
+  
+  const weeklyExpensesfilter = (data) => {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  
+    return data.flatMap((item) => {
+      if (item && item.items) {
+        return item.items
+          .filter((item) => {
+            const itemDate = new Date(item.createdAt.seconds * 1000);
+            return itemDate >= oneWeekAgo;
+          })
+          .map((item) => item.amount);
+      } else {
+        return [];
+      }
     });
   };
 
-  const weeklyExpensefilter = (data) => {
+  // Income Filters
+  const monthlyIncomefilter = (data, month) => {
+    return data
+      .filter((item) => {
+        const itemDate = new Date(item.createdAt);
+        return itemDate.getMonth() === month;
+      })
+      .map((item) => item.amount);
+  };
+
+  const dailyIncomefilter = (data) => {
+    const currentDate = new Date();
+    const currentDay = currentDate.getDate();
+    const currentMonth = currentDate.getMonth();
+  
+    return data
+      .filter((item) => {
+        const itemDate = new Date(item.createdAt);
+        return (
+          itemDate.getMonth() === currentMonth &&
+          itemDate.getDate() === currentDay
+        );
+      })
+      .map((item) => item.amount);
+  };
+
+  const weeklyIncomefilter = (data) => {
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-
-    return data.flatMap((item) => {
-      return item.items
-        .filter((item) => {
-          const itemDate = new Date(item.createdAt.seconds * 1000);
-          return itemDate >= oneWeekAgo;
-        })
-        .map((item) => item.amount);
-    });
+  
+    return data
+      .filter((item) => {
+        const itemDate = new Date(item.createdAt);
+        return itemDate >= oneWeekAgo;
+      })
+      .map((item) => item.amount);
   };
 
   // Data calculations
@@ -98,9 +148,9 @@ function TableAnalisisModal({ show, onClose }) {
   };
 
   // Expenses
-  const dailyExpenses = dailyExpensefilter(expenses);
-  const weeklyExpenses = weeklyExpensefilter(expenses);
-  const monthlyExpenses = monthlyExpensefilter(expenses, currentMonth);
+  const dailyExpenses = dailyExpensesfilter(expenses);
+  const weeklyExpenses = weeklyExpensesfilter(expenses);
+  const monthlyExpenses = monthlyExpensesfilter(expenses, currentMonth);
 
   const [
     meanDailyExpenses,
@@ -121,6 +171,27 @@ function TableAnalisisModal({ show, onClose }) {
   ] = calculateStatistics(monthlyExpenses);
 
   // Income
+  const dailyIncomes = dailyIncomefilter(income);
+  const weeklyIncomes = weeklyIncomefilter(income);
+  const monthlyIncomes = monthlyIncomefilter(income, currentMonth);
+
+  const [
+    meanDailyIncomes,
+    medianDailyIncomes,
+    modeDailyIncomes,
+  ] = calculateStatistics(dailyIncomes);
+
+  const [
+    meanWeeklyIncomes,
+    medianWeeklyIncomes,
+    modeWeeklyIncomes,
+  ] = calculateStatistics(weeklyIncomes);
+
+  const [
+    meanMonthlyIncomes,
+    medianMonthlyIncomes,
+    modeMonthlyIncomes,
+  ] = calculateStatistics(monthlyIncomes);
 
   const expensesData = {
     mean: meanExpenses,
@@ -185,25 +256,25 @@ function TableAnalisisModal({ show, onClose }) {
               <td>
                 <strong>Daily</strong>
               </td>
-              <td>{isIncome ? incomesData.mean : meanDailyExpenses}</td>
-              <td>{isIncome ? incomesData.median : medianDailyExpenses}</td>
-              <td>{isIncome ? incomesData.mode : modeDailyExpenses}</td>
+              <td>{isIncome ? meanDailyIncomes : meanDailyExpenses}</td>
+              <td>{isIncome ? medianDailyIncomes : medianDailyExpenses}</td>
+              <td>{isIncome ? modeDailyIncomes : modeDailyExpenses}</td>
             </tr>
             <tr>
               <td>
                 <strong>Weekly</strong>
               </td>
-              <td>{isIncome ? incomesData.mean : meanWeeklyExpenses}</td>
-              <td>{isIncome ? incomesData.median : medianWeeklyExpenses}</td>
-              <td>{isIncome ? incomesData.mode : modeWeeklyExpenses}</td>
+              <td>{isIncome ? meanWeeklyIncomes : meanWeeklyExpenses}</td>
+              <td>{isIncome ? medianWeeklyIncomes : medianWeeklyExpenses}</td>
+              <td>{isIncome ? modeWeeklyIncomes : modeWeeklyExpenses}</td>
             </tr>
             <tr>
               <td>
                 <strong>Mothly</strong>
               </td>
-              <td>{isIncome ? incomesData.mean : meanMonthlyExpenses}</td>
-              <td>{isIncome ? incomesData.median : medianMonthlyExpenses}</td>
-              <td>{isIncome ? incomesData.mode : modeMonthlyExpenses}</td>
+              <td>{isIncome ? meanMonthlyIncomes : meanMonthlyExpenses}</td>
+              <td>{isIncome ? medianMonthlyIncomes : medianMonthlyExpenses}</td>
+              <td>{isIncome ? modeMonthlyIncomes : modeMonthlyExpenses}</td>
             </tr>
           </tbody>
         </tbody>
