@@ -8,7 +8,6 @@ import './Calendar.css';
 const Calendar = () => {
     const svgRef = useRef(null);
     const {expenses, income, monthlyBudget, addMonthlyBudget, updateMonthlyBudget} = useContext(financeContext);
-    const [isBudgetAdded, setIsBudgetAdded] = useState(false);
     const [currentTime, setCurrentTime] = useState(new Date());
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
     /* 
@@ -45,7 +44,7 @@ const Calendar = () => {
     const totalIncome = monthlyincome.reduce((total, item) => total + item.amount, 0);
     const monthlyBudgetAmount = monthlyBudget.length > 0 ? monthlyBudget[0].budget : 1;
     let progress = (totalExpenses / monthlyBudgetAmount) * 100;
-    progress <= 100 ? progress = 0 : progress = progress;
+    progress > 100 ? progress = 0 : progress = progress;
 
     function renderProgressBar(percentage){
     return (
@@ -64,13 +63,11 @@ const Calendar = () => {
         if (input !== null) {
             const budget = parseFloat(input);
             if (!isNaN(budget)) {
-                if (!isBudgetAdded || !monthlyBudget.id) {
+                if (monthlyBudget.length < 1) {
                     addMonthlyBudget(budget); 
-                    setIsBudgetAdded(true);
                     toast.success("Budget added successfully.");
                 } else {
                     updateMonthlyBudget(budget); 
-                    setIsBudgetAdded(true);
                     toast.success("Budget updated successfully.");
                 }
             } else {
