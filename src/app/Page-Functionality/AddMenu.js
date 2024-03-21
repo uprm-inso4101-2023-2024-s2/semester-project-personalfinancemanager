@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useContext } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { authContext } from "./auth-context";
+import { authContext } from "./Login/auth-context";
 
 
 function AddMenu() {
@@ -69,10 +69,10 @@ function AddMenu() {
               <FontAwesomeIcon icon={faTimes} size="xl"  className="text-red-600"/>
             </button>
             <div className="mt-20"> {/* Adjust margin top here */}
-            <button onClick={() => handleClick('expenses')} className="block w-full text-left mb-4 text-white z-10 rounded-md">Home</button>
-          <button onClick={() => handleClick('income')} className="block w-full text-left mb-4 text-white z-10 rounded-md">Calendar</button>
-          <button onClick={() => handleClick('budget')} className="block w-full text-left mb-4 text-white z-10 rounded-md">Graphs</button>
-          <button onClick={() => handleClick('calendar')} className="block w-full text-left mb-4 text-white z-10 rounded-md">Settings</button>
+            <button onClick={() => handleClick('expenses')} className="block w-full text-left mb-4 ml-4 text-white z-10 rounded-md">Home</button>
+          <button onClick={() => handleClick('income')} className="block w-full text-left mb-4 ml-4 text-white z-10 rounded-md">Calendar</button>
+          <button onClick={() => handleClick('budget')} className="block w-full text-left mb-4 ml-4 text-white z-10 rounded-md">Graphs</button>
+          <button onClick={() => handleClick('calendar')} className="block w-full text-left mb-4 ml-4 text-white z-10 rounded-md">Settings</button>
                     </div>
           </div>
         </div>
