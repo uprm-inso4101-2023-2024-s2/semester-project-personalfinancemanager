@@ -459,7 +459,7 @@ const Calendar = () => {
                 <div className='panel'>
                     {renderPanel()}
                 </div>
-                <svg ref={svgRef}></svg>
+                <svg id='calendarSvg' ref={svgRef}></svg>
             </div>
         </div>
     );
