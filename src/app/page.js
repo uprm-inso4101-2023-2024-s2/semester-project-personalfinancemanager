@@ -1,17 +1,17 @@
 'use client'
 import React, { useState, useContext, useEffect } from 'react';
-import RenderBarChart from "./barChart";
-import RenderPieChart from "./ExpenseChart"; 
-import RenderDBC from "./divergingBarChart";
-import RenderLineChart from './lineChart';
-import LoginPage from './LoginPage';
-import { authContext } from './auth-context';
-import { currencyFormatter } from './utils';
-import ExpenseCategoryItem from './ExpenseCategoryItem';
-import AddExpensesModal from './AddExpensesModal';
-import AddIncomesModal from './AddIncomesModal';
-import { financeContext } from './finance-context';
-import Calendar from './Calendar'; // Import Calendar component
+import RenderBarChart from "./Charts/barChart";
+import RenderPieChart from "./Charts/ExpenseChart"; 
+import RenderDBC from "./Charts/divergingBarChart";
+import RenderLineChart from './Charts/lineChart';
+import LoginPage from './Pages/LoginPage';
+import { authContext } from './Page-Functionality/Login/auth-context';
+import { currencyFormatter } from './Finance-Context/utils';
+import ExpenseCategoryItem from './Page-Functionality/ExpenseCategoryItem';
+import AddExpensesModal from './Modals/AddExpensesModal';
+import AddIncomesModal from './Modals/AddIncomesModal';
+import { financeContext } from './Finance-Context/finance-context';
+import Calendar from './Page-Functionality/Calendar';
 
 import { Chart as ChartJS, Tooltip, LinearScale, CategoryScale, BarElement, Legend} from "chart.js";
 

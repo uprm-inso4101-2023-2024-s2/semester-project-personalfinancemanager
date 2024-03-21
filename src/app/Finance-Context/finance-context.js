@@ -2,10 +2,10 @@
 
 import { createContext, useState, useEffect, useContext } from "react";
 
-import { authContext } from "./auth-context";
+import { authContext } from "../Page-Functionality/Login/auth-context";
 
 // Firebase
-import { db } from "./index";
+import { db } from "../index";
 import {
   collection,
   addDoc,

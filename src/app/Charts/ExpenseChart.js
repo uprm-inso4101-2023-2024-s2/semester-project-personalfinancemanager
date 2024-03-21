@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import './globals.css';
+import '../globals.css';
 
 const RenderPieChart = ({ expensesData }) => {
   const svgRef = useRef();

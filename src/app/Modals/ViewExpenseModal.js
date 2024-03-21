@@ -1,8 +1,8 @@
-import Modal from "@/app/modal";
+import Modal from "@/app/Modals/modal";
 import { useContext } from 'react';
-import { currencyFormatter } from "./utils";
+import { currencyFormatter } from "../Finance-Context/utils";
 import { FaRegTrashAlt } from 'react-icons/fa'
-import { financeContext } from "./finance-context";
+import { financeContext } from "../Finance-Context/finance-context";
 import { toast } from 'react-toastify';
 
 function ViewExpenseModal({ show, onClose, expense }) {
