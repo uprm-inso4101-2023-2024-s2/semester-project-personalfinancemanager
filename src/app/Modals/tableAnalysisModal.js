@@ -7,13 +7,13 @@ function TableAnalisisModal({ show, onClose }) {
   const [isIncome, setIsIncome] = useState(true);
   const currentMonth = new Date().getMonth();
 
-  const [meanExpenses, setMeanExpenses] = useState(0); // state for mean expenses
-  const [medianExpenses, setMedianExpenses] = useState(0); // state for median expenses
-  const [modeExpenses, setModeExpenses] = useState(0); // state for mode expenses
+  const [meanExpenses] = useState(0); // state for mean expenses
+  const [medianExpenses] = useState(0); // state for median expenses
+  const [modeExpenses] = useState(0); // state for mode expenses
 
-  const [meanIncome, setMeanIncome] = useState(0); // state for mean income
-  const [medianIncome, setMedianIncome] = useState(0); // state for median income
-  const [modeIncome, setModeIncome] = useState(0); // state for mode income
+  const [meanIncome] = useState(0); // state for mean income
+  const [medianIncome] = useState(0); // state for median income
+  const [modeIncome] = useState(0); // state for mode income
 
   // Filters
   const monthlyExpensefilter = (data, month) => {
