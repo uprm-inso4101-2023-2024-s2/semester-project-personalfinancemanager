@@ -256,25 +256,25 @@ function TableAnalisisModal({ show, onClose }) {
               <td>
                 <strong>Daily</strong>
               </td>
-              <td>{isIncome ? meanDailyIncomes : meanDailyExpenses}</td>
-              <td>{isIncome ? medianDailyIncomes : medianDailyExpenses}</td>
-              <td>{isIncome ? modeDailyIncomes : modeDailyExpenses}</td>
+              <td>{isIncome ? meanDailyIncomes.toFixed(2) : meanDailyExpenses.toFixed(2)}</td>
+              <td>{isIncome ? medianDailyIncomes.toFixed(2) : medianDailyExpenses.toFixed(2)}</td>
+              <td>{isIncome ? modeDailyIncomes.toFixed(2) : modeDailyExpenses.toFixed(2)}</td>
             </tr>
             <tr>
               <td>
                 <strong>Weekly</strong>
               </td>
-              <td>{isIncome ? meanWeeklyIncomes : meanWeeklyExpenses}</td>
-              <td>{isIncome ? medianWeeklyIncomes : medianWeeklyExpenses}</td>
-              <td>{isIncome ? modeWeeklyIncomes : modeWeeklyExpenses}</td>
+              <td>{isIncome ? meanWeeklyIncomes.toFixed(2) : meanWeeklyExpenses.toFixed(2)}</td>
+              <td>{isIncome ? medianWeeklyIncomes.toFixed(2) : medianWeeklyExpenses.toFixed(2)}</td>
+              <td>{isIncome ? modeWeeklyIncomes.toFixed(2) : modeWeeklyExpenses.toFixed(2)}</td>
             </tr>
             <tr>
               <td>
                 <strong>Mothly</strong>
               </td>
-              <td>{isIncome ? meanMonthlyIncomes : meanMonthlyExpenses}</td>
-              <td>{isIncome ? medianMonthlyIncomes : medianMonthlyExpenses}</td>
-              <td>{isIncome ? modeMonthlyIncomes : modeMonthlyExpenses}</td>
+              <td>{isIncome ? meanMonthlyIncomes.toFixed(2) : meanMonthlyExpenses.toFixed(2)}</td>
+              <td>{isIncome ? medianMonthlyIncomes.toFixed(2) : medianMonthlyExpenses.toFixed(2)}</td>
+              <td>{isIncome ? modeMonthlyIncomes.toFixed(2) : modeMonthlyExpenses.toFixed(2)}</td>
             </tr>
           </tbody>
         </tbody>
