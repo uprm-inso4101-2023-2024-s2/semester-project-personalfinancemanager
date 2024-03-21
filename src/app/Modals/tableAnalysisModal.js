@@ -31,24 +31,31 @@ function TableAnalisisModal({ show, onClose }) {
     const currentDate = new Date();
     const currentDay = currentDate.getDate();
     const currentMonth = currentDate.getMonth();
-  
-    return data.flatMap(item => {
-      return item.items.filter(item => {
-        const itemDate = new Date(item.createdAt.seconds * 1000);
-        return itemDate.getMonth() === currentMonth && itemDate.getDate() === currentDay;
-      }).map(item => item.amount);
+
+    return data.flatMap((item) => {
+      return item.items
+        .filter((item) => {
+          const itemDate = new Date(item.createdAt.seconds * 1000);
+          return (
+            itemDate.getMonth() === currentMonth &&
+            itemDate.getDate() === currentDay
+          );
+        })
+        .map((item) => item.amount);
     });
   };
 
   const weeklyExpensefilter = (data) => {
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-  
-    return data.flatMap(item => {
-      return item.items.filter(item => {
-        const itemDate = new Date(item.createdAt.seconds * 1000);
-        return itemDate >= oneWeekAgo;
-      }).map(item => item.amount);
+
+    return data.flatMap((item) => {
+      return item.items
+        .filter((item) => {
+          const itemDate = new Date(item.createdAt.seconds * 1000);
+          return itemDate >= oneWeekAgo;
+        })
+        .map((item) => item.amount);
     });
   };
 
