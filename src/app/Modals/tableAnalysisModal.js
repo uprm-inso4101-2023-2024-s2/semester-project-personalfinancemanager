@@ -60,26 +60,22 @@ function TableAnalisisModal({ show, onClose }) {
   };
 
   // Data calculations
-  const calculateMean = (numbers) => {
-    if (numbers.length === 0) return 0;
-    const sum = numbers.reduce((a, b) => a + b, 0);
-    return sum / numbers.length;
-  };
+  const calculateStatistics = (numbers) => {
+    if (numbers.length === 0) return [0, 0, 0];
 
-  const calculateMedian = (numbers) => {
-    if (numbers.length === 0) return 0;
+    const sum = numbers.reduce((a, b) => a + b, 0);
     const sorted = [...numbers].sort((a, b) => a - b);
     const middle = Math.floor(sorted.length / 2);
 
-    if (sorted.length % 2 === 0) {
-      return (sorted[middle - 1] + sorted[middle]) / 2;
-    } else {
-      return sorted[middle];
-    }
-  };
+    const mean = sum / numbers.length;
 
-  const calculateMode = (numbers) => {
-    if (numbers.length === 0) return 0;
+    let median;
+    if (sorted.length % 2 === 0) {
+      median = (sorted[middle - 1] + sorted[middle]) / 2;
+    } else {
+      median = sorted[middle];
+    }
+
     const counts = numbers.reduce((acc, number) => {
       if (number in acc) {
         acc[number]++;
@@ -98,7 +94,7 @@ function TableAnalisisModal({ show, onClose }) {
       }
     }
 
-    return mode;
+    return [mean, median, mode];
   };
 
   // Expenses
@@ -106,17 +102,23 @@ function TableAnalisisModal({ show, onClose }) {
   const weeklyExpenses = weeklyExpensefilter(expenses);
   const monthlyExpenses = monthlyExpensefilter(expenses, currentMonth);
 
-  const meanDailyExpenses = calculateMean(dailyExpenses);
-  const medianDailyExpenses = calculateMedian(dailyExpenses);
-  const modeDailyExpenses = calculateMode(dailyExpenses);
+  const [
+    meanDailyExpenses,
+    medianDailyExpenses,
+    modeDailyExpenses,
+  ] = calculateStatistics(dailyExpenses);
 
-  const meanWeeklyExpenses = calculateMean(weeklyExpenses);
-  const medianWeeklyExpenses = calculateMedian(weeklyExpenses);
-  const modeWeeklyExpenses = calculateMode(weeklyExpenses);
+  const [
+    meanWeeklyExpenses,
+    medianWeeklyExpenses,
+    modeWeeklyExpenses,
+  ] = calculateStatistics(weeklyExpenses);
 
-  const meanMonthlyExpenses = calculateMean(monthlyExpenses);
-  const medianMonthlyExpenses = calculateMedian(monthlyExpenses);
-  const modeMonthlyExpenses = calculateMode(monthlyExpenses);
+  const [
+    meanMonthlyExpenses,
+    medianMonthlyExpenses,
+    modeMonthlyExpenses,
+  ] = calculateStatistics(monthlyExpenses);
 
   // Income
 
