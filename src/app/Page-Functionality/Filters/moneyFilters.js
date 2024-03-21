@@ -112,3 +112,86 @@ export function yearlyIncomeFilter(incomes, year) {
     const yearFilter = filterIncomebyYear(incomes, year);
     return yearFilter;
 }
+
+export function expensesFilterByMonth(data, month) {
+    // Filter expenses by month
+    const filteredExpenses = data.flatMap((data) =>
+      data.items.filter(
+        (item) => new Date(item.createdAt).getMonth() === month
+      )
+    );
+
+    // Map to amounts
+    const amounts = filteredExpenses.map((item) => item.amount);
+
+    return amounts;
+  }
+  
+  export function expensesFilterByDay(data) {
+    const currentDate = new Date();
+    const currentDay = currentDate.getDate();
+    const currentMonth = currentDate.getMonth();
+
+    return data.flatMap((item) => {
+      return item.items
+        .filter((item) => {
+          const itemDate = new Date(item.createdAt);
+          return (
+            itemDate.getMonth() === currentMonth &&
+            itemDate.getDate() === currentDay
+          );
+        })
+        .map((item) => item.amount);
+    });
+  }
+  
+  export function expensesFilterByWeek(data) {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    return data.flatMap((item) => {
+      return item.items
+        .filter((item) => {
+          const itemDate = new Date(item.createdAt);
+          return itemDate >= oneWeekAgo;
+        })
+        .map((item) => item.amount);
+    });
+  }
+  
+  export function incomesFilterByMonth(data, month) {
+    return data
+      .filter((item) => {
+        const itemDate = new Date(item.createdAt);
+        return itemDate.getMonth() === month;
+      })
+      .map((item) => item.amount);
+  }
+  
+  export function incomesFilterByDay(data) {
+    const currentDate = new Date();
+    const currentDay = currentDate.getDate();
+    const currentMonth = currentDate.getMonth();
+
+    return data
+      .filter((item) => {
+        const itemDate = new Date(item.createdAt);
+        return (
+          itemDate.getMonth() === currentMonth &&
+          itemDate.getDate() === currentDay
+        );
+      })
+      .map((item) => item.amount);
+  }
+  
+  export function incomesFilterByWeek(data) {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    return data
+      .filter((item) => {
+        const itemDate = new Date(item.createdAt);
+        return itemDate >= oneWeekAgo;
+      })
+      .map((item) => item.amount);
+  }

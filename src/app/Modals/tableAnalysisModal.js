@@ -2,6 +2,15 @@ import { financeContext } from "../Finance-Context/finance-context";
 import { useState, useContext } from "react";
 import Modal from "./modal";
 
+import {
+  expensesFilterByMonth,
+  expensesFilterByDay,
+  expensesFilterByWeek,
+  incomesFilterByMonth,
+  incomesFilterByDay,
+  incomesFilterByWeek,
+} from '../Page-Functionality/Filters/moneyFilters';
+
 function TableAnalisisModal({ show, onClose }) {
   const { expenses, income } = useContext(financeContext);
   const [isIncome, setIsIncome] = useState(true);
@@ -14,91 +23,6 @@ function TableAnalisisModal({ show, onClose }) {
   const [meanIncome] = useState(0); // state for mean income
   const [medianIncome] = useState(0); // state for median income
   const [modeIncome] = useState(0); // state for mode income
-
-  // Expenses Filters
-  function monthlyExpenseFilter(expenses, month) {
-    // Filter expenses by month
-    const filteredExpenses = expenses.flatMap((expense) =>
-      expense.items.filter(
-        (item) => new Date(item.createdAt).getMonth() === month
-      )
-    );
-
-    // Map to amounts
-    const amounts = filteredExpenses.map((item) => item.amount);
-
-    return amounts;
-  }
-
-  const dailyExpenseFilter = (data) => {
-    const currentDate = new Date();
-    const currentDay = currentDate.getDate();
-    const currentMonth = currentDate.getMonth();
-
-    return data.flatMap((item) => {
-      return item.items
-        .filter((item) => {
-          const itemDate = new Date(item.createdAt);
-          return (
-            itemDate.getMonth() === currentMonth &&
-            itemDate.getDate() === currentDay
-          );
-        })
-        .map((item) => item.amount);
-    });
-  };
-
-  const weeklyExpenseFilter = (data) => {
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-
-    return data.flatMap((item) => {
-      return item.items
-        .filter((item) => {
-          const itemDate = new Date(item.createdAt);
-          return itemDate >= oneWeekAgo;
-        })
-        .map((item) => item.amount);
-    });
-  };
-
-  // Income Filters
-  const monthlyIncomeFilter = (data, month) => {
-    return data
-      .filter((item) => {
-        const itemDate = new Date(item.createdAt);
-        return itemDate.getMonth() === month;
-      })
-      .map((item) => item.amount);
-  };
-
-  const dailyIncomeFilter = (data) => {
-    const currentDate = new Date();
-    const currentDay = currentDate.getDate();
-    const currentMonth = currentDate.getMonth();
-
-    return data
-      .filter((item) => {
-        const itemDate = new Date(item.createdAt);
-        return (
-          itemDate.getMonth() === currentMonth &&
-          itemDate.getDate() === currentDay
-        );
-      })
-      .map((item) => item.amount);
-  };
-
-  const weeklyIncomeFilter = (data) => {
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-
-    return data
-      .filter((item) => {
-        const itemDate = new Date(item.createdAt);
-        return itemDate >= oneWeekAgo;
-      })
-      .map((item) => item.amount);
-  };
 
   // Data calculations
   const calculateStatistics = (numbers) => {
@@ -139,12 +63,11 @@ function TableAnalisisModal({ show, onClose }) {
   };
 
   // Expenses
-  const dailyExpenses = dailyExpenseFilter(expenses);
-  const weeklyExpenses = weeklyExpenseFilter(expenses);
-  const monthlyExpenses = monthlyExpenseFilter(expenses, currentMonth);
+  const dailyExpenses = expensesFilterByDay(expenses);
+  const weeklyExpenses = expensesFilterByWeek(expenses);
+  const monthlyExpenses = expensesFilterByMonth(expenses, currentMonth);
 
-  // console.log(expenses);
-  // console.log(dailyExpenses, weeklyExpenses, monthlyExpenses);
+  console.log(dailyExpenses, weeklyExpenses, monthlyExpenses);
 
   const [meanDailyExpenses, medianDailyExpenses, modeDailyExpenses] =
     calculateStatistics(dailyExpenses);
@@ -156,9 +79,9 @@ function TableAnalisisModal({ show, onClose }) {
     calculateStatistics(monthlyExpenses);
 
   // Income
-  const dailyIncomes = dailyIncomeFilter(income);
-  const weeklyIncomes = weeklyIncomeFilter(income);
-  const monthlyIncomes = monthlyIncomeFilter(income, currentMonth);
+  const dailyIncomes = incomesFilterByDay(income);
+  const weeklyIncomes = incomesFilterByWeek(income);
+  const monthlyIncomes = incomesFilterByMonth(income, currentMonth);
 
   const [meanDailyIncomes, medianDailyIncomes, modeDailyIncomes] =
     calculateStatistics(dailyIncomes);
