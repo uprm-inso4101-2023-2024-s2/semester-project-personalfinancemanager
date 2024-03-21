@@ -1,5 +1,5 @@
 import Modal from "@/app/modal";
-import { useContext } from 'react';
+import { useState, useContext } from 'react';
 import { currencyFormatter } from "./utils";
 import { FaRegTrashAlt } from 'react-icons/fa'
 import { financeContext } from "./finance-context";
@@ -8,6 +8,8 @@ import { toast } from 'react-toastify';
 function ViewExpenseModal({ show, onClose, expense }) {
     const { deleteExpenseItem, deleteExpenseCategory } =
       useContext(financeContext);
+
+  const [selectedColor, setSelectedColor] = useState(expense.color);
   
     const deleteExpenseHandler = async () => {
       try {
@@ -37,7 +39,15 @@ function ViewExpenseModal({ show, onClose, expense }) {
         toast.error(error.message);
       }
     };
-  
+
+  const handleColorChange = (e) => {
+    setSelectedColor(e.target.value);
+  };
+
+  const handleUpdateColor = () => {
+    expense.color = selectedColor;
+};
+
   return (
     <Modal show={show} onClose={onClose}>
       <div className="flex items-center justify-between">
@@ -45,6 +55,18 @@ function ViewExpenseModal({ show, onClose, expense }) {
         <button onClick={deleteExpenseHandler} className="btn btn-danger">
           Delete
         </button>
+      </div>
+
+      {/* Change Color */}
+      <div className="mt-4 flex items-center">
+      <label className="mr-2">Pick Color</label>
+        <input
+          type="color" 
+          className="bg bg-slate-500 w-24 h-10"
+          value={selectedColor}
+          onChange={handleColorChange}        
+        />
+        <button onClick={handleUpdateColor} className="btn btn-primary ml-2">Update Color</button>
       </div>
   
       <div>
