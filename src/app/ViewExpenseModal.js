@@ -6,7 +6,7 @@ import { financeContext } from "./finance-context";
 import { toast } from 'react-toastify';
 
 function ViewExpenseModal({ show, onClose, expense }) {
-    const { deleteExpenseItem, deleteExpenseCategory } =
+    const { deleteExpenseItem, deleteExpenseCategory, updateExpense } =
       useContext(financeContext);
 
   const [selectedColor, setSelectedColor] = useState(expense.color);
@@ -44,8 +44,15 @@ function ViewExpenseModal({ show, onClose, expense }) {
     setSelectedColor(e.target.value);
   };
 
-  const handleUpdateColor = () => {
-    expense.color = selectedColor;
+  const handleUpdateColor = async () => {
+    try {
+        const updatedExpense = { ...expense, color: selectedColor };
+        await updateExpense(updatedExpense);
+        toast.success("Expense color updated successfully");
+    } catch (error) {
+        console.log(error.message);
+        toast.error(error.message);
+    }
 };
 
   return (
