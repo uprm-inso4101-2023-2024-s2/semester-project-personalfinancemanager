@@ -21,7 +21,7 @@ export default function monthlyExpensefilter(expenses, month, year) {
             }
             //filters items that don't match the month and year
             const filteredItems = items.filter(item => {
-                const expenseDate =  new Date(item.createdAt.toMillis());
+                const expenseDate =  new Date(item.createdAt);
                 return expenseDate.getMonth() + 1 === month && expenseDate.getFullYear() === year;
             })
             //returns filtered items (May return categories with 0 items!)

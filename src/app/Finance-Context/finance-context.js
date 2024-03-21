@@ -305,6 +305,10 @@ export default function FinanceContextProvider({ children }) {
         return {
           id: doc.id,
           ...doc.data(),
+          items: doc.data().items.map((item) => ({
+            ...item,
+            createdAt: new Date(item.createdAt.toMillis()), 
+        }))
         };
       });
 
