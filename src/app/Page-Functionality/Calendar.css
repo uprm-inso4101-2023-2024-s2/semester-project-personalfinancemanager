@@ -106,7 +106,7 @@
     border-radius: 10px;
 }
 
-svg {
+#calendarSvg {
     flex: 1;
     margin-top: 20px;
 }
