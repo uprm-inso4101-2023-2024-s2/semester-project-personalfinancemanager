@@ -52,11 +52,7 @@ function LoginPage({currentPage, setCurrentPage}) {
                                     <button onClick={() => setCurrentPage('forgotpassword')} className='flex items-center text-xs'>Forgot password?</button>
                                     
                                 </div>
-                                <a href='#'
-                                    className='border-2 border-green-500 text-green-500 rounded-full px-12 py-2 inline-block font-semibold hover:bg-green-500 hover:text-white'
-                                >
-                                    Sign In
-                                </a>
+                                <button onClick={() => setCurrentPage('home')} className='border-2 border-green-500 text-green-500 rounded-full px-12 py-2 inline-block font-semibold hover:bg-green-500 hover:text-white'>Sign In</button>
                             </div>
                         </div>
                     </div>
@@ -67,7 +63,7 @@ function LoginPage({currentPage, setCurrentPage}) {
                         <p className='mb-10'>
                             Fill up personal information and start journey with us.
                         </p>
-                        <button onClick={() => setCurrentPage('login')} className='border-2 border-white rounded-full px-12 py-2 inline-block font-semibold hover:bg-white hover:text-green-500'>
+                        <button onClick={() => setCurrentPage('signup')} className='border-2 border-white rounded-full px-12 py-2 inline-block font-semibold hover:bg-white hover:text-green-500'>
                             Sign Up
                         </button>
                         
