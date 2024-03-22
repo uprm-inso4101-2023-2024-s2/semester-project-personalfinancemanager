@@ -161,9 +161,13 @@ export default function Home() {
                 {/* Render added preferences */}
                 {preferences.map((preference, index) => (
                   <div key={index} className="preference-item bg-gray-200 p-4 rounded-md" style={{ flex: '0 0 calc(33.32% - 16px)' }}>
-                    <p> {preference.title}</p>
-                    <p> {preference.amount}</p>
-                  </div>
+                    <p>{preference.title}</p>
+                    <p>{preference.amount}</p>
+                    <div className="flex justify-between">
+                      <button className="btn btn-secondary">Edit</button>
+                      <button className="btn btn-danger">Delete</button>
+                    </div>
+                    </div>
                 ))}
               </div>
             </section>
