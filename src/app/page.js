@@ -15,6 +15,7 @@ import Calendar from './Page-Functionality/Calendar';
 import { Chart as ChartJS, Tooltip, LinearScale, CategoryScale, BarElement, Legend} from "chart.js";
 import LoginPage from './Pages/LoginPage';
 import SignUpPage from './Pages/SignUpPage';
+import ForgotPassword from './Page-Functionality/Login/ForgotPassword';
 
 ChartJS.register(
   CategoryScale,
@@ -97,9 +98,11 @@ export default function Home() {
   const renderCurrentPage = () => {
     switch(currentPage) {
       case 'login':
-        return <LoginPage currentPage={currentPage} setCurrentPage={setCurrentPage} user={user} />;
+        return <LoginPage currentPage={currentPage} setCurrentPage={setCurrentPage} />;
       case 'signup':
         return <SignUpPage currentPage={currentPage} setCurrentPage={setCurrentPage} />;
+      case 'forgotpassword':
+        return <ForgotPassword currentPage={currentPage} setCurrentPage={setCurrentPage} />;
       case 'home':
         return (
         // Main container code...
