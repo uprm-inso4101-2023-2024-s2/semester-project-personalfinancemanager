@@ -10,6 +10,7 @@ import { currencyFormatter } from './Finance-Context/utils';
 import ExpenseCategoryItem from './Page-Functionality/ExpenseCategoryItem';
 import AddExpensesModal from './Modals/AddExpensesModal';
 import AddIncomesModal from './Modals/AddIncomesModal';
+import AddPreferenceModal from './Modals/AddPreferenceModal';
 import { financeContext } from './Finance-Context/finance-context';
 import Calendar from './Page-Functionality/Calendar';
 
@@ -31,8 +32,13 @@ export default function Home() {
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
   const [balance, setBalance] = useState(0);
   const { expenses, income } = useContext(financeContext);
+  const [showAddPreferenceModal, setShowAddPreferenceModal] = useState(false);
+  const [preferences, setPreferences] = useState([]); 
 
-
+  const handleAddPreference = (newPreference) => {
+    setPreferences([...preferences, newPreference]);
+    setShowAddPreferenceModal(false); 
+};
 
   useEffect((newBalance) => {
     newBalance = income.reduce((total, i) => {
@@ -110,6 +116,13 @@ export default function Home() {
             onClose={setShowAddExpenseModal}
           />
 
+          {/* Add Preference Modal */}
+          <AddPreferenceModal
+            show={showAddPreferenceModal}
+            onClose={() => setShowAddPreferenceModal(false)}
+            onAddPreference={handleAddPreference}
+          />
+
           <section className="container max-w-2x1 px-6 mx-auto">
             <section className="balance-box">
               <h3 className="balance-label">My Balance</h3>
@@ -132,6 +145,28 @@ export default function Home() {
                 Expenses +
               </button>
             </div>
+            
+            {/** Preferences */}
+            <section className='py-6'>
+              <h3 className="text-2xl pl-6 flex items-center">Preferences
+                <button 
+                  className="ml-2 bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-full hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300"
+                  style={{paddingTop: '0.05rem', paddingBottom: '0.15rem'}}
+                  onClick={() => setShowAddPreferenceModal(true)}
+                >
+                  +
+                </button>
+              </h3>
+              <div className='grid grid-cols-3 gap-4 mt-6'>
+                {/* Render added preferences */}
+                {preferences.map((preference, index) => (
+                  <div key={index} className="preference-item bg-gray-200 p-4 rounded-md" style={{ flex: '0 0 calc(33.32% - 16px)' }}>
+                    <p> {preference.title}</p>
+                    <p> {preference.amount}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
 
             {/** Expenses */}
             <section className='py-6'>

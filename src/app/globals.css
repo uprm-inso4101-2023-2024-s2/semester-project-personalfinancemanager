@@ -236,3 +236,9 @@ body, button, input, .btn, .balance-box, .balance-label, .balance-amount, .text-
 .day-label-top {
     fill: white;
 }
+
+.preference-item {
+  background-color: #8d9aa8;
+  flex: 0 0 calc(33.33% - 8px);
+  margin-right: 8px;
+}
