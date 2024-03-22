@@ -177,7 +177,7 @@ export default function Home() {
             
             {/** Preferences */}
             <section className='py-6'>
-              <h3 className="text-2xl pl-6 flex items-center">Preferences
+              <h3 className="text-2xl pl-6 flex items-center" style={{ color: 'white' }}>Preferences
                 <button 
                   className="ml-2 bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-full hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300"
                   style={{paddingTop: '0.05rem', paddingBottom: '0.15rem'}}
@@ -189,14 +189,16 @@ export default function Home() {
               <div className='grid grid-cols-3 gap-4 mt-6'>
                 {/* Render added preferences */}
                 {preferences.map((preference, index) => (
-                  <div key={index} className="preference-item bg-gray-200 p-4 rounded-md" style={{ flex: '0 0 calc(33.32% - 16px)' }}>
-                    <p>{preference.title}</p>
-                    <p>{preference.amount}</p>
-                    <div className="flex justify-between">
-                      <button className="btn btn-secondary">Edit</button>
+                  <div key={index} className="preference-item bg-gray-200 p-4 rounded-md" style={{ flex: '0 0 calc(33.32% - 16px)', display: 'flex', justifyContent: 'space-between' }}>
+                    <div>
+                      <p>{preference.title}</p>
+                      <p>{preference.amount}</p>
+                    </div>
+                    <div>
+                    <button className="btn" style={{ backgroundColor: 'hsl(50, 100%, 40%)', marginRight: '10px' }}>Edit</button>
                       <button className="btn btn-danger">Delete</button>
                     </div>
-                    </div>
+                  </div>
                 ))}
               </div>
             </section>
