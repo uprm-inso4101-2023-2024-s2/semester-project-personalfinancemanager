@@ -40,11 +40,11 @@ export const financeContext = createContext({
     const docSnap = await getDocs(q);
     const categoryTitles = []; 
     docSnap.forEach(doc => {
-      const newTitle = doc.data().title.toLowerCase().trim();
+      const newTitle = doc.data().title.toLowerCase().split(' ').join('');
       categoryTitles.push(newTitle);
     });
 
-    return categoryTitles.includes(title.toLowerCase().trim());
+    return categoryTitles.includes(title.toLowerCase().split(' ').join(''));
   } catch (err) {
     throw err;
   }
