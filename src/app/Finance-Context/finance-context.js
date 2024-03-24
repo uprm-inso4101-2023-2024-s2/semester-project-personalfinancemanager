@@ -33,6 +33,23 @@ export const financeContext = createContext({
   deleteExpenseCategory: async () => {},
 });
 
+ export async function checkExpensesDuplication(user,title){
+  try {
+    const collectionRef = collection(db, "expenses");
+    const q = query(collectionRef, where("uid", "==", user.uid));
+    const docSnap = await getDocs(q);
+    const categoryTitles = []; 
+    docSnap.forEach(doc => {
+      const newTitle = doc.data().title;
+      categoryTitles.push(newTitle);
+    });
+
+    return categoryTitles.includes(title);
+  } catch (err) {
+    throw err;
+  }
+};
+
 export default function FinanceContextProvider({ children }) {
   const [income, setIncome] = useState([]);
   const [expenses, setExpenses] = useState([]);
