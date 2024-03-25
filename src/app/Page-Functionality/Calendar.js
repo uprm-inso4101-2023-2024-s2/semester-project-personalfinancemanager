@@ -1,13 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useContext } from 'react';
+import { toast } from 'react-toastify';
+import monthlyExpensefilter , { monthlyIncomeFilter } from './Filters/moneyFilters';
+import { financeContext } from '../Finance-Context/finance-context';
 import * as d3 from 'd3';
 import './Calendar.css';
-import { useContext } from 'react';
-import { financeContext } from './finance-context';
 
 const Calendar = () => {
     const svgRef = useRef(null);
+    const {expenses, income, monthlyBudget, addMonthlyBudget, updateMonthlyBudget} = useContext(financeContext);
     const [currentTime, setCurrentTime] = useState(new Date());
-    const { submitEventData } = useContext(financeContext);
+    const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
     /* 
     State variables used to manage the interactive behavior of the calendar component.
 
@@ -26,6 +28,53 @@ const Calendar = () => {
     const [expectedExpenses, setExpectedExpenses] = useState({});
     const [daysWithData, setDaysWithData] = useState([]);
     const [removedEvents, setRemovedEvents] = useState({});
+    const [showMonthSelectorPanel, setShowMonthSelectorPanel] = useState(false);
+    const [shouldRenderCalendar, setShouldRenderCalendar] = useState(true);
+
+    debugger;
+    //Variables to calculate total income, total expenses, and the percentage of the total expenses compared to the monthly budget.
+    const monthlyincome = monthlyIncomeFilter(income, currentTime.getMonth() + 1, currentTime.getFullYear());
+    const monthlyexpenses = monthlyExpensefilter(expenses, currentTime.getMonth() + 1, currentTime.getFullYear());
+    const totalExpenses = monthlyexpenses.reduce((total, category) => {
+        const categoryTotal = category.items.reduce((itemTotal, item) => {
+            return itemTotal + item.amount;
+        }, 0);
+        return total + categoryTotal;
+    }, 0);
+    const totalIncome = monthlyincome.reduce((total, item) => total + item.amount, 0);
+    const monthlyBudgetAmount = monthlyBudget.length > 0 ? monthlyBudget[0].budget : 1;
+    let progress = (totalExpenses / monthlyBudgetAmount) * 100;
+    progress > 100 ? progress = 100 : progress = progress;
+
+    function renderProgressBar(percentage){
+    return (
+        <div className="progressBar">
+            <div className="progress"style={{ width: `${percentage}%` }}> </div>
+        </div>
+    );
+    }
+
+    /** Handles the budget button. Adds a budget to the database if the user does not already have one. 
+     * If the user has a budget, then it is updated.
+     * 
+     */
+    const handleAddOrUpdateBudget = () => {
+        const input = window.prompt("Enter the monthly budget:");
+        if (input !== null) {
+            const budget = parseFloat(input);
+            if (!isNaN(budget)) {
+                if (monthlyBudget.length < 1) {
+                    addMonthlyBudget(budget); 
+                    toast.success("Budget added successfully.");
+                } else {
+                    updateMonthlyBudget(budget); 
+                    toast.success("Budget updated successfully.");
+                }
+            } else {
+                toast.error("Please enter a valid number for the monthly budget.");
+            }
+        }
+    };
 
     useEffect(() => {
         const timerID = setInterval(() => tick(), 1000); // Update every second
@@ -40,7 +89,7 @@ const Calendar = () => {
 
     useEffect(() => {
         renderCalendar();
-    }, [currentTime, submittedData]); // Re-render whenever currentTime or submittedData changes
+    }, [currentTime, submittedData, currentMonth]); // Re-render whenever currentTime or submittedData changes
 
     const renderCalendar = () => {
         const svg = d3.select(svgRef.current);
@@ -57,7 +106,6 @@ const Calendar = () => {
             .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
         const currentYear = currentTime.getFullYear();
-        const currentMonth = currentTime.getMonth();
 
         const daysInCurrentMonth = d3.timeDays(new Date(currentYear, currentMonth, 1), new Date(currentYear, currentMonth + 1, 1));
 
@@ -83,7 +131,7 @@ const Calendar = () => {
             .enter().append('rect')
             .attr('class', (d) => {
                 const hasData = daysWithData.some(date => date.toDateString() === d.toDateString());
-                const isToday = d.getDate() === currentTime.getDate();
+                const isToday = d.getDate() === currentTime.getDate() && d.getMonth() === currentTime.getMonth();
                 const hasEvents = submittedData[d] && submittedData[d].events && submittedData[d].events.length > 0;
 
                 // Check if the day has been removed
@@ -97,7 +145,7 @@ const Calendar = () => {
                 - "orange-fill": Added if today and events have been submitted.
                 - "removed": Added if events for the day have been removed.
                 */
-                return `day${hasData ? ' with-data' : ''}${hasEvents ? ' submitted' : ''}${isToday && hasEvents ? ' orange-fill' : ''}${hasRemovedEvents ? ' removed' : ''}`;
+                return `day${hasData ? ' with-data' : ''}${hasEvents ? ' submitted' : ''}${isToday && hasEvents  ? ' orange-fill' : ''}${hasRemovedEvents ? ' removed' : ''}`;
             })
             .attr('width', xScale.bandwidth())
             .attr('height', yScale.bandwidth())
@@ -105,18 +153,22 @@ const Calendar = () => {
             .attr('y', (d) => yScale(d3.timeWeek.count(d3.timeMonth(d), d)) + yScale.bandwidth())
             .attr('fill', (d) => {
                 const isToday = d.getDate() === currentTime.getDate();
-                const hasEvents = submittedData[d] && submittedData[d].events && submittedData[d].events.length > 0;
-            
+                const hasEvent = submittedData[d] && submittedData[d].event && submittedData[d].events.length > 0;
+
                 // Check if the day has been removed
                 const hasRemovedEvents = removedEvents[d];
-            
+
                 // Fill the day depending on if it has events or not
-                if (d.getDate() < currentTime.getDate()) {
-                    return '#d3d3d3';
-                } else if (isToday && hasEvents) {
-                    return 'orange';
-                } else if (isToday) {
-                    return 'lime';
+                
+                if ((d.getDate() < currentTime.getDate() && d.getMonth() === currentTime.getMonth()) || (d.getMonth() < currentTime.getMonth())) {
+                    return '#d3d3d3'; // Day has passed
+                } else if (isToday && (d.getMonth() === currentTime.getMonth())) {
+                    if(hasEvent) {
+                        return 'orange'; // Highlight current day with event
+                    }
+                    else {
+                        return 'lime'; // Highlight current day
+                    }
                 } else {
                     return 'white';
                 }
@@ -141,25 +193,16 @@ const Calendar = () => {
             .attr('x', width / 2)
             .attr('y', -30)
             .attr('text-anchor', 'middle')
-            .text(monthYearLabel);
-
-        const monthNameLabel = d3.timeFormat('%B')(new Date(currentYear, currentMonth));
-        svg.append('text')
-            .attr('class', 'month-name-label')
-            .attr('x', width / 2)
-            .attr('y', 20)
-            .attr('font-size', '25')
-            .attr('text-anchor', 'middle')
-            .text(monthNameLabel);
-
-        const yearLabel = currentYear;
+            .text(`${currentMonth + 1}/${currentYear}`); 
+    
+        // Add text for the year
         svg.append('text')
             .attr('class', 'year-label')
             .attr('x', width / 1.05)
             .attr('y', 20)
             .attr('font-size', '25')
             .attr('text-anchor', 'middle')
-            .text(yearLabel);
+            .text(monthYearLabel);
 
         const currentTimeLabel = d3.timeFormat('%H:%M:%S')(currentTime);
         svg.append('text')
@@ -175,7 +218,7 @@ const Calendar = () => {
         }
     };
 
-        /* 
+    /* 
     Function to handle clicks on a calendar day.
     - Updates the selected day.
     - Manages input mode, enabling it if there's no input or submitted events.
@@ -275,43 +318,24 @@ const Calendar = () => {
     - Updates events and expected expenses for the selected day.
     - Resets input values for the selected day.
     */
-    const handleSubmit = async () => {
+    const handleSubmit = () => {
         if ((dayInput[selectedDay] ?? '').trim() !== '') {
-            // Prepare the data to be submitted
-            const newEvent = {
-              event: dayInput[selectedDay] || '',
-              expenses: expectedExpenses[selectedDay] || ''
-            };
-        
-            const updatedSubmittedData = {
-              ...submittedData,
-              [selectedDay]: {
-                events: [
-                  ...(submittedData[selectedDay]?.events || []),
-                  newEvent
-                ]
-              }
-            };
-        
-            // Set the submitted data locally
-            setSubmittedData(updatedSubmittedData);
-        
-            // Prepare the data object to be passed to the finance context
-            const data = {
-              date: selectedDay,
-              events: updatedSubmittedData[selectedDay]?.events || [],
-            };
-        
-            // Call the submitEventData function with the data
-            await submitEventData(data);
-        
-            // Clear input values if necessary
+            setSubmittedData({
+                ...submittedData,
+                [selectedDay]: {
+                    events: [
+                        ...(submittedData[selectedDay]?.events || []),
+                        {
+                            event: dayInput[selectedDay] || '',
+                            expenses: expectedExpenses[selectedDay] || ''
+                        }
+                    ],
+                }
+            });
             setDayInput({ ...dayInput, [selectedDay]: '' });
             setExpectedExpenses({ ...expectedExpenses, [selectedDay]: '' });
         }
     };
-
-
         
     // Renders the panel based on the selected day and input mode.
     const renderPanel = () => {
@@ -396,11 +420,47 @@ const Calendar = () => {
         );
     };
 
+    const handleChangeMonth = (event) => {
+        const selectedMonth = parseInt(event.target.value);
+        console.log('Selected month:', selectedMonth);
+        setCurrentMonth(selectedMonth);
+    };
+
+    const renderMonthSelector = () => {
+        return (
+            <div className='month-selector-panel'>
+                <select className='select-input' name='months' id='months' onChange={handleChangeMonth} value={currentMonth}>
+                    <option value="0">January</option>
+                    <option value="1">February</option>
+                    <option value="2">March</option>
+                    <option value="3">April</option>
+                    <option value="4">May</option>
+                    <option value="5">June</option>
+                    <option value="6">July</option>
+                    <option value="7">August</option>
+                    <option value="8">September</option>
+                    <option value="9">October</option>
+                    <option value="10">November</option>
+                    <option value="11">December</option>
+                </select>
+            </div>
+        );
+    };
+
 
     return (
-        <div id="calendar-container">
-            {renderPanel()}
-            <svg ref={svgRef}></svg>
+        <div>
+            <div><button onClick={handleAddOrUpdateBudget} className='budget-button'>Add/Update Monthly Budget</button></div>
+            <div className='month-selector-panel'>
+                {renderMonthSelector()}
+            </div>
+            <div id="calendar-container">
+                {renderProgressBar(progress)}
+                <div className='panel'>
+                    {renderPanel()}
+                </div>
+                <svg id='calendarSvg' ref={svgRef}></svg>
+            </div>
         </div>
     );
 };

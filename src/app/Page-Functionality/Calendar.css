@@ -1,18 +1,21 @@
 #calendar-container {
+    padding-top: 10px;
+    position: relative;
     display: flex;
+    justify-content: center;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
     margin-top: 20px;
+    bottom: 10px;
 }
 
 .panel {
+    margin: 5%;
+    padding: 0;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding: 20px; 
-    border: 1px solid #ddd;
     border-radius: 10px;
-    margin-right: 20px;
     background-color: #fff; 
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -70,4 +73,54 @@
 
 .remove-event-button:hover {
     background-color: #c82333; 
+}
+
+.month-selector-panel {
+    display: flex;
+    text-align: center;
+    justify-content: center; 
+    font-size: 25px;
+  }
+
+.select-input {
+    text-align: center;
+}
+
+
+.progressBar {
+    justify-content: center;
+    width: 50%; 
+    height: 20px; 
+    background-color: #000000; 
+    border-radius: 10px; 
+    overflow: hidden; 
+    position: absolute; 
+    top: 0; 
+    margin-bottom: 35px;
+    transition: width 3s ease;
+  }
+  
+.progress {
+    height: 100%;
+    background-color: #cf1414; 
+    border-radius: 10px;
+}
+
+#calendarSvg {
+    flex: 1;
+    margin-top: 20px;
+}
+
+.budget-button {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    bottom: 0;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: rgb(150,150,150);
+    color: black;
+    margin-left: 280px;
+    border-radius: 10px;
+    padding: 10px 20px;
 }

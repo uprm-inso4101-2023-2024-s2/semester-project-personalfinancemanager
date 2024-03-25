@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ForgotPasswordPage from './NewPassword';
 
 
-function ForgotPassword() {
+function ForgotPassword({currentPage, setCurrentPage}) {
     const [email, setEmail] = useState('');
     const [isShowForgotPassword, setShowForgotPassword] = useState(true);
     const [isShowResetPassword, setShowResetPassword] = useState(false);
@@ -10,9 +10,10 @@ function ForgotPassword() {
     const handleResetPasswordClick = () => {
         setShowForgotPassword(false);
         setShowResetPassword(true)
+        setCurrentPage('login');
     };
 
-    return (isShowForgotPassword ? (
+    return (currentPage=='forgotpassword' ? (
         <div className="flex flex-col items-center h-screen">
             <h2 className="text-2xl font-semibold mb-3">Forgot Password</h2>
             <div className="flex flex-col gap-4">
