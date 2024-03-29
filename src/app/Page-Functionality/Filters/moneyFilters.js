@@ -25,9 +25,11 @@ export default function monthlyExpensefilter(expenses, month, year) {
                 return expenseDate.getMonth() + 1 === month && expenseDate.getFullYear() === year;
             })
             //returns filtered items (May return categories with 0 items!)
+            const total = filteredItems.reduce((acc, curr) => acc + curr.amount, 0);
             return {
                 ...expense,
-                items: filteredItems
+                items: filteredItems,
+                total: total
             };
         });
     };
