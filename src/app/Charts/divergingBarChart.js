@@ -21,7 +21,7 @@ import * as d3 from 'd3';
  * @param {string} xLabel - A label for the x-axis.
  * @param {number} [yPadding=0.1] - The padding between y-values (categories) in the chart.
  * @param {Array} [colors=["red", "steelblue"]] - An array of colors for pos and neg values.
- * @returns The drawing of the dynamic bar chart svg.
+ * @returns A div containing an svg element with the drawing of the dynamic bar chart svg.
  */
 export default function RenderDBC( {
     expensesData = [],
@@ -29,9 +29,9 @@ export default function RenderDBC( {
     x = d => d.value, // given d in data, returns the (quantitative) x-value
     y = d => d.category, // given d in data, returns the (ordinal) y-value
     marginTop = 50, 
-    marginRight = 40, 
+    marginRight = 65, 
     marginBottom = 10, 
-    marginLeft = 40, 
+    marginLeft = 65, 
     width = 640, // outer width of chart, in pixels
     xType = d3.scaleLinear, // type of x-scale
     xRange = [marginLeft, width - marginRight], // [left, right]
@@ -105,7 +105,7 @@ export default function RenderDBC( {
             .attr("transform", `translate(0,${marginTop})`)
             .call(xAxis)
             .call(g => g.select(".domain").remove())
-            .call(g => g.selectAll(".tick line").clone()
+            .call(g => g.selectAll(".tick line").remove()
                 .attr("y2", height - marginTop - marginBottom)
                 .attr("stroke-opacity", 0.1))
             .call(g => g.append("text")
@@ -134,6 +134,14 @@ export default function RenderDBC( {
                   .transition()
                   .duration(300)
                   .attr("font-size", "16px");
+
+                svg.selectAll(".bar-values")
+                   .filter((d, index) => index === i)
+                   .transition()
+                   .duration(300)
+                   .text( i => "$" + format(X[i]))
+                   .attr("fill", X[i] < 0 ? "rgb(239, 68, 68)" : "rgb(34, 197, 94)")
+                   .attr("font-size", "16");
             })
             .on('mouseout', function(event, i) {
                 d3.select(this)
@@ -144,6 +152,14 @@ export default function RenderDBC( {
                   .transition()
                   .duration(300)
                   .attr("font-size", "10px");
+
+                  svg.selectAll(".bar-values")
+                   .filter((d, index) => index === i)
+                   .transition()
+                   .duration(300)
+                   .attr("fill", "#808080")
+                   .text(i => format(X[i]))
+                   .attr("font-size", "10");
             })
             .transition() 
             .duration(500) 
@@ -158,6 +174,7 @@ export default function RenderDBC( {
             .selectAll("text")
             .data(I)
             .join("text")
+            .attr("class", "bar-values")
             .attr("text-anchor", i => X[i] < 0 ? "end" : "start")
             .attr("x", i => xScale(X[i]) + Math.sign(X[i] - 0) * 4)
             .attr("y", i => yScale(Y[i]) + yScale.bandwidth() / 2)
@@ -168,6 +185,7 @@ export default function RenderDBC( {
         //Draw the bar labels. 
         svg.append("g")
             .attr("transform", `translate(${xScale(0)},0)`)
+            .attr("class", "bar-labels")
             .call(yAxis)
             .call(g => g.selectAll(".tick text")
                 .filter(y => YX.get(y) < 0)
