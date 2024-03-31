@@ -104,6 +104,7 @@
     height: 100%;
     background-color: #cf1414; 
     border-radius: 10px;
+    transition: width 2s ease;
 }
 
 #calendarSvg {

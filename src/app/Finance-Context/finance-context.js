@@ -82,10 +82,7 @@ export default function FinanceContextProvider({ children }) {
         const budgetId = docSnap.docs[0].id;
         const docRef = doc(db, "monthly_budget", budgetId);
         await updateDoc(docRef, { budget: newBudget });
-        setBudget((prevBudget) => ({
-          ...prevBudget,
-          budget : newBudget
-        }));
+        setBudget([{id : docRef.id, budget : newBudget, user : user.uid}]);
         await checkBudgetDuplication();
       } 
     } catch (err) {
