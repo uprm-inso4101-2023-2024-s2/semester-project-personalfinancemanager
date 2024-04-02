@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState, useContext } from 'react';
-import { toast } from 'react-toastify';
 import monthlyExpensefilter , { monthlyIncomeFilter } from './Filters/moneyFilters';
 import { financeContext } from '../Finance-Context/finance-context';
 import * as d3 from 'd3';
@@ -32,7 +31,6 @@ const Calendar = () => {
     const [showMonthSelectorPanel, setShowMonthSelectorPanel] = useState(false);
     const [shouldRenderCalendar, setShouldRenderCalendar] = useState(true);
 
-    debugger;
     //Variables to calculate total income, total expenses, and the percentage of the total expenses compared to the monthly budget.
     useEffect(() => {
         const monthlyincome = monthlyIncomeFilter(income, currentTime.getMonth() + 1, currentTime.getFullYear());
@@ -58,27 +56,6 @@ const Calendar = () => {
     );
     }
 
-    /** Handles the budget button. Adds a budget to the database if the user does not already have one. 
-     * If the user has a budget, then it is updated.
-     * 
-     */
-    const handleAddOrUpdateBudget = () => {
-        const input = window.prompt("Enter the monthly budget:");
-        if (input !== null) {
-            const budget = parseFloat(input);
-            if (!isNaN(budget)) {
-                if (monthlyBudget.length < 1) {
-                    addMonthlyBudget(budget); 
-                    toast.success("Budget added successfully.");
-                } else {
-                    updateMonthlyBudget(budget); 
-                    toast.success("Budget updated successfully.");
-                }
-            } else {
-                toast.error("Please enter a valid number for the monthly budget.");
-            }
-        }
-    };
 
     useEffect(() => {
         const timerID = setInterval(() => tick(), 1000); // Update every second
@@ -349,9 +326,9 @@ const Calendar = () => {
         const shouldRenderForm = selectedDay !== null && !inputMode;
 
         return (
-            <div className="panel">
-                {shouldRenderForm && (
-                    <>
+            <>
+                {shouldRenderForm &&(
+                    <div>
                         <button onClick={() => setSelectedDay(null)} className="close-button">
                             X
                         </button>
@@ -380,7 +357,7 @@ const Calendar = () => {
                                 </div>
                             )}
                         </div>
-                    </>
+                    </div>
                 )}
 
                 {inputMode && selectedDay !== null && (
@@ -420,7 +397,7 @@ const Calendar = () => {
                         </button>
                     </div>
                 )}
-            </div>
+            </>
         );
     };
 
@@ -454,7 +431,6 @@ const Calendar = () => {
 
     return (
         <div>
-            <div><button onClick={handleAddOrUpdateBudget} className='budget-button'>Add/Update Monthly Budget</button></div>
             <div className='month-selector-panel'>
                 {renderMonthSelector()}
             </div>

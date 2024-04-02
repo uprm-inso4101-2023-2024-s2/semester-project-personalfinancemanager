@@ -14,7 +14,7 @@ import AddIncomesModal from './Modals/AddIncomesModal';
 import { financeContext } from './Finance-Context/finance-context';
 import Calendar from './Page-Functionality/Calendar';
 import TableAnalisisModal from './Modals/tableAnalysisModal';
-
+import { toast } from 'react-toastify';
 import { Chart as ChartJS, Tooltip, LinearScale, CategoryScale, BarElement, Legend} from "chart.js";
 import LoginPage from './Pages/LoginPage';
 import SignUpPage from './Pages/SignUpPage';
@@ -37,7 +37,7 @@ export default function Home() {
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
   const [showTableAnalisis, setShowTableAnalisis] = useState(false);
   const [balance, setBalance] = useState(0);
-  const { expenses, income } = useContext(financeContext);
+  const { expenses, income, monthlyBudget, addMonthlyBudget, updateMonthlyBudget } = useContext(financeContext);
 
   const { user } = useContext(authContext);
 
@@ -100,6 +100,30 @@ export default function Home() {
         return null;
     }
   }
+
+  debugger;
+  /** Handles the budget button. Adds a budget to the database if the user does not already have one. 
+       * If the user has a budget, then it is updated.
+       * 
+       */
+  const handleAddOrUpdateBudget = () => {
+    const input = window.prompt("Enter the monthly budget:");
+    if (input !== null) {
+        const budget = parseFloat(input);
+        if (!isNaN(budget)) {
+            if (monthlyBudget.length < 1) {
+                addMonthlyBudget(budget); 
+                toast.success("Budget added successfully.");
+            } else {
+                updateMonthlyBudget(budget); 
+                toast.success("Budget updated successfully.");
+            }
+        } else {
+            toast.error("Please enter a valid number for the monthly budget.");
+        }
+    }
+  };
+
   const renderCurrentPage = () => {
     switch(currentPage) {
       case 'login':
@@ -196,6 +220,9 @@ export default function Home() {
             {/* Calendar */}
             <section className='py-6 pl-6'>
               <h3 className='text-2xl text-center'>Calendar System</h3>
+              <div className='budget-button'>
+                <button onClick={handleAddOrUpdateBudget}>Add/Update Monthly Budget</button>
+              </div>
               <div className="flex justify-center">
                 <Calendar />
               </div>
