@@ -36,7 +36,6 @@ export const financeContext = createContext({
   addEventItem: async () => {},
   deleteEventCategory: async () => {},
   deleteEventItem: async () => {},
-  addEventItem: async () => {}, // Calendar related
   submitEventData: async () => {}, // Calendar related
 });
 
