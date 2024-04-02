@@ -21,6 +21,7 @@ export const financeContext = createContext({
   income: [],
   expenses: [],
   monthlyBudget: [],
+  events: [],
   addMonthlyBudget: async () => {},
   updateMonthlyBudget: async () => {},
   deleteBudget: async () => {},
@@ -31,14 +32,128 @@ export const financeContext = createContext({
   addCategory: async () => {},
   deleteExpenseItem: async () => {},
   deleteExpenseCategory: async () => {},
+  addEventCategory: async () => {},
+  addEventItem: async () => {},
+  deleteEventCategory: async () => {},
+  deleteEventItem: async () => {},
 });
 
 export default function FinanceContextProvider({ children }) {
   const [income, setIncome] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [monthlyBudget, setBudget] = useState([]);
+  const [events, setEvents] = useState([]);
 
   const { user } = useContext(authContext);
+
+  /** Adds a new event category, identified by the user and the event date. This should be called 
+   * when the user does not hae any events in the specified date.
+   * The category should look something like this:
+   *  {date : selectedDate, total:0}
+   * 
+   * @param {array} category - A list of events where it contains the userID, date, and another array of events 
+   */
+  const addEventCategory = async (category) => {
+    try {
+      const collectionRef = collection(db, "events");
+
+      const docSnap = await addDoc(collectionRef, {
+        uid: user.uid,
+        ...category,
+        items: [],
+      });
+
+      setEvents((prevEvents) => {
+        return [
+          ...prevEvents,
+          {
+            id: docSnap.id,
+            uid: user.uid,
+            items: [],
+            ...category,
+          },
+        ];
+      });
+      
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  /** Adds a new event to the already existing event list.
+   * The new event should have the following properties:
+   * const newEvent = {
+            date : event.date
+            total: event.total + +eventExpectedExpenses,
+            items: [
+                ...event.items,
+                {
+                    amount: +eventExpectedExpenses,
+                    id: uuidv4(),
+                },
+            ],
+        };
+   *  
+   * 
+   * @param {string} eventCategoryID 
+   * @param {array} newEvent 
+   */
+  const AddEventItem = async (eventCategoryID, newEvent) => {
+    const docRef = doc(db, "expenses", eventCategoryID);
+    try {
+      await updateDoc(docRef, { ...newEvent });
+      setEvents((prevState) => {
+        const updatedEvents = [...prevState];
+
+        const foundIndex = updatedEvents.findIndex((event) => {
+          return event.id === eventCategoryID;
+        });
+
+        updatedEvents[foundIndex] = { id: eventCategoryID, ...newEvent };
+
+        return updatedEvents;
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  const deleteEventCategory = async (eventCategoryID) => {
+    try {
+      const docRef = doc(db, "expenses", eventCategoryID);
+      await deleteDoc(docRef);
+
+      setExpenses((prevExpenses) => {
+        const updatedEvents = prevExpenses.filter(
+          (expense) => expense.id !== eventCategoryID
+        );
+
+        return [...updatedEvents];
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  const deleteEventItem = async (updatedEvent, eventCategoryID) => {
+      try {
+        const docRef = doc(db, "expenses", eventCategoryID);
+        await updateDoc(docRef, {
+          ...updatedEvent,
+        });
+        setExpenses((prevEvents) => {
+          const updatedEvents = [...prevEvents];
+          const pos = updatedEvents.findIndex(
+            (ex) => ex.id === eventCategoryID
+          );
+          updatedEvents[pos].items = [...updatedEvent.items];
+          updatedEvents[pos].total = updatedEvent.total;
+          return updatedEvents;
+        });
+      } catch (err) {
+        throw err;
+      }
+  }
 
   /** Adds a new monthly budget document to the database. It is saved with the document Id and the User Id.
    * 
@@ -250,6 +365,7 @@ export default function FinanceContextProvider({ children }) {
     income,
     expenses,
     monthlyBudget,
+    events,
     addMonthlyBudget,
     updateMonthlyBudget,
     deleteBudget,
@@ -260,6 +376,10 @@ export default function FinanceContextProvider({ children }) {
     addCategory,
     deleteExpenseItem,
     deleteExpenseCategory,
+    addEventCategory,
+    AddEventItem,
+    deleteEventCategory,
+    deleteEventItem,
   };
 
   useEffect(() => {
