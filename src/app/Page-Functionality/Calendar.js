@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState, useContext } from 'react';
-import { toast } from 'react-toastify';
 import monthlyExpensefilter , { monthlyIncomeFilter } from './Filters/moneyFilters';
 import { financeContext } from '../Finance-Context/finance-context';
 import * as d3 from 'd3';
@@ -7,6 +6,7 @@ import './Calendar.css';
 
 const Calendar = () => {
     const svgRef = useRef(null);
+    const [progress, setProgress] = useState(0);
     const {expenses, income, monthlyBudgets, createMonthlyBudgets, updateMonthlyBudgets} = useContext(financeContext);
     const [currentTime, setCurrentTime] = useState(new Date());
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
@@ -31,27 +31,29 @@ const Calendar = () => {
     const [showMonthSelectorPanel, setShowMonthSelectorPanel] = useState(false);
     const [shouldRenderCalendar, setShouldRenderCalendar] = useState(true);
 
-    debugger;
     //Variables to calculate total income, total expenses, and the percentage of the total expenses compared to the monthly budget.
-    const monthlyincome = monthlyIncomeFilter(income, currentMonth + 1, currentTime.getFullYear());
-    const monthlyexpenses = monthlyExpensefilter(expenses, currentMonth + 1, currentTime.getFullYear());
-    const totalExpenses = monthlyexpenses.reduce((total, category) => {
+    useEffect(() => {
+        const monthlyincome = monthlyIncomeFilter(income, currentTime.getMonth() + 1, currentTime.getFullYear());
+        const monthlyexpenses = monthlyExpensefilter(expenses, currentTime.getMonth() + 1, currentTime.getFullYear());
+        const totalExpenses = monthlyexpenses.reduce((total, category) => {
         const categoryTotal = category.items.reduce((itemTotal, item) => {
             return itemTotal + item.amount;
         }, 0);
         return total + categoryTotal;
-    }, 0);
-    const totalIncome = monthlyincome.reduce((total, item) => total + item.amount, 0);
-    let monthlyBudgetAmount = 1;
+        }, 0);
+        const totalIncome = monthlyincome.reduce((total, item) => total + item.amount, 0);
+        let monthlyBudgetAmount = 1;
     if(monthlyBudgets.length > 0) {
         if(monthlyBudgets[0].budgets[currentMonth] !== 0) monthlyBudgetAmount = monthlyBudgets[0].budgets[currentMonth];
     }
-    let progress = (totalExpenses / monthlyBudgetAmount) * 100;
-    progress > 100 ? progress = 100 : progress = progress;
+        let progressValue = (totalExpenses / monthlyBudgetAmount) * 100;
+        progressValue > 100 ? progressValue = 100 : progressValue = progressValue;
+        setProgress(progressValue);
+    },[currentTime, submittedData, currentMonth, monthlyBudgets, income, expenses]);
 
     function renderProgressBar(percentage){
-    return (
-        <div className="progressBar">
+        return (
+            <div className="progressBar">
             <div className="progress"style={{ width: `${percentage}%` }}> </div>
         </div>
     );
@@ -349,9 +351,9 @@ const Calendar = () => {
         const shouldRenderForm = selectedDay !== null && !inputMode;
 
         return (
-            <div className="panel">
-                {shouldRenderForm && (
-                    <>
+            <>
+                {shouldRenderForm &&(
+                    <div>
                         <button onClick={() => setSelectedDay(null)} className="close-button">
                             X
                         </button>
@@ -380,7 +382,7 @@ const Calendar = () => {
                                 </div>
                             )}
                         </div>
-                    </>
+                    </div>
                 )}
 
                 {inputMode && selectedDay !== null && (
@@ -420,7 +422,7 @@ const Calendar = () => {
                         </button>
                     </div>
                 )}
-            </div>
+            </>
         );
     };
 
@@ -454,7 +456,6 @@ const Calendar = () => {
 
     return (
         <div>
-            <div><button onClick={handleAddOrUpdateBudget} className='budget-button'>Add/Update Monthly Budget</button></div>
             <div className='month-selector-panel'>
                 {renderMonthSelector()}
             </div>

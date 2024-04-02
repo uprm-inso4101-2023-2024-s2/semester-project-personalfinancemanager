@@ -245,3 +245,17 @@ body, button, input, .btn, .balance-box, .balance-label, .balance-amount, .text-
 .bg-custom-gray {
   background-color: rgb(28, 29, 33);
 }
+
+.budget-button {
+  display: block;
+  width: 300px;
+  text-align: center;
+  justify-content: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 420px;
+  background-color: rgb(150,150,150);
+  color: black;
+  border-radius: 10px;
+  padding: 10px 20px;
+}
