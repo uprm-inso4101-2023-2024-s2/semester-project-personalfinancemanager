@@ -36,7 +36,26 @@ export const financeContext = createContext({
   addEventItem: async () => {},
   deleteEventCategory: async () => {},
   deleteEventItem: async () => {},
+  addEventItem: async () => {}, // Calendar related
+  submitEventData: async () => {}, // Calendar related
 });
+
+ export async function checkExpensesDuplication(user,title){
+  try {
+    const collectionRef = collection(db, "expenses");
+    const q = query(collectionRef, where("uid", "==", user.uid));
+    const docSnap = await getDocs(q);
+    const categoryTitles = []; 
+    docSnap.forEach(doc => {
+      const newTitle = doc.data().title.toLowerCase().split(' ').join('');
+      categoryTitles.push(newTitle);
+    });
+
+    return categoryTitles.includes(title.toLowerCase().split(' ').join(''));
+  } catch (err) {
+    throw err;
+  }
+};
 
 export default function FinanceContextProvider({ children }) {
   const [income, setIncome] = useState([]);
@@ -361,6 +380,37 @@ export default function FinanceContextProvider({ children }) {
     }
   };
 
+  const addEventItem = async (newEvent) => { // calendar related
+
+    try {
+      const collectionRef = collection(db, "event");
+      const docRef = await addDoc(collectionRef, newEvent);
+      setEvents((prevState) => {
+        return [
+          ...prevState,
+          {
+            id: docRef.id,
+            uid: user.uid,
+            ...newEvent,
+          },
+        ];
+      });
+    } catch (error) {
+      console.log(error.message);
+      throw error;
+    }
+  };
+
+  const submitEventData = async (data) => {
+    try {
+      await addEventItem(data);
+    } catch (error) {
+      console.log(error.message);
+      throw error;
+    }
+  };
+
+
   const values = {
     income,
     expenses,
@@ -402,6 +452,24 @@ export default function FinanceContextProvider({ children }) {
       setIncome(data);
     };
 
+    const getEventsData = async () => { // calendar related
+      const collectionRef = collection(db, "event");
+      const q = query(collectionRef, where("uid", "==", user.uid));
+
+      const docsSnap = await getDocs(q);
+
+      const data = docsSnap.docs.map((doc) => {
+        return {
+          id: doc.id,
+          ...doc.data(),
+          start: new Date(doc.data().start.toMillis()),
+          end: new Date(doc.data().end.toMillis()),
+        };
+      });
+
+      setEvents(data);
+    };
+
     const getBudgetData = async () => {
       const colRef = collection(db, "monthly_budget");
       const q = query(colRef, where("uid", "==", user.uid));
@@ -438,6 +506,7 @@ export default function FinanceContextProvider({ children }) {
     getIncomeData();
     getExpensesData();
     getBudgetData();
+    getEventsData(); // calendar related
   }, [user]);
 
   return (
