@@ -7,7 +7,7 @@ import './Calendar.css';
 
 const Calendar = () => {
     const svgRef = useRef(null);
-    const {expenses, income, monthlyBudget, addMonthlyBudget, updateMonthlyBudget} = useContext(financeContext);
+    const {expenses, income, monthlyBudgets, createMonthlyBudgets, updateMonthlyBudgets} = useContext(financeContext);
     const [currentTime, setCurrentTime] = useState(new Date());
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
     /* 
@@ -33,8 +33,8 @@ const Calendar = () => {
 
     debugger;
     //Variables to calculate total income, total expenses, and the percentage of the total expenses compared to the monthly budget.
-    const monthlyincome = monthlyIncomeFilter(income, currentTime.getMonth() + 1, currentTime.getFullYear());
-    const monthlyexpenses = monthlyExpensefilter(expenses, currentTime.getMonth() + 1, currentTime.getFullYear());
+    const monthlyincome = monthlyIncomeFilter(income, currentMonth + 1, currentTime.getFullYear());
+    const monthlyexpenses = monthlyExpensefilter(expenses, currentMonth + 1, currentTime.getFullYear());
     const totalExpenses = monthlyexpenses.reduce((total, category) => {
         const categoryTotal = category.items.reduce((itemTotal, item) => {
             return itemTotal + item.amount;
@@ -42,7 +42,10 @@ const Calendar = () => {
         return total + categoryTotal;
     }, 0);
     const totalIncome = monthlyincome.reduce((total, item) => total + item.amount, 0);
-    const monthlyBudgetAmount = monthlyBudget.length > 0 ? monthlyBudget[0].budget : 1;
+    let monthlyBudgetAmount = 1;
+    if(monthlyBudgets.length > 0) {
+        if(monthlyBudgets[0].budgets[currentMonth] !== 0) monthlyBudgetAmount = monthlyBudgets[0].budgets[currentMonth];
+    }
     let progress = (totalExpenses / monthlyBudgetAmount) * 100;
     progress > 100 ? progress = 100 : progress = progress;
 
@@ -63,12 +66,13 @@ const Calendar = () => {
         if (input !== null) {
             const budget = parseFloat(input);
             if (!isNaN(budget)) {
-                if (monthlyBudget.length < 1) {
-                    addMonthlyBudget(budget); 
-                    toast.success("Budget added successfully.");
+                if (monthlyBudgets.length < 1) {
+                    createMonthlyBudgets(budget, currentMonth); 
+                    toast.success('Budget for ${currentMonth} added successfully.')
                 } else {
-                    updateMonthlyBudget(budget); 
-                    toast.success("Budget updated successfully.");
+                    updateMonthlyBudgets(budget, currentMonth); 
+                    monthlyBudgets.budgets[currentMonth] !== 0 ? toast.success('Budget for ${currentMonth} updated successfully.') :  toast.success('Budget for ${currentMonth} added successfully.');
+
                 }
             } else {
                 toast.error("Please enter a valid number for the monthly budget.");
