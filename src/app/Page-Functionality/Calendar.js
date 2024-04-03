@@ -80,7 +80,7 @@ const Calendar = () => {
             if (!isNaN(budget)) {
                 if (monthlyBudgets.budgets.length === 0) {
                     createMonthlyBudgets(budget, currentMonth); 
-                    toast.success('Budget for' + months[currentMonth] + 'added successfully.')
+                    toast.success('Budget for ' + months[currentMonth] + ' added successfully.')
                 } else {
                     updateMonthlyBudgets(budget, currentMonth); 
                     monthlyBudgets.budgets[currentMonth] !== 0 ? toast.success('Budget for ' + months[currentMonth] + ' updated successfully.') :  toast.success('Budget for ' + months[currentMonth] + ' added successfully.');
