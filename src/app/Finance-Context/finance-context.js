@@ -71,13 +71,12 @@ export default function FinanceContextProvider({ children }) {
         budgets: items,
       });
 
-      setBudgets( 
-        {
+      setBudgets({
           id: docSnap.id,
           uid : user.uid,
           budgets : items,
-        }
-      )
+        })
+
     } catch (err) {
       throw err; 
     }
@@ -94,15 +93,15 @@ export default function FinanceContextProvider({ children }) {
       const q = query(colRef, where("uid", "==", user.uid));
       const docSnap = await getDocs(q);
       const updatedItems = docSnap.docs[0].data().budgets;
-      console.log(updatedItems);
       updatedItems[month] = newBudget;
       const budgetId = docSnap.docs[0].id;
       const docRef = doc(db, "monthly_budget", budgetId);
       await updateDoc(docRef, { budgets: updatedItems });
-      setBudgets((prevBudget) => ({
-        ...prevBudget,
-        budgets : updatedItems
-      }));
+      setBudgets({
+        id: budgetId,
+        uid: user.uid,
+        budgets: updatedItems
+      });
     } catch (err) {
       throw err;
     }
@@ -301,14 +300,14 @@ export default function FinanceContextProvider({ children }) {
       const colRef = collection(db, "monthly_budget");
       const q = query(colRef, where("uid", "==", user.uid));
       const docSnap = await getDocs(q);
-      const data = docSnap.docs.map((doc) => {
-        return {
-          id: doc.id,
-          ...doc.data(),
-          budgets: doc.data().budgets.map((item) => ({ ...item,}))
-        };
+      const items = docSnap.size > 0 ? docSnap.docs[0].data().budgets : [];
+      const docID = docSnap.size > 0 ? docSnap.docs[0].id : "";
+      
+      setBudgets({
+        id: docID,
+        uid: user.uid,
+        budgets: items
       });
-      setBudgets(data);
     }
 
     const getExpensesData = async () => {
