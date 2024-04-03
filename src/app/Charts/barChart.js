@@ -21,7 +21,12 @@ const RenderBarChart = ({expensesData}) => {
   }
 
   useEffect(() => {
+    //deletes previous bars
+    d3.select(svgRef.current).selectAll('*').remove();
+    
     let filteredExpenses = expensesData;
+
+    console.log("UnFiltered", filteredExpenses)
 
     if (shouldFilter) {
       filteredExpenses = monthlyExpensefilter(expensesData, selectedMonth, currentTime.getFullYear());
@@ -32,8 +37,15 @@ const RenderBarChart = ({expensesData}) => {
       }
     }
 
-    //deletes previous bars
-    d3.select(svgRef.current).selectAll('*').remove();
+    let totalMonthlyExpense = 0;
+    for (let i = 0; i < filteredExpenses.length; i++)
+      totalMonthlyExpense += filteredExpenses[i].total;
+
+    console.log("Filtered", filteredExpenses)
+    console.log("Month", selectedMonth)
+    if (totalMonthlyExpense === 0) {
+      return;
+    }
 
     //setting the container
     const w = 500;
