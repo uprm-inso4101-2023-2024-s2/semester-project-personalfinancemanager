@@ -78,7 +78,7 @@ const Calendar = () => {
         if (input !== null) {
             const budget = parseFloat(input);
             if (!isNaN(budget)) {
-                if (monthlyBudgets.budgets.length < 0) {
+                if (monthlyBudgets.budgets.length === 0) {
                     createMonthlyBudgets(budget, currentMonth); 
                     toast.success('Budget for' + months[currentMonth] + 'added successfully.')
                 } else {
