@@ -20,9 +20,9 @@ import {
 export const financeContext = createContext({
   income: [],
   expenses: [],
-  monthlyBudget: [],
-  addMonthlyBudget: async () => {},
-  updateMonthlyBudget: async () => {},
+  monthlyBudgets: [],
+  createMonthlyBudgets: async () => {},
+  updateMonthlyBudgets: async () => {},
   deleteBudget: async () => {},
   checkBudgetDuplication: async () => {},
   addIncomeItem: async () => {},
@@ -33,10 +33,27 @@ export const financeContext = createContext({
   deleteExpenseCategory: async () => {},
 });
 
+ export async function checkExpensesDuplication(user,title){
+  try {
+    const collectionRef = collection(db, "expenses");
+    const q = query(collectionRef, where("uid", "==", user.uid));
+    const docSnap = await getDocs(q);
+    const categoryTitles = []; 
+    docSnap.forEach(doc => {
+      const newTitle = doc.data().title.toLowerCase().split(' ').join('');
+      categoryTitles.push(newTitle);
+    });
+
+    return categoryTitles.includes(title.toLowerCase().split(' ').join(''));
+  } catch (err) {
+    throw err;
+  }
+};
+
 export default function FinanceContextProvider({ children }) {
   const [income, setIncome] = useState([]);
   const [expenses, setExpenses] = useState([]);
-  const [monthlyBudget, setBudget] = useState([]);
+  const [monthlyBudgets, setBudgets] = useState([]);
 
   const { user } = useContext(authContext);
 
@@ -44,23 +61,22 @@ export default function FinanceContextProvider({ children }) {
    * 
    * @param {integer} newBudget - The budget to be added to the database.
    */
-  const addMonthlyBudget = async (newBudget) => {
+  const createMonthlyBudgets = async (newBudget, month) => {
     try {
       const collectionRef = collection(db, "monthly_budget");
+      const items = Array.from({ length: 12 }, () => 0); 
+      items[month] = newBudget;
       const docSnap = await addDoc(collectionRef, {
         uid : user.uid,
-        budget : newBudget
+        budgets: items,
       });
 
-      setBudget((newBudget) => {
-        return {
+      setBudgets({
           id: docSnap.id,
           uid : user.uid,
-          budget : newBudget,
-        }
-      })
+          budgets : items,
+        })
 
-      await checkBudgetDuplication();
     } catch (err) {
       throw err; 
     }
@@ -71,23 +87,21 @@ export default function FinanceContextProvider({ children }) {
    * 
    * @param {integer} newBudget - The new budget to update to the database.
    */
-  const updateMonthlyBudget = async (newBudget) => {
+  const updateMonthlyBudgets = async (newBudget, month) => {
     try {
       const colRef = collection(db, "monthly_budget");
       const q = query(colRef, where("uid", "==", user.uid));
       const docSnap = await getDocs(q);
-      if (docSnap.size === 0) {
-        await addMonthlyBudget(newBudget);
-      } else {
-        const budgetId = docSnap.docs[0].id;
-        const docRef = doc(db, "monthly_budget", budgetId);
-        await updateDoc(docRef, { budget: newBudget });
-        setBudget((prevBudget) => ({
-          ...prevBudget,
-          budget : newBudget
-        }));
-        await checkBudgetDuplication();
-      } 
+      const updatedItems = docSnap.docs[0].data().budgets;
+      updatedItems[month] = newBudget;
+      const budgetId = docSnap.docs[0].id;
+      const docRef = doc(db, "monthly_budget", budgetId);
+      await updateDoc(docRef, { budgets: updatedItems });
+      setBudgets({
+        id: budgetId,
+        uid: user.uid,
+        budgets: updatedItems
+      });
     } catch (err) {
       throw err;
     }
@@ -249,9 +263,9 @@ export default function FinanceContextProvider({ children }) {
   const values = {
     income,
     expenses,
-    monthlyBudget,
-    addMonthlyBudget,
-    updateMonthlyBudget,
+    monthlyBudgets,
+    createMonthlyBudgets,
+    updateMonthlyBudgets,
     deleteBudget,
     checkBudgetDuplication,
     addIncomeItem,
@@ -286,14 +300,14 @@ export default function FinanceContextProvider({ children }) {
       const colRef = collection(db, "monthly_budget");
       const q = query(colRef, where("uid", "==", user.uid));
       const docSnap = await getDocs(q);
-      const data = docSnap.docs.map((doc) => {
-        return {
-         id : doc.id,
-         user : user.uid,
-         ...doc.data(), 
-        }
+      const items = docSnap.size > 0 ? docSnap.docs[0].data().budgets : [];
+      const docID = docSnap.size > 0 ? docSnap.docs[0].id : "";
+      
+      setBudgets({
+        id: docID,
+        uid: user.uid,
+        budgets: items
       });
-      setBudget(data);
     }
 
     const getExpensesData = async () => {
