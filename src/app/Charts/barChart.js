@@ -3,11 +3,14 @@ import { financeContext } from '../Finance-Context/finance-context';
 import React, {useState, useRef, useEffect} from 'react';
 import monthlyExpensefilter from '../Page-Functionality/Filters/moneyFilters';
 import * as d3 from 'd3';
+import { faL } from '@fortawesome/free-solid-svg-icons';
 
 const RenderBarChart = ({expensesData}) => {
   const svgRef = useRef();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth()+1);
+  const [shouldFilter, setShouldFilter] = useState(true);
+  const [shouldRender, setShouldRender] = useState(false);
 
   function hexToRGBA(hex, alpha = 1) {
     let r = parseInt(hex.slice(1, 3), 16),
@@ -18,12 +21,17 @@ const RenderBarChart = ({expensesData}) => {
   }
 
   useEffect(() => {
-    const filteredExpenses = monthlyExpensefilter(expensesData, selectedMonth, currentTime.getFullYear());
+    let filteredExpenses = expensesData;
 
-    //checks for whether the expenses were updated
-    if(!filteredExpenses || filteredExpenses.length === 0) 
+    if (shouldFilter) {
+      filteredExpenses = monthlyExpensefilter(expensesData, selectedMonth, currentTime.getFullYear());
+      
+      // Check if the filtered expenses are empty or null
+      if (!filteredExpenses || filteredExpenses.length === 0) {
         return;
-    
+      }
+    }
+
     //deletes previous bars
     d3.select(svgRef.current).selectAll('*').remove();
 
@@ -46,18 +54,18 @@ const RenderBarChart = ({expensesData}) => {
                   .range([0,w])
                   .padding(0.5);
       const yScale = d3.scaleLinear()
-                  .domain([0, d3.max(filteredExpenses, d => d.total)])
+                  .domain([0, d3.max(filteredExpenses, d => d.total) || 0])
+                  .nice()
                   .range([h, 0]);
       //setting the axes
       const xAxis = d3.axisBottom(xScale)
                   .ticks(filteredExpenses.length);
       const yAxis = d3.axisLeft(yScale)
                   .ticks(25);
-      svg.append('g')
-        .call(xAxis)
-        .attr('transform', 'translate(0,' + (h) + ')');
-      svg.append('g')
-        .call(yAxis);
+      if (filteredExpenses.length > 0) {
+        svg.append('g').call(xAxis).attr('transform', 'translate(0,' + h + ')').classed('axis', true);
+        svg.append('g').call(yAxis).classed('axis', true);
+      }
         
       //seting the svg data
       svg.selectAll('.bar')
@@ -103,14 +111,25 @@ const RenderBarChart = ({expensesData}) => {
   }, [expensesData, selectedMonth]);
 
   const handleChangeMonth = (event) => {
-    const selectedMonth = parseInt(event.target.value);
-    setSelectedMonth(selectedMonth);
+    const selectedValue = event.target.value;
+    if (selectedValue === "0") {
+      // If the year option is selected, disable filtering
+      setShouldFilter(false);
+      setSelectedMonth(null);
+    } else {
+      // For other months, enable filtering and set the selected month
+      const selectedMonth = parseInt(selectedValue);
+      setSelectedMonth(selectedMonth);
+      setShouldFilter(true);
+    }
   };
+  
 
   const renderMonthSelector = () => {
     return (
       <div className='month-selector-panel'>
         <select className='select-input' name='months' id='months' onChange={handleChangeMonth} value={selectedMonth}>
+          <option value="0">{new Date().getFullYear().toString()}</option>
           <option value="1">January</option>
           <option value="2">February</option>
           <option value="3">March</option>
