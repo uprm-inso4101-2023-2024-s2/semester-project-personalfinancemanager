@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useContext } from 'react';
+import React, { useEffect, useRef, useState, useContext, createContext } from 'react';
 import monthlyExpensefilter , { monthlyIncomeFilter } from './Filters/moneyFilters';
 import { financeContext } from '../Finance-Context/finance-context';
 import * as d3 from 'd3';
@@ -31,6 +31,7 @@ const Calendar = () => {
     const [showMonthSelectorPanel, setShowMonthSelectorPanel] = useState(false);
     const [shouldRenderCalendar, setShouldRenderCalendar] = useState(true);
 
+    debugger;
     //Variables to calculate total income, total expenses, and the percentage of the total expenses compared to the monthly budget.
     useEffect(() => {
         const monthlyincome = monthlyIncomeFilter(income, currentTime.getMonth() + 1, currentTime.getFullYear());
@@ -43,13 +44,21 @@ const Calendar = () => {
         }, 0);
         const totalIncome = monthlyincome.reduce((total, item) => total + item.amount, 0);
         let monthlyBudgetAmount = 1;
-    if(monthlyBudgets.length > 0) {
-        if(monthlyBudgets[0].budgets[currentMonth] !== 0) monthlyBudgetAmount = monthlyBudgets[0].budgets[currentMonth];
-    }
+        if(monthlyBudgets.length > 0) {
+            if(monthlyBudgets[0].budgets[currentMonth] !== 0) monthlyBudgetAmount = monthlyBudgets[0].budgets[currentMonth];
+        }
         let progressValue = (totalExpenses / monthlyBudgetAmount) * 100;
         progressValue > 100 ? progressValue = 100 : progressValue = progressValue;
         setProgress(progressValue);
     },[currentTime, submittedData, currentMonth, monthlyBudgets, income, expenses]);
+
+    const renderBudgetButton = () => {
+        return (
+        <div className='budget-button'>
+            <button onClick={handleAddOrUpdateBudget}>Add/Update Monthly Budget</button>
+        </div>
+        );
+    }
 
     function renderProgressBar(percentage){
         return (
@@ -456,6 +465,7 @@ const Calendar = () => {
 
     return (
         <div>
+            {renderBudgetButton()}
             <div className='month-selector-panel'>
                 {renderMonthSelector()}
             </div>
