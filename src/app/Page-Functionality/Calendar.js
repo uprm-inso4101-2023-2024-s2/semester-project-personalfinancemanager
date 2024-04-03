@@ -29,8 +29,7 @@ const Calendar = () => {
     const [expectedExpenses, setExpectedExpenses] = useState({});
     const [daysWithData, setDaysWithData] = useState([]);
     const [removedEvents, setRemovedEvents] = useState({});
-    const [showMonthSelectorPanel, setShowMonthSelectorPanel] = useState(false);
-    const [shouldRenderCalendar, setShouldRenderCalendar] = useState(true);
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December",];
 
     debugger;
     //Variables to calculate total income, total expenses, and the percentage of the total expenses compared to the monthly budget.
@@ -81,10 +80,10 @@ const Calendar = () => {
             if (!isNaN(budget)) {
                 if (monthlyBudgets.length < 1) {
                     createMonthlyBudgets(budget, currentMonth); 
-                    toast.success('Budget for' + currentMonth.toLocaleString() + 'added successfully.')
+                    toast.success('Budget for' + months[currentMonth] + 'added successfully.')
                 } else {
                     updateMonthlyBudgets(budget, currentMonth); 
-                    monthlyBudgets.budgets[currentMonth] !== 0 ? toast.success('Budget for ' + currentMonth.toLocaleString() + ' updated successfully.') :  toast.success('Budget for ' + currentMonth.toLocaleString() + ' added successfully.');
+                    monthlyBudgets.budgets[currentMonth] !== 0 ? toast.success('Budget for ' + months[currentMonth] + ' updated successfully.') :  toast.success('Budget for ' + months[currentMonth] + ' added successfully.');
 
                 }
             } else {
