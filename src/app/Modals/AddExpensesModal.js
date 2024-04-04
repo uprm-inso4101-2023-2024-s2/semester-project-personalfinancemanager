@@ -1,9 +1,10 @@
 import Modal from "@/app/Modals/modal";
 import { useState, useContext, useRef } from "react";
-import { financeContext } from '../Finance-Context/finance-context';
+import { financeContext, checkExpensesDuplication } from '../Finance-Context/finance-context';
 import AddCategoryItem from "../Page-Functionality/addcategoryItem";
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
+import { authContext } from "../Page-Functionality/Login/auth-context";
 
 /**
  * Function to format a date object to a string in the format 'YYYY-MM-DDTHH:MM'.
@@ -37,6 +38,7 @@ function AddExpensesModal({ show, onClose }) {
     const [showAddExpense, setShowAddExpense] = useState(false);
     const titleRef = useRef();
     const colorRef = useRef();
+    const { user } = useContext(authContext);
 
     /**
      * Handles adding an expense item.
@@ -78,6 +80,11 @@ function AddExpensesModal({ show, onClose }) {
         const color = colorRef.current.value;
 
         try {
+            const isDuplicate = await checkExpensesDuplication(user, title);
+            if(isDuplicate){
+                toast.error("This category already exists. Please choose a new category name.");
+                return;
+            }
             await addCategory({title, color, total: 0});
             setShowAddExpense(false);
             toast.success("Category created!");

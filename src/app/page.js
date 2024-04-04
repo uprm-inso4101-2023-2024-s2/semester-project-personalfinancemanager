@@ -14,7 +14,7 @@ import AddIncomesModal from './Modals/AddIncomesModal';
 import { financeContext } from './Finance-Context/finance-context';
 import Calendar from './Page-Functionality/Calendar';
 import TableAnalisisModal from './Modals/tableAnalysisModal';
-
+import { toast } from 'react-toastify';
 import { Chart as ChartJS, Tooltip, LinearScale, CategoryScale, BarElement, Legend} from "chart.js";
 import LoginPage from './Pages/LoginPage';
 import SignUpPage from './Pages/SignUpPage';
@@ -100,6 +100,8 @@ export default function Home() {
         return null;
     }
   }
+
+
   const renderCurrentPage = () => {
     switch(currentPage) {
       case 'login':
