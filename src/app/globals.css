@@ -250,3 +250,10 @@ body, button, input, .btn, .balance-box, .balance-label, .balance-amount, .text-
   text-align: center;
   color: black;
 }
+
+.expense-message{
+  display: flex; 
+  justify-content: center;
+  align-items: center; 
+  font-size: 25px;
+}

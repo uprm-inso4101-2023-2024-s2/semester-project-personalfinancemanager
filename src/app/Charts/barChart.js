@@ -10,7 +10,7 @@ const RenderBarChart = ({expensesData}) => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth()+1);
   const [shouldFilter, setShouldFilter] = useState(true);
-  const [shouldRender, setShouldRender] = useState(false);
+  const [shouldRenderExpenseMessage, setShouldRenderExpenseMessage] = useState(false);
 
   function hexToRGBA(hex, alpha = 1) {
     let r = parseInt(hex.slice(1, 3), 16),
@@ -44,8 +44,10 @@ const RenderBarChart = ({expensesData}) => {
     console.log("Filtered", filteredExpenses)
     console.log("Month", selectedMonth)
     if (totalMonthlyExpense === 0) {
+      setShouldRenderExpenseMessage(true);
       return;
     }
+    setShouldRenderExpenseMessage(false);
 
     //setting the container
     const w = 500;
@@ -159,10 +161,21 @@ const RenderBarChart = ({expensesData}) => {
     );
   };
 
+  const renderExpenseMessage = () => {
+    if (shouldRenderExpenseMessage===true) {
+      return (
+        <div>
+          <p className='expense-message'>There are no expenses recorded for the selected period.</p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className="barChart">
       {renderMonthSelector()}
+      {renderExpenseMessage()}
       <svg ref={svgRef}></svg>
     </div>
   );
