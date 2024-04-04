@@ -1,0 +1,6 @@
+.no-data-message {
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+    color: red;
+}

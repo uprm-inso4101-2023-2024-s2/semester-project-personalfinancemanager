@@ -29,7 +29,7 @@ export default function monthlyExpensefilter(expenses, month, year) {
                 ...expense,
                 items: filteredItems
             };
-        });
+        }).filter(expense => expense.items && expense.items.length > 0);
     };
     const monthfilter = filterExpensesByMonth(expenses, month, year);
     return monthfilter;
@@ -77,7 +77,7 @@ export function yearlyExpenseFilter(expenses, year) {
             }
             //filters items that don't match the month and year
             const filteredItems = items.filter(item => {
-                const expenseDate =  new Date(item.createdAt.toMillis());
+                const expenseDate =  new Date(item.createdAt);
                 return expenseDate.getFullYear() === year;
             })
             //returns filtered items (May return categories with 0 items!)
@@ -104,8 +104,7 @@ export function yearlyIncomeFilter(incomes, year) {
     
         //Check the date then filter accordingly
         return incomes.filter(income => {
-            const createdAt = income.createdAt;
-            const incomedate = new Date(createdAt);
+            const incomedate = new Date(income.createdAt);
             return incomedate.getFullYear() === year;
         })
     };

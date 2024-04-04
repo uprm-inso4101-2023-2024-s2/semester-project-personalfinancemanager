@@ -1,6 +1,7 @@
 'use client'
-import React, {useRef, useEffect} from 'react';
+import React, {useRef, useEffect, useState} from 'react';
 import * as d3 from 'd3';
+import monthlyExpensefilter , { monthlyIncomeFilter, yearlyExpenseFilter, yearlyIncomeFilter } from '../Page-Functionality/Filters/moneyFilters';
 
 /**
  * Constructs a Diverging Bar Chart using an array of objects, each with a value and category. 
@@ -42,18 +43,58 @@ export default function RenderDBC( {
   } = {}) {
     // Compute values.
     const svgRef = useRef();
+    debugger;
+    const [currentDate, setCurrentDate,] = useState(new Date());
+    const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+    const [filteredExpenses, setFilteredExpenses] = useState(expensesData);
+    const [filteredIncome, setFilteredIncome] = useState(incomeData);
+    const [noDataAvailable, setNoDataAvailable] = useState(false);
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December",];
+
+
+    const handleChangeMonth = (event) => {
+        const selectedValue = event.target.value;
+        if (selectedValue === "0") {
+          const year = parseInt(selectedValue);
+          setSelectedMonth(year);
+          setFilteredExpenses(yearlyExpenseFilter(expensesData, currentDate.getFullYear()));
+          setFilteredIncome(yearlyIncomeFilter(incomeData, currentDate.getFullYear()));
+        } else {
+          // For other months, enable filtering and set the selected month
+          const selectedMonth = parseInt(selectedValue);
+          setSelectedMonth(selectedMonth);
+          setFilteredExpenses(monthlyExpensefilter(expensesData, selectedMonth, currentDate.getFullYear()));
+          setFilteredIncome(monthlyIncomeFilter(incomeData, selectedMonth, currentDate.getFullYear()));
+        }
+      };
+
+      const renderNoDataMessage = () => {
+        if (noDataAvailable) {
+          return (
+            <div className="no-data-message">
+              <h3>No information available for {selectedMonth === 0 ? currentDate.getFullYear() : months[selectedMonth]}</h3>
+            </div>
+          );
+        } else {
+          return (
+            <svg ref={svgRef}></svg>
+          );
+        }
+      };
 
     const unduplicatedData = {};
-    expensesData.forEach(item => {
-        const category = item.title;
+    filteredExpenses.forEach(item => {
+        if(item.items && item.items.length > 0) {
+          const category = item.title;
         if(!unduplicatedData[category]){
             unduplicatedData[category] = -item.total;
         } else {
             unduplicatedData[category] -= item.total;
         }
+      }
     })
 
-    incomeData.forEach(item => {
+    filteredIncome.forEach(item => {
         const category = item.description;
         if(!unduplicatedData[category]){
             unduplicatedData[category] = item.amount;
@@ -65,6 +106,7 @@ export default function RenderDBC( {
     const processedData = Object.keys(unduplicatedData).map(category => ({category, value: unduplicatedData[category]}));
 
     useEffect(() => {
+      debugger;
         d3.select(svgRef.current).selectAll('*').remove();
 
         const X = d3.map(processedData, x);
@@ -191,11 +233,27 @@ export default function RenderDBC( {
                 .filter(y => YX.get(y) < 0)
                 .attr("text-anchor", "start")
                 .attr("x", 6));
-    }, [expensesData, incomeData, width, xRange,  xLabel, xFormat, xType, marginTop, marginRight, marginBottom, marginLeft, yPadding, colors]);
-    
+        const newDataAvailable = filteredExpenses.length > 0 || filteredIncome.length > 0;
+        setNoDataAvailable(!newDataAvailable);
+    }, [filteredExpenses, filteredIncome, handleChangeMonth, width, xRange,  xLabel, xFormat, xType, marginTop, marginRight, marginBottom, marginLeft, yPadding, colors]);
+         
+    const renderMonthSelector = () => {
+      return (
+        <div className='month-selector-panel'>
+          <select className='select-input' name='months' id='months' onChange={handleChangeMonth} value={selectedMonth}>
+            <option value="0">{new Date().getFullYear().toString()}</option>
+            {months.map((month, index) => (
+              <option key={index + 1} value={index + 1}>{month}</option>
+            ))}
+          </select>
+        </div>
+      );
+    };
+
     return (
         <div className="divergingBarChart">
-            <svg ref={svgRef}></svg>
+            {renderMonthSelector()}
+            {renderNoDataMessage()}
         </div>
     );
 }
