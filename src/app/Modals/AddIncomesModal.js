@@ -64,7 +64,7 @@ function AddIncomesModal({ show, onClose }) {
         <Modal show={show} onClose={onClose}>
             <form className="input-ground" onSubmit={addIncomeHandler}>
                 <div className="input-ground"> 
-                    <label htmlFor="amount"> Income Amount</label>
+                    <label htmlFor="amount" className="income-label"> Income Amount</label>
                     <input 
                         type="number" 
                         name="amount"
@@ -78,7 +78,7 @@ function AddIncomesModal({ show, onClose }) {
                 </div>
 
                 <div className="input-ground"> 
-                    <label htmlFor="description"> Description</label>
+                    <label htmlFor="description" className="income-label"> Description</label>
                     <input 
                         name="description"
                         type="text" 
@@ -91,7 +91,7 @@ function AddIncomesModal({ show, onClose }) {
 
                 {/* Date Input Field */}
                 <div className="input-ground"> 
-                    <label htmlFor="date">Select Date and Time</label>
+                    <label htmlFor="date" className="income-label">Select Date and Time</label>
                     <input 
                         type="datetime-local" 
                         name="date"
@@ -106,13 +106,13 @@ function AddIncomesModal({ show, onClose }) {
             </form>
 
             <div className="flex flex-col gap-4 mt-6">
-                <h3 className="text-2xl font-bold"> Income History</h3>
+                <h3 className="text-2xl font-bold income-label"> Income History</h3>
                 {income.map(i => {
                     return (
                         <div className="flex justify-between item-center" key={i.id}>
                             <div>
-                                <p className="font-semibold">{i.description}</p>
-                                <small className="text-xs">
+                                <p className="font-semibold income-label">{i.description}</p>
+                                <small className="text-xs income-label">
                                     {/* Display Date and Time */}
                                     {new Date(i.createdAt).toLocaleString()}
                                 </small>
