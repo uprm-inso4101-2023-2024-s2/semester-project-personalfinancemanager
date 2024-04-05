@@ -89,6 +89,7 @@
 
 .select-input {
     text-align: center;
+    background-color: rgb(150, 150, 150);/*Changed color on the month selection dropdown to match the budget button*/
 }
 
 
