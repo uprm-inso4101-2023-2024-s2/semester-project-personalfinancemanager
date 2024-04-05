@@ -78,14 +78,34 @@ export function yearlyExpenseFilter(expenses, year) {
               return false; 
           }
           //filters items that don't match the month and year
+
+          // const filteredItems = items.filter(item => {
+          //     const expenseDate =  new Date(item.createdAt.toMillis());
+          //     return expenseDate.getFullYear() === year;
+          // })
+
+          //
+
           const filteredItems = items.filter(item => {
-              const expenseDate =  new Date(item.createdAt.toMillis());
-              return expenseDate.getFullYear() === year;
+            const expenseDate = new Date(item.createdAt);
+          
+            // Ensure that expenseDate is a valid Date object
+            if (!(expenseDate instanceof Date && !isNaN(expenseDate))) {
+              console.error("Invalid createdAt value:", item.createdAt);
+              return false;
+            }
+          
+            return expenseDate.getFullYear() === year;
           })
+          //
+
+
           //returns filtered items (May return categories with 0 items!)
+          const total = filteredItems.reduce((acc, curr) => acc + curr.amount, 0);
           return {
               ...expense,
-              items: filteredItems
+              items: filteredItems,
+              total: total
           };
       });
   };

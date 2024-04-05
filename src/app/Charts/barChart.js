@@ -2,6 +2,7 @@
 import { financeContext } from '../Finance-Context/finance-context';
 import React, {useState, useRef, useEffect} from 'react';
 import monthlyExpensefilter from '../Page-Functionality/Filters/moneyFilters';
+import { yearlyExpenseFilter } from '../Page-Functionality/Filters/moneyFilters';
 import * as d3 from 'd3';
 import { faL } from '@fortawesome/free-solid-svg-icons';
 
@@ -9,7 +10,8 @@ const RenderBarChart = ({expensesData}) => {
   const svgRef = useRef();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth()+1);
-  const [shouldFilter, setShouldFilter] = useState(true);
+  const [shouldFilterbyMonth, setShouldFilterbyMonth] = useState(true);
+  const [shouldFilterByYear, setShouldFilterbyYear] = useState(false);
   const [shouldRenderExpenseMessage, setShouldRenderExpenseMessage] = useState(false);
 
   function hexToRGBA(hex, alpha = 1) {
@@ -28,7 +30,7 @@ const RenderBarChart = ({expensesData}) => {
 
     console.log("UnFiltered", filteredExpenses)
 
-    if (shouldFilter) {
+    if (shouldFilterbyMonth) {
       filteredExpenses = monthlyExpensefilter(expensesData, selectedMonth, currentTime.getFullYear());
       
       // Check if the filtered expenses are empty or null
@@ -36,14 +38,22 @@ const RenderBarChart = ({expensesData}) => {
         return;
       }
     }
+    else if (shouldFilterByYear) {
+      filteredExpenses = yearlyExpenseFilter(expensesData, currentTime.getFullYear());
 
-    let totalMonthlyExpense = 0;
+      // Check if the filtered expenses are empty or null
+      if (!filteredExpenses || filteredExpenses.length === 0) {
+        return;
+      }
+    }
+
+    let totalExpense = 0;
     for (let i = 0; i < filteredExpenses.length; i++)
-      totalMonthlyExpense += filteredExpenses[i].total;
+    totalExpense += filteredExpenses[i].total;
 
     console.log("Filtered", filteredExpenses)
     console.log("Month", selectedMonth)
-    if (totalMonthlyExpense === 0) {
+    if (totalExpense === 0) {
       setShouldRenderExpenseMessage(true);
       return;
     }
@@ -54,7 +64,6 @@ const RenderBarChart = ({expensesData}) => {
     const h = 350;
     const paddingTop = 20;
     const paddingBottom = 20;
-    const totalExpense = filteredExpenses.reduce((acc, curr) => acc + curr.total, 0);
 
     const svg = d3.select(svgRef.current)
                   .attr('width', w)
@@ -122,19 +131,26 @@ const RenderBarChart = ({expensesData}) => {
             .style('opacity', 0) 
             .remove(); 
         });
-  }, [expensesData, selectedMonth]);
+  }, [expensesData, selectedMonth, shouldFilterByYear, shouldFilterbyMonth]);
 
   const handleChangeMonth = (event) => {
     const selectedValue = event.target.value;
     if (selectedValue === "0") {
-      // If the year option is selected, disable filtering
-      setShouldFilter(false);
+      // If the year option is selected, enable yearly filtering
       setSelectedMonth(null);
+      setShouldFilterbyMonth(false);
+      setShouldFilterbyYear(true);
+    } else if (selectedValue === "-1"){
+      // If all expenses are selected, disable filtering
+      setSelectedMonth(null);
+      setShouldFilterbyMonth(false);
+      setShouldFilterbyYear(false);
     } else {
-      // For other months, enable filtering and set the selected month
+      // For other months, enable monthly filtering and set the selected month
       const selectedMonth = parseInt(selectedValue);
       setSelectedMonth(selectedMonth);
-      setShouldFilter(true);
+      setShouldFilterbyMonth(true);
+      setShouldFilterbyYear(false);
     }
   };
   
@@ -143,6 +159,7 @@ const RenderBarChart = ({expensesData}) => {
     return (
       <div className='month-selector-panel'>
         <select className='select-input' name='months' id='months' onChange={handleChangeMonth} value={selectedMonth}>
+          <option value="-1">All</option>
           <option value="0">{new Date().getFullYear().toString()}</option>
           <option value="1">January</option>
           <option value="2">February</option>
