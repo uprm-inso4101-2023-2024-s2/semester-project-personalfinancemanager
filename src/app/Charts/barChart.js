@@ -14,6 +14,7 @@ const RenderBarChart = ({expensesData}) => {
   const [shouldFilterByYear, setShouldFilterbyYear] = useState(false);
   const [shouldRenderExpenseMessage, setShouldRenderExpenseMessage] = useState(false);
 
+  //function for transition effect for hover over of bar graphs
   function hexToRGBA(hex, alpha = 1) {
     let r = parseInt(hex.slice(1, 3), 16),
         g = parseInt(hex.slice(3, 5), 16),
@@ -28,34 +29,28 @@ const RenderBarChart = ({expensesData}) => {
     
     let filteredExpenses = expensesData;
 
-    console.log("UnFiltered", filteredExpenses)
-
+    //determine whether it should filter the expenses or not and by month or year
     if (shouldFilterbyMonth) {
       filteredExpenses = monthlyExpensefilter(expensesData, selectedMonth, currentTime.getFullYear());
-      
-      // Check if the filtered expenses are empty or null
-      if (!filteredExpenses || filteredExpenses.length === 0) {
-        return;
-      }
     }
     else if (shouldFilterByYear) {
       filteredExpenses = yearlyExpenseFilter(expensesData, currentTime.getFullYear());
-
-      // Check if the filtered expenses are empty or null
-      if (!filteredExpenses || filteredExpenses.length === 0) {
-        return;
-      }
     }
 
-    let totalExpense = 0;
-    for (let i = 0; i < filteredExpenses.length; i++)
-    totalExpense += filteredExpenses[i].total;
-
-    console.log("Filtered", filteredExpenses)
-    console.log("Month", selectedMonth)
-    if (totalExpense === 0) {
+    //checks if the user has no categories added
+    if (!filteredExpenses || filteredExpenses.length === 0) {
       setShouldRenderExpenseMessage(true);
       return;
+    }
+    setShouldRenderExpenseMessage(false);
+
+    //checks if user has no expenses for the selected period
+    let totalExpense = 0;
+    for (let i = 0; i < filteredExpenses.length; i++) 
+      totalExpense += filteredExpenses[i].total;
+      if (totalExpense === 0) {
+        setShouldRenderExpenseMessage(true);
+        return;
     }
     setShouldRenderExpenseMessage(false);
 
@@ -133,6 +128,7 @@ const RenderBarChart = ({expensesData}) => {
         });
   }, [expensesData, selectedMonth, shouldFilterByYear, shouldFilterbyMonth]);
 
+  //handles the input given by the user in the month selector 
   const handleChangeMonth = (event) => {
     const selectedValue = event.target.value;
     if (selectedValue === "0") {
@@ -146,15 +142,15 @@ const RenderBarChart = ({expensesData}) => {
       setShouldFilterbyMonth(false);
       setShouldFilterbyYear(false);
     } else {
-      // For other months, enable monthly filtering and set the selected month
+      // For the months, enable monthly filtering and set the selected month
       const selectedMonth = parseInt(selectedValue);
       setSelectedMonth(selectedMonth);
       setShouldFilterbyMonth(true);
       setShouldFilterbyYear(false);
     }
   };
-  
 
+  //render the month selector panel
   const renderMonthSelector = () => {
     return (
       <div className='month-selector-panel'>
@@ -178,6 +174,7 @@ const RenderBarChart = ({expensesData}) => {
     );
   };
 
+  //renders a message when the user has no expenses for the selected time period
   const renderExpenseMessage = () => {
     if (shouldRenderExpenseMessage===true) {
       return (
