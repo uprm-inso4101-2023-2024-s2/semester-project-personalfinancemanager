@@ -31,6 +31,7 @@ export const financeContext = createContext({
   addCategory: async () => {},
   deleteExpenseItem: async () => {},
   deleteExpenseCategory: async () => {},
+  updateExpense: async () => {},
 });
 
  export async function checkExpensesDuplication(user,title){
@@ -165,6 +166,26 @@ export default function FinanceContextProvider({ children }) {
     }
   };
 
+  const updateExpense = async (updatedExpense) => {
+    try {
+        const docRef = doc(db, "expenses", updatedExpense.id);
+        await updateDoc(docRef, {
+            ...updatedExpense
+        });
+
+        setExpenses(prevExpenses => {
+            const updatedExpenses = [...prevExpenses];
+            const index = updatedExpenses.findIndex(expense => expense.id === updatedExpense.id);
+            if (index !== -1) {
+                updatedExpenses[index] = updatedExpense;
+            }
+            return updatedExpenses;
+        });
+    } catch (error) {
+        throw error;
+    }
+};
+
   const addExpenseItem = async (expenseCategoryId, newExpense) => {
     const docRef = doc(db, "expenses", expenseCategoryId);
 
@@ -274,6 +295,7 @@ export default function FinanceContextProvider({ children }) {
     addCategory,
     deleteExpenseItem,
     deleteExpenseCategory,
+    updateExpense,
   };
 
   useEffect(() => {
