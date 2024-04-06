@@ -379,26 +379,6 @@ export default function FinanceContextProvider({ children }) {
     }
   };
 
-  const addEventItem = async (newEvent) => { // calendar related
-
-    try {
-      const collectionRef = collection(db, "event");
-      const docRef = await addDoc(collectionRef, newEvent);
-      setEvents((prevState) => {
-        return [
-          ...prevState,
-          {
-            id: docRef.id,
-            uid: user.uid,
-            ...newEvent,
-          },
-        ];
-      });
-    } catch (error) {
-      console.log(error.message);
-      throw error;
-    }
-  };
 
 
 
