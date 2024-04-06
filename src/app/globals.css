@@ -219,6 +219,10 @@ body {
   }
 }
 
+.income-label {
+  color: black;
+}
+
 body, button, input, .btn, .balance-box, .balance-label, .balance-amount, .text-2xl, .section-title {
   font-family: 'Nunito', sans-serif;
   /*font-family: 'Helvetica Neue', sans-serif;*/
