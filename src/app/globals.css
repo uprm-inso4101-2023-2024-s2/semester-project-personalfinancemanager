@@ -245,3 +245,15 @@ body, button, input, .btn, .balance-box, .balance-label, .balance-amount, .text-
 .bg-custom-gray {
   background-color: rgb(28, 29, 33);
 }
+
+.select-input {
+  text-align: center;
+  color: black;
+}
+
+.expense-message{
+  display: flex; 
+  justify-content: center;
+  align-items: center; 
+  font-size: 25px;
+}
