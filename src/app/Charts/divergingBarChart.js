@@ -47,8 +47,8 @@ export default function RenderDBC( {
     debugger;
     const [currentDate, setCurrentDate,] = useState(new Date());
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
-    const [filteredExpenses, setFilteredExpenses] = useState(expensesData);
-    const [filteredIncome, setFilteredIncome] = useState(incomeData);
+    const [filteredExpenses, setFilteredExpenses] = useState(monthlyExpensefilter(expensesData, selectedMonth, currentDate.getFullYear()));
+    const [filteredIncome, setFilteredIncome] = useState(monthlyIncomeFilter(incomeData, selectedMonth, currentDate.getFullYear()));
     const [noDataAvailable, setNoDataAvailable] = useState(false);
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December",];
 
