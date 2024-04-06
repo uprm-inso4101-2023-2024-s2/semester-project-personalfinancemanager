@@ -1,15 +1,49 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import '../globals.css';
+import monthlyExpensefilter from '../Page-Functionality/Filters/moneyFilters';
+import { yearlyExpenseFilter } from '../Page-Functionality/Filters/moneyFilters';
+
 
 const RenderPieChart = ({ expensesData }) => {
   const svgRef = useRef();
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // State for selected month
+  const [showPieChart, setShowPieChart] = useState(false); // State to toggle pie chart visibility
+  const [noDataMessage, setNoDataMessage] = useState(''); // State for no data message
+
+  /* This useEffect hook is responsible for updating the pie chart based on changes in expensesData, selectedMonth, 
+  or noDataMessage. It begins by filtering expensesData for the selected month and calculating the totalExpense. If totalExpense is zero, indicating no data, 
+  it sets the noDataMessage state accordingly and hides the pie chart. Otherwise, it clears any existing no data message, sets showPieChart state to true, 
+  and renders the pie chart for the selected month. Dependencies: expensesData, selectedMonth, noDataMessage. */
 
   useEffect(() => {
+    let filteredExpenses;
+    if (selectedMonth === 13) { // Check if selected month is the entire year
+      filteredExpenses = yearlyExpenseFilter(expensesData, new Date().getFullYear()); // Use yearlyExpenseFilter
+      console.log(filteredExpenses);
+    } else {
+      filteredExpenses = monthlyExpensefilter(expensesData, selectedMonth, new Date().getFullYear());
+    }
+    let totalExpense = 0;
+    for (let i = 0; i < filteredExpenses.length; i++) {
+      totalExpense += filteredExpenses[i].total;
+    }
+
+    if (totalExpense === 0) {
+      setNoDataMessage('No data available');
+      setShowPieChart(false);
+    } else {
+      setNoDataMessage('');
+      setShowPieChart(true);
+      renderPieChartForMonth(filteredExpenses);
+    }
+
+  }, [expensesData, selectedMonth, noDataMessage]);
+
+  const renderPieChartForMonth = (month) => {
     d3.select(svgRef.current).selectAll('*').remove();
-
-    const colorScale = d3.scaleOrdinal().range(expensesData.map(d => d.color));
-
+    // Filter expenses data for the selected month
+    const colorScale = d3.scaleOrdinal().range(month.map(d => d.color));
     const width = 400;
     const height = 400;
     const radius = Math.min(width, height) / 2;
@@ -22,6 +56,7 @@ const RenderPieChart = ({ expensesData }) => {
 
     svg.selectAll("text").remove();
 
+    // Appending text elements for total and percentage
     const totalText = svg.append("text")
       .attr("text-anchor", "middle")
       .attr("dy", ".35em")
@@ -36,6 +71,7 @@ const RenderPieChart = ({ expensesData }) => {
       .attr("class", "tooltip")
       .style("opacity", 0);
 
+    // Function to update total and percentage text
     const updateTotalText = (total, category, amount) => {
         const textY = 0;
       
@@ -62,7 +98,7 @@ const RenderPieChart = ({ expensesData }) => {
       .outerRadius(radius);
 
     const arcs = svg.selectAll("arc")
-      .data(pie(expensesData))
+      .data(pie(month))
       .enter()
       .append("g")
       .attr("class", "arc");
@@ -79,7 +115,7 @@ const RenderPieChart = ({ expensesData }) => {
           .duration(100)
           .attr("fill", brighterColor);
       
-        const totalAmount = d3.sum(expensesData, (d) => d.total);
+        const totalAmount = d3.sum(month, (d) => d.total);
         const categoryAmount = d.data.total;
         const categoryName = d.data.title;
       
@@ -101,21 +137,52 @@ const RenderPieChart = ({ expensesData }) => {
           .duration(100)
           .attr("fill", originalColor);
       
-        updateTotalText(d3.sum(expensesData, (d) => d.total), '', 0);
+        updateTotalText(d3.sum(month, (d) => d.total), '', 0);
       
         tooltip.transition()
           .duration(500)
           .style("opacity", 0);
       });
+  }
 
-  }, [expensesData]);
+
+  //Function to change the select month
+  const handleChangeMonth = (event) => {
+    const selectedValue = event.target.value;
+    setSelectedMonth(parseInt(selectedValue));
+  };
+
+  {/* This section represents the container for the pie chart component. 
+  It includes a dropdown menu to select the month using a select-input2 class for styling, 
+  with options ranging from January to December. Depending on whether there is a noDataMessage 
+  present, it conditionally renders either a div displaying the message using a no-data-message class 
+  or the SVG element for the pie chart rendered via D3, which is referenced using the svgRef. */}  
 
   return (
-    <div className="pie-chart" style={{ position: 'relative' }}>
-      <svg ref={svgRef}></svg>
+    
+    <div className="pie-chart">
+      <select className="select-input2" value={selectedMonth} onChange={handleChangeMonth}>
+        <option value="1">January</option>
+        <option value="2">February</option>
+        <option value="3">March</option>
+        <option value="4">April</option>
+        <option value="5">May</option>
+        <option value="6">June</option>
+        <option value="7">July</option>
+        <option value="8">August</option>
+        <option value="9">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+        <option value="13">All 2024</option> {/* New option for the entire year */}
+      </select>
+      {noDataMessage != '' ? (
+      <div className="no-data-message">{noDataMessage}</div>
+      ) : (
+        <svg ref={svgRef}></svg>
+      )}    
     </div>
   );
 };
 
 export default RenderPieChart;
-
