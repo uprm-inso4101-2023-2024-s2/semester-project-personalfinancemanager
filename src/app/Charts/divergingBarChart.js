@@ -2,7 +2,7 @@
 import React, {useRef, useEffect, useState} from 'react';
 import * as d3 from 'd3';
 import monthlyExpensefilter , { monthlyIncomeFilter, yearlyExpenseFilter, yearlyIncomeFilter } from '../Page-Functionality/Filters/moneyFilters';
-import './divergingBarChart.css';
+import './charts.css';
 
 /**
  * Constructs a Diverging Bar Chart using an array of objects, each with a value and category. 
