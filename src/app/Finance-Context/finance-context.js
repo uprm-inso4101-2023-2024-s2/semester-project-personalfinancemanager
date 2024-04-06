@@ -400,14 +400,6 @@ export default function FinanceContextProvider({ children }) {
     }
   };
 
-  const submitEventData = async (data) => {
-    try {
-      await addEventItem(data);
-    } catch (error) {
-      console.log(error.message);
-      throw error;
-    }
-  };
 
 
   const values = {
