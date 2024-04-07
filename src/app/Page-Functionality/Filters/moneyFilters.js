@@ -79,13 +79,6 @@ export function yearlyExpenseFilter(expenses, year) {
           }
           //filters items that don't match the month and year
 
-          // const filteredItems = items.filter(item => {
-          //     const expenseDate =  new Date(item.createdAt.toMillis());
-          //     return expenseDate.getFullYear() === year;
-          // })
-
-          //
-
           const filteredItems = items.filter(item => {
             const expenseDate = new Date(item.createdAt);
           

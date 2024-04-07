@@ -44,7 +44,6 @@ export default function RenderDBC( {
   } = {}) {
     // Compute values.
     const svgRef = useRef();
-    debugger;
     const [currentDate, setCurrentDate,] = useState(new Date());
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
     const [filteredExpenses, setFilteredExpenses] = useState(monthlyExpensefilter(expensesData, selectedMonth, currentDate.getFullYear()));
@@ -107,7 +106,6 @@ export default function RenderDBC( {
     const processedData = Object.keys(unduplicatedData).map(category => ({category, value: unduplicatedData[category]}));
 
     useEffect(() => {
-      debugger;
         d3.select(svgRef.current).selectAll('*').remove();
 
         const X = d3.map(processedData, x);
