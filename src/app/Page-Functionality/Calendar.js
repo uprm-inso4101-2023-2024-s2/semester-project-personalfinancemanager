@@ -8,10 +8,9 @@ import './Calendar.css';
 const Calendar = () => {
     const svgRef = useRef(null);
     const [progress, setProgress] = useState(0);
-    const {expenses, income, monthlyBudgets, createMonthlyBudgets, updateMonthlyBudgets} = useContext(financeContext);
+    const {expenses, income, monthlyBudgets, events, createMonthlyBudgets, updateMonthlyBudgets, addEventCategory, addEventItem, deleteEventCategory, deleteEventItem} = useContext(financeContext);
     const [currentTime, setCurrentTime] = useState(new Date());
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
-    const { submitEventData } = useContext(financeContext); 
     /* 
     State variables used to manage the interactive behavior of the calendar component.
 
@@ -35,7 +34,6 @@ const Calendar = () => {
     debugger;
     //Variables to calculate total income, total expenses, and the percentage of the total expenses compared to the monthly budget.
     useEffect(() => {
-        debugger;
         const monthlyincome = monthlyIncomeFilter(income, currentMonth + 1, currentTime.getFullYear());
         const monthlyexpenses = monthlyExpensefilter(expenses, currentMonth + 1, currentTime.getFullYear());
         const totalExpenses = monthlyexpenses.reduce((total, category) => {
@@ -170,7 +168,7 @@ const Calendar = () => {
             .attr('y', (d) => yScale(d3.timeWeek.count(d3.timeMonth(d), d)) + yScale.bandwidth())
             .attr('fill', (d) => {
                 const isToday = d.getDate() === currentTime.getDate();
-                const hasEvent = submittedData[d] && submittedData[d].event && submittedData[d].events.length > 0;
+                const hasEvent = events[d] && events[d].event && events[d].events.length > 0;
 
                 // Check if the day has been removed
                 const hasRemovedEvents = removedEvents[d];
@@ -363,7 +361,7 @@ const Calendar = () => {
             };
         
             // Call the submitEventData function with the data
-            await submitEventData(data);
+            await addEventCategory(data);
         
             // Clear input values if necessary
             setDayInput({ ...dayInput, [selectedDay]: '' });

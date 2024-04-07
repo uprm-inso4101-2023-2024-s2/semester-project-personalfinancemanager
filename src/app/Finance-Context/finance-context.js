@@ -79,7 +79,6 @@ export default function FinanceContextProvider({ children }) {
       const docSnap = await addDoc(collectionRef, {
         uid: user.uid,
         ...category,
-        items: [],
       });
 
       setEvents((prevEvents) => {
@@ -88,7 +87,6 @@ export default function FinanceContextProvider({ children }) {
           {
             id: docSnap.id,
             uid: user.uid,
-            items: [],
             ...category,
           },
         ];
