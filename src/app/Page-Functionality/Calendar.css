@@ -2,6 +2,7 @@
     padding-top: 10px;
     position: relative;
     display: flex;
+    width: 100%;
     justify-content: center;
     flex-direction: row;
     align-items: flex-start;
@@ -10,10 +11,14 @@
 }
 
 .panel {
-    margin: 5%;
-    padding: 0;
+    margin-top: 30px;
+    margin-right: 5px;
+    padding: 5px;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+    justify-content: center;
+    align-items: center;
     gap: 10px;
     border-radius: 10px;
     background-color: #fff; 
@@ -84,12 +89,13 @@
 
 .select-input {
     text-align: center;
+    background-color: rgb(150, 150, 150);/*Changed color on the month selection dropdown to match the budget button*/
 }
 
 
 .progressBar {
     justify-content: center;
-    width: 50%; 
+    width: 500px; 
     height: 20px; 
     background-color: #000000; 
     border-radius: 10px; 
@@ -104,23 +110,25 @@
     height: 100%;
     background-color: #cf1414; 
     border-radius: 10px;
+    transition: width 2s ease;
 }
 
 #calendarSvg {
-    flex: 1;
+    flex: 2;
     margin-top: 20px;
 }
 
 .budget-button {
-    display: flex;
+    display: block;
+    width: 300px;
     text-align: center;
     justify-content: center;
-    bottom: 0;
     margin-top: 10px;
     margin-bottom: 10px;
+    margin-left: auto;
+    margin-right: auto;
     background-color: rgb(150,150,150);
     color: black;
-    margin-left: 280px;
     border-radius: 10px;
     padding: 10px 20px;
-}
+  }
