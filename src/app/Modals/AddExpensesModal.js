@@ -97,7 +97,7 @@ function AddExpensesModal({ show, onClose }) {
     return (
         <Modal show={show} onClose={onClose}>
             <div className="flex flex-col gap-4">
-                <label className="input-ground"> Enter an amount...</label>
+                <label className="expense-label"> Expense Amount</label>
                 <input
                     type="number"
                     min={0.01}
@@ -114,14 +114,14 @@ function AddExpensesModal({ show, onClose }) {
             {expenseAmount > 0 && (
                 <div className= "flex flex-col gap-4 mt-6">
                     <div className="flex items-center justify-between">
-                        <h3 className="text-2x1 capitalize">Select expense category</h3>
+                        <h3 className="text-2x1 expense-label">Select Expense Category</h3>
                         <button onClick={() => setShowAddExpense(true)} className="text-lime-800">+ New Category</button>
                     </div>
 
                     {showAddExpense && (
                         <div className= "flex items-center justify-between">
                             <input type="text" placeholder="Enter Title" ref={titleRef}/>
-                            <label>Pick Color</label>
+                            <label className="expense-label">Pick Color:</label>
                             <input type="color" className="bg bg-slate-500 w-24 h-10" ref={colorRef}/>
                             <button onClick={addCategoryHandler} className="btn btn2-primary-outline">Create</button>
                             <button className="btn btn-danger">Cancel</button>
