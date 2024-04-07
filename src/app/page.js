@@ -194,7 +194,7 @@ export default function Home() {
                   <div key={index} className="preference-item bg-gray-200 p-4 rounded-md" style={{ flex: '0 0 calc(33.32% - 16px)', display: 'flex', justifyContent: 'space-between' }}>
                     <div>
                       <p>{preference.title}</p>
-                      <p>{preference.amount}</p>
+                      <p>$ {preference.amount}</p>
                     </div>
                     <div>
                     <button className="btn" style={{ backgroundColor: 'hsl(50, 100%, 40%)', marginRight: '10px' }}>Edit</button>
