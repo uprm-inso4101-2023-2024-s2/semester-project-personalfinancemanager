@@ -261,3 +261,46 @@ body, button, input, .btn, .balance-box, .balance-label, .balance-amount, .text-
   align-items: center; 
   font-size: 25px;
 }
+
+.pie-chart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.select-input2 {
+  text-align: center;
+  padding: 8px 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.select-input2:hover {
+  border-color: #999;
+}
+
+.select-input2:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.no-data-message {
+  font-size: 18px;
+  color: #FF0000;
+  margin-top: 20px;
+  text-align: center; 
+  border: 2px solid #FF0000; 
+  padding: 10px; 
+  background-color: #FFF;
+  border-radius: 5px; 
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
