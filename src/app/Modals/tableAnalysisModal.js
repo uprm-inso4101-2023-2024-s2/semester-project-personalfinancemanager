@@ -224,18 +224,17 @@ function TableAnalisisModal({ show, onClose }) {
 
         table {
           width: 100%;
-          border-collapse: collapse; // Change this to 'collapse'
+          border-collapse: collapse;
         }
 
         th, td {
           padding: 18px;
           text-align: center;
           background-color: white;
-          transition: background-color 0.3s ease; // Add this line
         }
       
         tr:hover td {
-          background-color: #f2f2f2; // Change this to the color you want
+          background-color: #f2f2f2;
         }
 
         tr {
