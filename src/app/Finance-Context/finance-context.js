@@ -447,11 +447,14 @@ export default function FinanceContextProvider({ children }) {
       const docsSnap = await getDocs(q);
 
       const data = docsSnap.docs.map((doc) => {
+        const docData = doc.data();
         return {
           id: doc.id,
-          ...doc.data(),
-          events: doc.data().events.map((item) => ({
-            ...item,
+          date: docData.date,
+          uid:  docData.uid,
+          events: docData.events.map((item) => ({
+            event: item.event,
+            expenses: item.expenses,
         }))
         };
       });
