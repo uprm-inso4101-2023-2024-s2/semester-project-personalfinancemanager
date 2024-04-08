@@ -441,7 +441,7 @@ export default function FinanceContextProvider({ children }) {
     };
 
     const getEventsData = async () => { // calendar related
-      const collectionRef = collection(db, "event");
+      const collectionRef = collection(db, "events");
       const q = query(collectionRef, where("uid", "==", user.uid));
 
       const docsSnap = await getDocs(q);
@@ -450,8 +450,9 @@ export default function FinanceContextProvider({ children }) {
         return {
           id: doc.id,
           ...doc.data(),
-          start: new Date(doc.data().start.toMillis()),
-          end: new Date(doc.data().end.toMillis()),
+          events: doc.data().events.map((item) => ({
+            ...item,
+        }))
         };
       });
 

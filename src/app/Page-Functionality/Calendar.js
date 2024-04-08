@@ -168,7 +168,7 @@ const Calendar = () => {
             .attr('y', (d) => yScale(d3.timeWeek.count(d3.timeMonth(d), d)) + yScale.bandwidth())
             .attr('fill', (d) => {
                 const isToday = d.getDate() === currentTime.getDate();
-                const hasEvent = events[d] && events[d].event && events[d].events.length > 0;
+                const hasEvent = submittedData[d] && submittedData[d].events && submittedData[d].events.length > 0;
 
                 // Check if the day has been removed
                 const hasRemovedEvents = removedEvents[d];
