@@ -13,7 +13,8 @@ import './charts.css';
  * @see https://react.dev/reference/react/useEffect
  * @see https://d3js.org
  * 
- * @param {Array} data - An array of objects with each data point holding a value and a category.
+ * @param {Array} expensesData - An array of expenses with each data point holding a value and a category.
+ * @param {Array} incomeData - An array of income with each data point holding a value and a description.
  * @param {number} [marginTop=50] - The margin on the top of the chart.
  * @param {number} [marginRight=40] - The margin on the right side of the chart.
  * @param {number} [marginBottom=10] - The margin on the bottom of the chart.
@@ -104,7 +105,9 @@ export default function RenderDBC( {
     })
 
     const processedData = Object.keys(unduplicatedData).map(category => ({category, value: unduplicatedData[category]}));
-
+    const total = processedData.reduce((acc, curr) => acc + curr.value, 0);
+    processedData.push({category: "Total", value: total});
+    debugger;
     useEffect(() => {
         d3.select(svgRef.current).selectAll('*').remove();
 
@@ -112,7 +115,10 @@ export default function RenderDBC( {
         const Y = d3.map(processedData, y);
     
         // Compute default domains, and unique the y-domain.
-        const xDomain = d3.extent(X);
+        const xDomain = [
+          Math.min(0, d3.min(processedData, d => d.value)),
+          Math.max(0, d3.max(processedData, d => d.value))
+        ];
         let yDomain = Y;
         yDomain = Array.from(new Set(yDomain));
     
