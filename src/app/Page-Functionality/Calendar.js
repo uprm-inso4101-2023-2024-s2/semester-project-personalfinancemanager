@@ -31,10 +31,8 @@ const Calendar = () => {
     const [removedEvents, setRemovedEvents] = useState({});
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December",];
 
-    debugger;
     //Variables to calculate total income, total expenses, and the percentage of the total expenses compared to the monthly budget.
     useEffect(() => {
-        debugger;
         const monthlyincome = monthlyIncomeFilter(income, currentMonth + 1, currentTime.getFullYear());
         const monthlyexpenses = monthlyExpensefilter(expenses, currentMonth + 1, currentTime.getFullYear());
         const totalExpenses = monthlyexpenses.reduce((total, category) => {
