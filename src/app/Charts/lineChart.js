@@ -32,7 +32,7 @@ export default function RenderLineChart() {
                      .range([0, innerWidth]);
 
     const yScale = d3.scaleLinear()
-                     .domain([0, d3.max(data)])
+                     .domain([0, d3.max(data)]) 
                      .range([innerHeight, 0]);
 
     // Line generator
@@ -70,7 +70,7 @@ export default function RenderLineChart() {
               .attr('y1', 0)
               .attr('x2', innerWidth)
               .attr('y2', 0)
-              .style('stroke', 'black')
+              .style('stroke', 'gray')
               .style('stroke-width', '1px')
               .style('opacity', '0.1');
 
@@ -82,7 +82,7 @@ export default function RenderLineChart() {
               .attr('y1', 0)
               .attr('x2', 0)
               .attr('y2', -innerHeight)
-              .style('stroke', 'black')
+              .style('stroke', 'gray')
               .style('stroke-width', '1px')
               .style('opacity', '0.1');
 
