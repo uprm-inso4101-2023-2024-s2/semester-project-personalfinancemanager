@@ -47,11 +47,23 @@ export default function RenderDBC( {
     const svgRef = useRef();
     const [currentDate, setCurrentDate,] = useState(new Date());
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
-    const [filteredExpenses, setFilteredExpenses] = useState(monthlyExpensefilter(expensesData, selectedMonth, currentDate.getFullYear()));
-    const [filteredIncome, setFilteredIncome] = useState(monthlyIncomeFilter(incomeData, selectedMonth, currentDate.getFullYear()));
+    const [filteredExpenses, setFilteredExpenses] = useState([]);
+    const [filteredIncome, setFilteredIncome] = useState([]);
     const [noDataAvailable, setNoDataAvailable] = useState(false);
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December",];
-
+    useEffect(() => {
+      let updatedFilteredExpenses = [];
+      let updatedFilteredIncome = [];
+      if(selectedMonth === 0) {
+        updatedFilteredExpenses = yearlyExpenseFilter(expensesData, currentDate.getFullYear());
+        updatedFilteredIncome = yearlyIncomeFilter(incomeData, currentDate.getFullYear());
+      } else {
+        updatedFilteredExpenses = monthlyExpensefilter(expensesData, selectedMonth, currentDate.getFullYear());
+        updatedFilteredIncome = monthlyIncomeFilter(incomeData, selectedMonth, currentDate.getFullYear());
+      }
+      setFilteredExpenses(updatedFilteredExpenses);
+      setFilteredIncome(updatedFilteredIncome);
+    }, [expensesData, incomeData, selectedMonth, currentDate]) 
 
     const handleChangeMonth = (event) => {
         const selectedValue = event.target.value;
@@ -107,7 +119,7 @@ export default function RenderDBC( {
     const processedData = Object.keys(unduplicatedData).map(category => ({category, value: unduplicatedData[category]}));
     const total = processedData.reduce((acc, curr) => acc + curr.value, 0);
     processedData.push({category: "Total", value: total});
-    debugger;
+
     useEffect(() => {
         d3.select(svgRef.current).selectAll('*').remove();
 
@@ -240,7 +252,7 @@ export default function RenderDBC( {
                 .attr("x", 6));
         const newDataAvailable = filteredExpenses.length > 0 || filteredIncome.length > 0;
         setNoDataAvailable(!newDataAvailable);
-    }, [filteredExpenses, filteredIncome, handleChangeMonth, width, xRange,  xLabel, xFormat, xType, marginTop, marginRight, marginBottom, marginLeft, yPadding, colors]);
+    }, [filteredExpenses, filteredIncome, expensesData, incomeData, handleChangeMonth, width, xRange,  xLabel, xFormat, xType, marginTop, marginRight, marginBottom, marginLeft, yPadding, colors]);
          
     const renderMonthSelector = () => {
       return (
