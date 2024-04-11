@@ -93,7 +93,17 @@ export default function RenderLineChart() {
        .attr('stroke', 'steelblue')
        .attr('stroke-width', 2)
        .attr('d', line)
-       .attr('transform', `translate(${margin.left}, ${margin.top})`);
+       .attr('transform', `translate(${margin.left}, ${margin.top})`)
+
+       .on('mouseover', function(event, d){
+        d3.select(this)
+        .attr('stroke-width', 5);
+          } 
+        )
+      .on('mouseout', function(event, d) {
+        d3.select(this)
+        .attr('stroke-width', 2)
+      } );
 
     // Define another dataset for the second line
     const data2 = [50, 150, 100, 200, 250, 175, 125, 275, 225, 150, 100];
@@ -110,7 +120,17 @@ export default function RenderLineChart() {
        .attr('stroke', 'red')
        .attr('stroke-width', 2)
        .attr('d', line2)
-       .attr('transform', `translate(${margin.left}, ${margin.top})`);
+       .attr('transform', `translate(${margin.left}, ${margin.top})`)
+
+       .on('mouseover', function(event, d){
+        d3.select(this)
+        .attr('stroke-width', 5);
+          } 
+        )
+      .on('mouseout', function(event, d) {
+        d3.select(this)
+        .attr('stroke-width', 2)
+      } );
 
     // Adding legend
     const legend = svg.append('g')
