@@ -132,3 +132,56 @@
     border-radius: 10px;
     padding: 10px 20px;
   }
+
+  .modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    width: 100%; 
+}
+
+.modal-input {
+    margin-bottom: 10px;
+    width: 100%; /* This makes the input take full width of the parent container */
+}
+
+.modal-button {
+    background-color: #007BFF; /* A bright blue, which is commonly associated with primary actions */
+    color: white; /* White text for contrast */
+    border: none; /* No border for a cleaner look */
+    padding: 12px 24px; /* Adequate padding for better clickability */
+    font-size: 18px; /* Larger font size for better readability */
+    font-weight: bold; /* Bold font to make the text stand out */
+    border-radius: 5px; /* Slightly rounded corners */
+    cursor: pointer; /* Cursor pointer to indicate it's clickable */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transition for visual feedback */
+    width: 75%; /* Ensures it matches the width of the input fields */
+    margin-top: 10px;
+}
+
+.modal-button:hover {
+    background-color: #0056b3; /* Darker shade of blue on hover */
+    transform: scale(1.05); /* Slight increase in size to indicate interactivity */
+}
+
+.modal-button:active {
+    background-color: #004085; /* Even darker for the active state */
+    transform: scale(0.95); /* Small shrink effect on click */
+}
+
+
+.modal-current-budget {
+    margin-top: 10px; /* Space above the budget display */
+    font-size: 16px; /* Make the font slightly larger for visibility */
+    color: #2c8f18; /* A mild color for the text */
+    width: 100%; /* Aligns with the input and button */
+    text-align: center; /* Center-align the text */
+}
+
+.financial-tips {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
