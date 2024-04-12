@@ -90,20 +90,25 @@ export default function RenderLineChart() {
     svg.append('path')
        .datum(data)
        .attr('fill', 'none')
-       .attr('stroke', 'steelblue')
-       .attr('stroke-width', 2)
        .attr('d', line)
        .attr('transform', `translate(${margin.left}, ${margin.top})`)
 
        .on('mouseover', function(event, d){
         d3.select(this)
+        .style('fill', d.color)
+        .transition()
+        .duration(200)
         .attr('stroke-width', 5);
           } 
         )
       .on('mouseout', function(event, d) {
         d3.select(this)
         .attr('stroke-width', 2)
-      } );
+      } )
+      .transition()
+      .duration(600)
+      .attr('stroke', 'steelblue')
+      .attr('stroke-width', 2);
 
     // Define another dataset for the second line
     const data2 = [50, 150, 100, 200, 250, 175, 125, 275, 225, 150, 100];
@@ -117,20 +122,26 @@ export default function RenderLineChart() {
     svg.append('path')
        .datum(data2)
        .attr('fill', 'none')
-       .attr('stroke', 'red')
-       .attr('stroke-width', 2)
        .attr('d', line2)
        .attr('transform', `translate(${margin.left}, ${margin.top})`)
 
        .on('mouseover', function(event, d){
         d3.select(this)
+        .style('fill', d.color)
+        .transition()
+        .duration(200)
         .attr('stroke-width', 5);
           } 
         )
       .on('mouseout', function(event, d) {
         d3.select(this)
         .attr('stroke-width', 2)
-      } );
+      } )
+      .transition()
+      .duration(1000)
+      .attr('stroke', 'red')
+      .attr('stroke-width', 2)
+      ;
 
     // Adding legend
     const legend = svg.append('g')
