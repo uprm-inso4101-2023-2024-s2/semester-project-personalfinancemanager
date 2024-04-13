@@ -113,8 +113,9 @@ function AddExpensesModal({ show, onClose }) {
             {expenseAmount > 0 && selectedCategory && (
                 <div className="mt-6">
                 {/* Date Input Field */}
-                    <label htmlFor="date">Select Date and Time</label>
+                    <label htmlFor="date">Select Date and Time:</label>
                     <input 
+                        style={{color: "black", backgroundColor: "gray-500", borderRadius: "5px", marginRight: "10px", marginLeft: "10px",cursor: "pointer"}}
                         type="datetime-local" 
                         name="date"
                         value={formatDate(selectedDate)} // Format ISO date to string
