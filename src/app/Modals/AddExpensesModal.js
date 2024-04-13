@@ -96,6 +96,7 @@ function AddExpensesModal({ show, onClose }) {
 
     return (
         <Modal show={show} onClose={onClose}>
+        <div style={{ overflowY: 'auto', maxHeight: '68vh', overflowX: 'hidden' }}>
             <div className="flex flex-col gap-4">
                 <label className="expense-label"> Expense Amount</label>
                 <input
@@ -109,9 +110,24 @@ function AddExpensesModal({ show, onClose }) {
                     required
                 />
             </div>
+            {expenseAmount > 0 && selectedCategory && (
+                <div className="mt-6">
+                {/* Date Input Field */}
+                    <label htmlFor="date">Select Date and Time</label>
+                    <input 
+                        type="datetime-local" 
+                        name="date"
+                        value={formatDate(selectedDate)} // Format ISO date to string
+                        onChange={(e) => setSelectedDate(new Date(e.target.value))}
+                        required
+                    />
+                    <button className="btn btn-primary" onClick={AddCategoryItemHandler}>Add Expense</button>
+                </div>
+            )}
 
             {/* Expenses Category */}
             {expenseAmount > 0 && (
+                
                 <div className= "flex flex-col gap-4 mt-6">
                     <div className="flex items-center justify-between">
                         <h3 className="text-2x1 expense-label">Select Expense Category</h3>
@@ -131,36 +147,22 @@ function AddExpensesModal({ show, onClose }) {
                     {expenses.map((expense) => (
                         <button key={expense.id} onClick={() => setSelectedCategory(expense.id)}>
                             <div
-                                style={{ boxShadow: expense.id === selectedCategory ? "1px 1px 4px" : "none" }}
-                                className="flex items-center justify-between px-4 py-4 bg-slate-500 rounded-3xl"
+                                style={{ boxShadow: expense.id === selectedCategory ? "1px 1px 4px" : "none", width: "90%", margin: "0 auto" }}
+                                className="flex items-center justify-between px-2 py-2 bg-slate-500 rounded-3xl"
                             >
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-1">
                                     <div
                                         className="w-[25px] h-[25px] rounded-full"
                                         style={{ backgroundColor: expense.color }}
                                     />
-                                    <h4 className="capitalize">{expense.title}</h4>
+                                    <h4 className="capitalize text-sm">{expense.title}</h4>
                                 </div>
                             </div>
                         </button>
                     ))}
                 </div>
             )}
-
-            {expenseAmount > 0 && selectedCategory && (
-                <div className="mt-6">
-                {/* Date Input Field */}
-                    <label htmlFor="date">Select Date and Time</label>
-                    <input 
-                        type="datetime-local" 
-                        name="date"
-                        value={formatDate(selectedDate)} // Format ISO date to string
-                        onChange={(e) => setSelectedDate(new Date(e.target.value))}
-                        required
-                    />
-                    <button className="btn btn-primary" onClick={AddCategoryItemHandler}>Add Expense</button>
-                </div>
-            )}
+        </div>
         </Modal>
     );
 }
