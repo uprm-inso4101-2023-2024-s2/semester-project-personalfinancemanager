@@ -1,0 +1,15 @@
+.divergingBarChart {
+    margin-top: 20px;
+}
+
+.no-data-message {
+    font-size: 18px;
+    color: #FF0000;
+    margin-top: 20px;
+    text-align: center; 
+    border: 2px solid #FF0000; 
+    padding: 10px; 
+    background-color: #FFF;
+    border-radius: 5px; 
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  }

@@ -223,6 +223,10 @@ body {
   color: black;
 }
 
+.expense-label {
+  color: black;
+}
+
 body, button, input, .btn, .balance-box, .balance-label, .balance-amount, .text-2xl, .section-title {
   font-family: 'Nunito', sans-serif;
   /*font-family: 'Helvetica Neue', sans-serif;*/
@@ -291,16 +295,3 @@ body, button, input, .btn, .balance-box, .balance-label, .balance-amount, .text-
   border-color: #007bff;
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
-
-.no-data-message {
-  font-size: 18px;
-  color: #FF0000;
-  margin-top: 20px;
-  text-align: center; 
-  border: 2px solid #FF0000; 
-  padding: 10px; 
-  background-color: #FFF;
-  border-radius: 5px; 
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-}
-
