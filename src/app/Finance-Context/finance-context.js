@@ -450,7 +450,7 @@ export default function FinanceContextProvider({ children }) {
         const docData = doc.data();
         return {
           id: doc.id,
-          date: docData.date,
+          date:  new Date(docData.date.toMillis()),
           uid:  docData.uid,
           events: docData.events.map((item) => ({
             event: item.event,
