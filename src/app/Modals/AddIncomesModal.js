@@ -26,7 +26,7 @@ function AddIncomesModal({ show, onClose }) {
     const { income, addIncomeItem, removeIncomeItem } = useContext(financeContext);
     const { user } = useContext(authContext);
 
-    // Función para manejar la adición de ingresos
+    // Function to handle adding income entries
     const addIncomeHandler = async (e) => {
         e.preventDefault();
 
@@ -62,70 +62,72 @@ function AddIncomesModal({ show, onClose }) {
 
     return (
         <Modal show={show} onClose={onClose}>
-            <form className="input-ground" onSubmit={addIncomeHandler}>
-                <div className="input-ground"> 
-                    <label htmlFor="amount" className="income-label"> Income Amount</label>
-                    <input 
-                        type="number" 
-                        name="amount"
-                        ref={amountRef}
-                        min={0.01} 
-                        step={0.01}
-                        className="bg bg-slate-500"
-                        placeholder="Enter income amount" 
-                        required
-                    />
-                </div>
+            <div style={{ overflowY: 'auto', maxHeight: '68vh' }}>  
+                <form className="input-ground" onSubmit={addIncomeHandler}>
+                    <div className="input-ground"> 
+                        <label htmlFor="amount" className="income-label"> Income Amount</label>
+                        <input 
+                            type="number" 
+                            name="amount"
+                            ref={amountRef}
+                            min={0.01} 
+                            step={0.01}
+                            className="bg bg-slate-500"
+                            placeholder="Enter income amount" 
+                            required
+                        />
+                    </div>
 
-                <div className="input-ground"> 
-                    <label htmlFor="description" className="income-label"> Description</label>
-                    <input 
-                        name="description"
-                        type="text" 
-                        ref={descriptionRef}
-                        className="bg bg-slate-500"
-                        placeholder="Enter income description" 
-                        required
-                    />
-                </div>
+                    <div className="input-ground"> 
+                        <label htmlFor="description" className="income-label"> Description</label>
+                        <input 
+                            name="description"
+                            type="text" 
+                            ref={descriptionRef}
+                            className="bg bg-slate-500"
+                            placeholder="Enter income description" 
+                            required
+                        />
+                    </div>
 
-                {/* Date Input Field */}
-                <div className="input-ground"> 
-                    <label htmlFor="date" className="income-label">Select Date and Time</label>
-                    <input 
-                        type="datetime-local" 
-                        name="date"
-                        value={formatDate(selectedDate)} // Format ISO date to string
-                        onChange={(e) => setSelectedDate(new Date(e.target.value))}
-                        required
-                    />
-                </div>
-                <button type="submit" className='btn btn-primary'>
-                    Add entry
-                </button>
-            </form>
+                    {/* Date Input Field */}
+                    <div className="input-ground"> 
+                        <label htmlFor="date" className="income-label">Select Date and Time</label>
+                        <input 
+                            type="datetime-local" 
+                            name="date"
+                            value={formatDate(selectedDate)} // Format ISO date to string
+                            onChange={(e) => setSelectedDate(new Date(e.target.value))}
+                            required
+                        />
+                    </div>
+                    <button type="submit" className='btn btn-primary'>
+                        Add entry
+                    </button>
+                </form>
 
-            <div className="flex flex-col gap-4 mt-6">
-                <h3 className="text-2xl font-bold income-label"> Income History</h3>
-                {income.map(i => {
-                    return (
-                        <div className="flex justify-between item-center" key={i.id}>
-                            <div>
-                                <p className="font-semibold income-label">{i.description}</p>
-                                <small className="text-xs income-label">
-                                    {/* Display Date and Time */}
-                                    {new Date(i.createdAt).toLocaleString()}
-                                </small>
+                <div className="flex flex-col gap-4 mt-6">
+                    <h3 className="text-2xl font-bold income-label"> Income History</h3>
+                    {income.map(i => {
+                        return (
+                            <div className="flex justify-between item-center" key={i.id}>
+                                <div>
+                                    <p className="font-semibold income-label">{i.description}</p>
+                                    <small className="text-xs income-label">
+                                        {/* Display Date and Time */}
+                                        {new Date(i.createdAt).toLocaleString()}
+                                    </small>
+                                </div>
+                                <p className="flex items-center justify-between">
+                                    {currencyFormatter(i.amount)}
+                                    <button onClick={() => { deleteIncomeEntryHandler(i.id) }}>
+                                        <FaRegTrashAlt />
+                                    </button>
+                                </p>
                             </div>
-                            <p className="flex items-center justify-between">
-                                {currencyFormatter(i.amount)}
-                                <button onClick={() => { deleteIncomeEntryHandler(i.id) }}>
-                                    <FaRegTrashAlt />
-                                </button>
-                            </p>
-                        </div>
-                    );
-                })}
+                        );
+                    })}
+                </div>
             </div>
         </Modal>
     );
