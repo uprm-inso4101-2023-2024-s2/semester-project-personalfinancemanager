@@ -76,7 +76,7 @@ function ViewExpenseModal({ show, onClose, expense }) {
         <button onClick={handleUpdateColor} className="btn btn-primary ml-2">Update Color</button>
       </div>
 
-      <div style={{ overflowY: 'auto', maxHeight: 'clamp(500px, 68vh, 50vh)' }}>
+      <div>
         <h3 className="my-8 text-2xl">Expense History</h3>
         {expense.items.map((item) => {
           return (
