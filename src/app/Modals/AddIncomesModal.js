@@ -62,7 +62,7 @@ function AddIncomesModal({ show, onClose }) {
 
     return (
         <Modal show={show} onClose={onClose}>
-            <div style={{ overflowY: 'auto', maxHeight: 'clamp(500px, 68vh, 80vh)' }}>  
+            <div style={{ overflowY: 'auto', maxHeight: 'clamp(300px, 65vh, 70vh)' }}>  
                 <form className="input-ground" onSubmit={addIncomeHandler}>
                     <div className="input-ground"> 
                         <label htmlFor="amount" className="income-label"> Income Amount</label>

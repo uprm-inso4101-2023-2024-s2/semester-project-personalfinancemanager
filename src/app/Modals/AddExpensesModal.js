@@ -96,7 +96,7 @@ function AddExpensesModal({ show, onClose }) {
 
     return (
         <Modal show={show} onClose={onClose}>
-        <div style={{ overflowY: 'auto', maxHeight: 'clamp(500px, 68vh, 80vh)' }}>
+        <div style={{ overflowY: 'auto', overflowX:'hidden', maxHeight: 'clamp(300px, 65vh, 70vh)' }}>
             <div className="flex flex-col gap-4">
                 <label className="expense-label"> Expense Amount</label>
                 <input
