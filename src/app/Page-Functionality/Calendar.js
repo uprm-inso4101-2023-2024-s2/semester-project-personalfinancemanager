@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useContext, createContext } from 'react';
+import Modal from "@/app/Modals/modal";
 import monthlyExpensefilter , { monthlyIncomeFilter } from './Filters/moneyFilters';
 import { financeContext } from '../Finance-Context/finance-context';
 import { toast } from 'react-toastify';
@@ -29,6 +30,10 @@ const Calendar = () => {
     const [expectedExpenses, setExpectedExpenses] = useState({});
     const [daysWithData, setDaysWithData] = useState([]);
     const [removedEvents, setRemovedEvents] = useState({});
+    // State to control the visibility of the modal
+    const [isBudgetModalVisible, setIsBudgetModalVisible] = useState(false);
+    // State to hold the budget input
+    const [budgetInput, setBudgetInput] = useState('');
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December",];
 
     //Variables to calculate total income, total expenses, and the percentage of the total expenses compared to the monthly budget.
@@ -71,24 +76,29 @@ const Calendar = () => {
      * If the user has a budget, then it is updated.
      * 
      */
-    const handleAddOrUpdateBudget = () => {
-        const input = window.prompt("Enter the monthly budget:");
-        if (input !== null) {
-            const budget = parseFloat(input);
-            if (!isNaN(budget)) {
-                if (monthlyBudgets.budgets.length === 0) {
-                    createMonthlyBudgets(budget, currentMonth); 
-                    toast.success('Budget for ' + months[currentMonth] + ' added successfully.')
-                } else {
-                    updateMonthlyBudgets(budget, currentMonth); 
-                    monthlyBudgets.budgets[currentMonth] !== 0 ? toast.success('Budget for ' + months[currentMonth] + ' updated successfully.') :  toast.success('Budget for ' + months[currentMonth] + ' added successfully.');
 
-                }
+    // Modified handleAddOrUpdateBudget function
+    const handleAddOrUpdateBudget = () => {
+        setIsBudgetModalVisible(true); // Show the modal instead of using window.prompt
+    };
+    debugger;
+    const handleBudgetSubmit = () => {
+        const budget = parseFloat(budgetInput);
+        if (!isNaN(budget)) {
+            if (!monthlyBudgets.budgets || monthlyBudgets.budgets.length === 0) {
+                createMonthlyBudgets(budget, currentMonth);
+                toast.success('Budget added successfully.');
             } else {
-                toast.error("Please enter a valid number for the monthly budget.");
+                updateMonthlyBudgets(budget, currentMonth);
+                toast.success('Budget updated successfully.');
             }
+            setIsBudgetModalVisible(false);
+            setBudgetInput('');
+        } else {
+            toast.error("Please enter a valid number.");
         }
     };
+
 
     useEffect(() => {
         const timerID = setInterval(() => tick(), 1000); // Update every second
@@ -350,6 +360,8 @@ const Calendar = () => {
             setExpectedExpenses({ ...expectedExpenses, [selectedDay]: '' });
         }
     };
+
+
         
     // Renders the panel based on the selected day and input mode.
     const renderPanel = () => {
@@ -440,6 +452,7 @@ const Calendar = () => {
         setCurrentMonth(selectedMonth);
     };
 
+
     const renderMonthSelector = () => {
         return (
             <div className='month-selector-panel'>
@@ -475,8 +488,34 @@ const Calendar = () => {
                 </div>
                 <svg id='calendarSvg' ref={svgRef}></svg>
             </div>
+            <div>
+                <Modal show={isBudgetModalVisible} onClose={() => setIsBudgetModalVisible(false)} >
+                    <div className="modal-content">
+                        <h2>Monthly Budget for {months[currentMonth]}</h2> {/* Display the current month */}
+                        <input
+                            type="number"
+                            value={budgetInput}
+                            onChange={(e) => setBudgetInput(e.target.value)}
+                            placeholder="Enter monthly budget"
+                        />
+                        <button className="modal-button" onClick={handleBudgetSubmit}>Submit</button>
+                        {monthlyBudgets && monthlyBudgets.budgets && monthlyBudgets.budgets.length > currentMonth ?
+                            <div className="modal-current-budget">
+                                Current Budget: {monthlyBudgets.budgets[currentMonth] ? monthlyBudgets.budgets[currentMonth] : "No budget set"}
+                            </div>
+                            : <div className="modal-current-budget">No budget set for this month.</div>
+                        }
+                        <div className="financial-tips">
+                            <h3>Did you know?</h3>
+                            <p>If you spend money... YOU LOSE MONEY!</p>
+                            <img src="https://th.bing.com/th/id/OIP.DbA7_sgVYhfgqUIrYopxXwHaHR?rs=1&pid=ImgDetMain" alt="Nice Picture" style={{ width: '30%', height: 30 }} />
+                        </div>
+                    </div>
+                </Modal>
+            </div>
         </div>
     );
 };
+
 
 export default Calendar;
