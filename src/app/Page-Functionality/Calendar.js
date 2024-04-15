@@ -287,13 +287,10 @@ const Calendar = () => {
     - Removes the last event and updates removed events and the SVG element fill color.
     */
     const handleRemoveEvent = async () => {
-        debugger;
         if (selectedDay) {
-            const eventIndex = events.findIndex(event => event.date.toDateString() === selectedDay.toDateString());
-            if (eventIndex !== -1) {
-                console.log('Removing event', eventIndex);
-                const eventID = events[eventIndex].id;
-                console.log('Event ID:', eventID);
+            const eventsForSelectedDay = events.filter(event => event.date.toDateString() === selectedDay.toDateString());
+            if (eventsForSelectedDay.length > 0) {
+                const eventID = events[eventsForSelectedDay.length - 1].id;
                 await deleteEvent(eventID);
             }
         }
@@ -313,27 +310,12 @@ const Calendar = () => {
               expenses: +expectedExpenses[selectedDay] 
             };
         
-            const updatedSubmittedData = {
-              ...submittedData,
-              [selectedDay]: {
-                events: [
-                  ...(submittedData[selectedDay]?.events || []),
-                  newEvent
-                ]
-              }
-            };
-        
-            // Set the submitted data locally
-            setSubmittedData(updatedSubmittedData);
-            
-            // Call the submitEventData function with the data
             await addEvent( {
                 date: selectedDay,
                 event: newEvent,
               });
               
             setDayInput('');
-            // Clear input values if necessary
             setExpectedExpenses(0);
         }
     };
