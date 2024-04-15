@@ -276,6 +276,9 @@ const Calendar = () => {
             if (eventsForSelectedDay.length > 0) {
                 const eventID = eventsForSelectedDay[eventsForSelectedDay.length - 1].id;
                 await deleteEvent(eventID);
+                toast.success("Last event deleted succesfully.");
+            } else {
+                toast.error("There is no event to delete.");
             }
         }
     };
