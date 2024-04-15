@@ -306,7 +306,11 @@ const Calendar = () => {
               
             setDayInput('');
             setExpectedExpenses(0);
-        } else {
+            toast.success("Event added successfully!");
+            setTimeout(() => {
+                toast.warning("You can keep adding events, close and reopen the panel to view your events.")
+            }, 2000);
+            } else {
             toast.error("Please enter something before submitting.");
         }
     };
