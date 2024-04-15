@@ -290,7 +290,7 @@ const Calendar = () => {
         if (selectedDay) {
             const eventsForSelectedDay = events.filter(event => event.date.toDateString() === selectedDay.toDateString());
             if (eventsForSelectedDay.length > 0) {
-                const eventID = events[eventsForSelectedDay.length - 1].id;
+                const eventID = eventsForSelectedDay[eventsForSelectedDay.length - 1].id;
                 await deleteEvent(eventID);
             }
         }
@@ -307,12 +307,12 @@ const Calendar = () => {
             // Prepare the data to be submitted
             const newEvent = {
               event: dayInput[selectedDay],
-              expenses: +expectedExpenses[selectedDay] 
+              expense: +expectedExpenses[selectedDay] 
             };
         
             await addEvent( {
                 date: selectedDay,
-                event: newEvent,
+                eventInfo: newEvent,
               });
               
             setDayInput('');

@@ -392,8 +392,8 @@ export default function FinanceContextProvider({ children }) {
           date:  docData.date.toDate(),
           uid:  docData.uid,
           eventInfo: {
-            event: docData.event.event,
-            expense: docData.event.expenses,
+            event: docData.eventInfo.event,
+            expense: docData.eventInfo.expense,
           }
         };
       });
