@@ -32,9 +32,9 @@ export default function RenderDBC( {
     x = d => d.value, // given d in data, returns the (quantitative) x-value
     y = d => d.category, // given d in data, returns the (ordinal) y-value
     marginTop = 50, 
-    marginRight = 65, 
+    marginRight = 70, 
     marginBottom = 10, 
-    marginLeft = 65, 
+    marginLeft = 70, 
     width = 640, // outer width of chart, in pixels
     xType = d3.scaleLinear, // type of x-scale
     xRange = [marginLeft, width - marginRight], // [left, right]
