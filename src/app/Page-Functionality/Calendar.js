@@ -305,11 +305,16 @@ const Calendar = () => {
     const handleSubmit = async () => {
         if ((dayInput[selectedDay] ?? '').trim() !== '') {
             // Prepare the data to be submitted
+            if(isNaN(+expectedExpenses[selectedDay]) || +expectedExpenses[selectedDay] <= 0){
+                toast.error("Please enter a number before submitting.");
+                return;
+            }
+            
             const newEvent = {
               event: dayInput[selectedDay],
               expense: +expectedExpenses[selectedDay] 
             };
-        
+            
             await addEvent( {
                 date: selectedDay,
                 eventInfo: newEvent,
@@ -317,6 +322,8 @@ const Calendar = () => {
               
             setDayInput('');
             setExpectedExpenses(0);
+        } else {
+            toast.error("Please enter something before submitting.");
         }
     };
         
