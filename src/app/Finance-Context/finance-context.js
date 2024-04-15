@@ -95,14 +95,14 @@ export default function FinanceContextProvider({ children }) {
   }
 
 
-  const deleteEvent = async (eventCategoryID) => {
+  const deleteEvent = async (eventID) => {
     try {
-      const docRef = doc(db, "expenses", eventCategoryID);
+      const docRef = doc(db, "events", eventID);
       await deleteDoc(docRef);
 
-      setExpenses((prevExpenses) => {
-        const updatedEvents = prevExpenses.filter(
-          (expense) => expense.id !== eventCategoryID
+      setEvents((prevEvents) => {
+        const updatedEvents = prevEvents.filter(
+          (event) => event.id !== eventID
         );
 
         return [...updatedEvents];

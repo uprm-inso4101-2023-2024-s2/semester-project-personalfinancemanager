@@ -35,7 +35,7 @@ const Calendar = () => {
     // State to hold the budget input
     const [budgetInput, setBudgetInput] = useState('');
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December",];
-    
+    debugger;
     //Variables to calculate total income, total expenses, and the percentage of the total expenses compared to the monthly budget.
     useEffect(() => {
         const monthlyincome = monthlyIncomeFilter(income, currentMonth + 1, currentTime.getFullYear());
@@ -56,15 +56,6 @@ const Calendar = () => {
         setProgress(progressValue);
     },[currentTime, submittedData, currentMonth, monthlyBudgets, income, expenses]);
 
-    useEffect(() => {
-        const formattedSubmittedData = events.reduce((acc, event) => {
-            const eventDate = event.date.toDateString();
-            acc[eventDate] = acc[eventDate] || { events: [] };
-            acc[eventDate].events.push(event);
-            return acc;
-        }, {});
-        setSubmittedData(formattedSubmittedData);
-    }, [events]);
 
     const renderBudgetButton = () => {
         return (
@@ -295,35 +286,16 @@ const Calendar = () => {
     - Checks if there is a selected day with submitted data.
     - Removes the last event and updates removed events and the SVG element fill color.
     */
-    const handleRemoveEvent = () => {
-        if (selectedDay && submittedData[selectedDay]) {
-            const updatedSubmittedData = { ...submittedData };
-
-            // Replace with the actual width and height of your SVG container
-            const width = 800;
-            const height = 600;
-
-            const yScale = d3.scaleBand().range([0, height]).domain(d3.range(0, 7));
-            const xScale = d3.scaleBand().range([0, width]).domain(['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']);
-
-            const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-            // Remove the last event
-            const updatedEvents = updatedSubmittedData[selectedDay].events.slice(0, -1);
-            updatedSubmittedData[selectedDay].events = updatedEvents;
-
-            // Set removed events for the selected day
-            setRemovedEvents({ ...removedEvents, [selectedDay]: true });
-
-            // Update the fill color directly in the SVG element
-            const svg = d3.select(svgRef.current);
-            const removedDay = svg.select(`.day[fill='white'][y='${yScale(d3.timeWeek.count(d3.timeMonth(selectedDay), selectedDay)) + yScale.bandwidth()}'][x='${xScale(dayLabels[selectedDay.getDay()])}']`);
-
-            if (removedDay) {
-                removedDay.attr('fill', 'white');
+    const handleRemoveEvent = async () => {
+        debugger;
+        if (selectedDay) {
+            const eventIndex = events.findIndex(event => event.date.toDateString() === selectedDay.toDateString());
+            if (eventIndex !== -1) {
+                console.log('Removing event', eventIndex);
+                const eventID = events[eventIndex].id;
+                console.log('Event ID:', eventID);
+                await deleteEvent(eventID);
             }
-
-            setSubmittedData(updatedSubmittedData);
         }
     };
 
@@ -376,7 +348,6 @@ const Calendar = () => {
         let hasInputEvents = false;
         let eventsForSelectedDay = [];
 
-        debugger;
         if (selectedDay) {
             hasInputEvents = events.some(event => event.date.toDateString() === selectedDay.toDateString());
             eventsForSelectedDay = events.filter(event => event.date.toDateString() === selectedDay.toDateString());
