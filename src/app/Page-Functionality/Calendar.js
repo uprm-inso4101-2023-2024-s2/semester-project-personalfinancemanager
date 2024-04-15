@@ -12,6 +12,20 @@ const Calendar = () => {
     const {expenses, income, monthlyBudgets, events, createMonthlyBudgets, updateMonthlyBudgets, addEvent, deleteEvent,} = useContext(financeContext);
     const [currentTime, setCurrentTime] = useState(new Date());
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+    const monthBackgroundImages = [
+        'url("https://th.bing.com/th/id/R.06e047eb19cf7edb0d16dee7ba395414?rik=MStN4Jy4%2bR7ynQ&pid=ImgRaw&r=0")',
+        'url("https://wallpapercave.com/wp/wp3428022.jpg")',
+        'url("https://wallpaperaccess.com/full/3458155.jpg")',
+        'url("https://cdn.wallpapersafari.com/54/56/2LpXc8.jpg")',
+        'url("https://www.wallpaperbetter.com/wallpaper/164/829/177/thumbnails-2K-wallpaper-middle-size.jpg")',
+        'url("https://th.bing.com/th/id/OIP.fIny0J3xS_WcfhTze9LSAgAAAA?rs=1&pid=ImgDetMain")',
+        'url("https://th.bing.com/th?id=OIF.Rj10%2b2vuliq24dzZFlXHmA&rs=1&pid=ImgDetMain")',
+        'url("https://th.bing.com/th/id/OIP.joBxCxydZ04kA_k4JcoG1wHaD0?pid=ImgDet&w=199&h=102&c=7&dpr=1,8")',
+        'url("https://www.inside-the-outside.com/wp-content/uploads/2016/08/FrielChris-Memorial-14.jpg")',
+        'url("https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/28304a19980795.562f32ba783e3.jpg")',
+        'url("https://wallpapercave.com/wp/ibG1tbs.jpg")',
+        'url("https://wallpaperaccess.com/full/2407092.jpg")',
+      ];
     /* 
     State variables used to manage the interactive behavior of the calendar component.
 
@@ -28,6 +42,7 @@ const Calendar = () => {
     const [expectedExpenses, setExpectedExpenses] = useState(0);
     // State to control the visibility of the modal
     const [isBudgetModalVisible, setIsBudgetModalVisible] = useState(false);
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     // State to hold the budget input
     const [budgetInput, setBudgetInput] = useState('');
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December",];
@@ -87,7 +102,7 @@ const Calendar = () => {
 
     const handleBudgetSubmit = () => {
         const budget = parseFloat(budgetInput);
-        if (!isNaN(budget)) {
+        if (!isNaN(budget) && budget >= 0) {
             if (!monthlyBudgets.budgets || monthlyBudgets.budgets.length === 0) {
                 createMonthlyBudgets(budget, currentMonth);
                 toast.success('Budget added successfully.');
@@ -101,7 +116,10 @@ const Calendar = () => {
             toast.error("Please enter a valid number.");
         }
     };
-
+    const confirmSubmit = () => {
+        setShowConfirmationModal(false);
+        handleBudgetSubmit();
+    };
 
     useEffect(() => {
         const timerID = setInterval(() => tick(), 1000); // Update every second
@@ -168,13 +186,13 @@ const Calendar = () => {
                 
                 const isToday = d.getDate() === currentTime.getDate() && d.getMonth() === currentTime.getMonth();
                 if ((d.getDate() < currentTime.getDate() && d.getMonth() === currentTime.getMonth()) || (d.getMonth() < currentTime.getMonth())) {
-                    return '#d3d3d3'; // Day has passed
-                } else if (hasEvents) {
-                    return 'orange'; // Day has events
-                } else if (isToday) {
-                    return 'lime'; // Highlight current day
-                } else {
-                    return 'white';
+                    return 'rgba(211, 211, 211, 0.8)'; // Day has passed
+                } else if(hasEvents) {
+                        return 'rgba(255, 165, 0, 0.8)'; // Highlight current day with event
+                    } else if (isToday && (d.getMonth() === currentTime.getMonth())) {
+                        return 'rgba(50, 205, 50, 0.8)'; // Highlight current day
+                    } else {
+                    return 'rgba(255, 255, 255, 0.8)';
                 }
             })
             .attr('stroke', (d) => 'black')
@@ -411,7 +429,6 @@ const Calendar = () => {
         setCurrentMonth(selectedMonth);
     };
 
-
     const renderMonthSelector = () => {
         return (
             <div className='month-selector-panel'>
@@ -433,14 +450,13 @@ const Calendar = () => {
         );
     };
 
-
     return (
         <div>
-            {renderBudgetButton()}
-            <div className='month-selector-panel'>
-                {renderMonthSelector()}
-            </div>
-            <div id="calendar-container">
+            <div id="calendar-container" style={{ backgroundImage: monthBackgroundImages[currentMonth] }}>
+                {renderBudgetButton()}
+                <div className='month-selector-panel'>
+                    {renderMonthSelector()}
+                </div>
                 {renderProgressBar(progress)}
                 <div className='panel'>
                     {renderPanel()}
@@ -450,14 +466,35 @@ const Calendar = () => {
             <div>
                 <Modal show={isBudgetModalVisible} onClose={() => setIsBudgetModalVisible(false)} >
                     <div className="modal-content">
-                        <h2>Monthly Budget for {months[currentMonth]}</h2> {/* Display the current month */}
+                        <h1>Monthly Budget for {months[currentMonth]}</h1> {/* Display the current month */}
                         <input
                             type="number"
                             value={budgetInput}
                             onChange={(e) => setBudgetInput(e.target.value)}
                             placeholder="Enter monthly budget"
                         />
-                        <button className="modal-button" onClick={handleBudgetSubmit}>Submit</button>
+                        <button className="modal-button"     onClick={() => {
+                            if (budgetInput >= 0 && budgetInput !== '') {
+                                setShowConfirmationModal(true);
+                            } else {
+                                confirmSubmit(); // Or handle the empty input case as needed
+                            }
+                        }}>Submit</button>
+                        <button className="modal-button red-button"     onClick={() => {
+                            setBudgetInput(0)
+                            setShowConfirmationModal(true)
+                        }}>Delete Budget</button>
+                        {showConfirmationModal && (
+                            <Modal show={showConfirmationModal} onClose={() => setShowConfirmationModal(false)}>
+                                <div className="confirmation-modal">
+                                    <h2>Confirm Submission</h2>
+                                    <p>{budgetInput > 0 ? "Are you sure you want to submit this budget?" : "Are you sure you want to delete your budget?"}</p>
+                                    <p style={{ color: 'green' }}>{budgetInput > 0 ? "New budget: $"+budgetInput : "There will be no budget for this month!"}</p>
+                                    <button className="modal-button green-button" onClick={confirmSubmit}>Confirm</button>
+                                    <button className="modal-button red-button" onClick={() => setShowConfirmationModal(false)}>Cancel</button>
+                                </div>
+                            </Modal>
+                        )}
                         {monthlyBudgets && monthlyBudgets.budgets && monthlyBudgets.budgets.length > currentMonth ?
                             <div className="modal-current-budget">
                                 Current Budget: {monthlyBudgets.budgets[currentMonth] ? monthlyBudgets.budgets[currentMonth] : "No budget set"}
@@ -467,7 +504,7 @@ const Calendar = () => {
                         <div className="financial-tips">
                             <h3>Did you know?</h3>
                             <p>If you spend money... YOU LOSE MONEY!</p>
-                            <img src="https://th.bing.com/th/id/OIP.DbA7_sgVYhfgqUIrYopxXwHaHR?rs=1&pid=ImgDetMain" alt="Nice Picture" style={{ width: '30%', height: 30 }} />
+                            <img src="https://i.imgflip.com/4cwqqv.jpg" alt="Nice Picture" style={{ width: '30%'}} />
                         </div>
                     </div>
                 </Modal>
@@ -475,6 +512,5 @@ const Calendar = () => {
         </div>
     );
 };
-
 
 export default Calendar;
