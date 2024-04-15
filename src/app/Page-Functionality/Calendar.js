@@ -9,7 +9,7 @@ import './Calendar.css';
 const Calendar = () => {
     const svgRef = useRef(null);
     const [progress, setProgress] = useState(0);
-    const {expenses, income, monthlyBudgets, events, createMonthlyBudgets, updateMonthlyBudgets, addEventCategory, addEventItem, deleteEventCategory, deleteEventItem} = useContext(financeContext);
+    const {expenses, income, monthlyBudgets, events, createMonthlyBudgets, updateMonthlyBudgets, addEvent, deleteEvent,} = useContext(financeContext);
     const [currentTime, setCurrentTime] = useState(new Date());
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
     /* 
@@ -25,9 +25,9 @@ const Calendar = () => {
     */
     const [selectedDay, setSelectedDay] = useState(null);
     const [inputMode, setInputMode] = useState(false);
-    const [dayInput, setDayInput] = useState({});
-    const [submittedData, setSubmittedData] = useState({});
-    const [expectedExpenses, setExpectedExpenses] = useState({});
+    const [dayInput, setDayInput] = useState('');
+    const [submittedData, setSubmittedData] = useState([]);
+    const [expectedExpenses, setExpectedExpenses] = useState(0);
     const [daysWithData, setDaysWithData] = useState([]);
     const [removedEvents, setRemovedEvents] = useState({});
     // State to control the visibility of the modal
@@ -35,7 +35,7 @@ const Calendar = () => {
     // State to hold the budget input
     const [budgetInput, setBudgetInput] = useState('');
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December",];
-
+    
     //Variables to calculate total income, total expenses, and the percentage of the total expenses compared to the monthly budget.
     useEffect(() => {
         const monthlyincome = monthlyIncomeFilter(income, currentMonth + 1, currentTime.getFullYear());
@@ -55,6 +55,16 @@ const Calendar = () => {
         progressValue > 100 ? progressValue = 100 : progressValue = progressValue;
         setProgress(progressValue);
     },[currentTime, submittedData, currentMonth, monthlyBudgets, income, expenses]);
+
+    useEffect(() => {
+        const formattedSubmittedData = events.reduce((acc, event) => {
+            const eventDate = event.date.toDateString();
+            acc[eventDate] = acc[eventDate] || { events: [] };
+            acc[eventDate].events.push(event);
+            return acc;
+        }, {});
+        setSubmittedData(formattedSubmittedData);
+    }, [events]);
 
     const renderBudgetButton = () => {
         return (
@@ -81,7 +91,7 @@ const Calendar = () => {
     const handleAddOrUpdateBudget = () => {
         setIsBudgetModalVisible(true); // Show the modal instead of using window.prompt
     };
-    debugger;
+
     const handleBudgetSubmit = () => {
         const budget = parseFloat(budgetInput);
         if (!isNaN(budget)) {
@@ -176,23 +186,18 @@ const Calendar = () => {
             .attr('x', (d) => xScale(dayLabels[d.getDay()]))
             .attr('y', (d) => yScale(d3.timeWeek.count(d3.timeMonth(d), d)) + yScale.bandwidth())
             .attr('fill', (d) => {
-                const isToday = d.getDate() === currentTime.getDate();
-                const hasEvent = submittedData[d] && submittedData[d].events && submittedData[d].events.length > 0;
-
-                // Check if the day has been removed
-                const hasRemovedEvents = removedEvents[d];
-
-                // Fill the day depending on if it has events or not
+                const hasEvents = events.some(event => {
+                    const eventDate = new Date(event.date);
+                    return eventDate.getDate() === d.getDate() && eventDate.getMonth() === d.getMonth() && eventDate.getFullYear() === d.getFullYear();
+                });
                 
+                const isToday = d.getDate() === currentTime.getDate() && d.getMonth() === currentTime.getMonth();
                 if ((d.getDate() < currentTime.getDate() && d.getMonth() === currentTime.getMonth()) || (d.getMonth() < currentTime.getMonth())) {
                     return '#d3d3d3'; // Day has passed
-                } else if (isToday && (d.getMonth() === currentTime.getMonth())) {
-                    if(hasEvent) {
-                        return 'orange'; // Highlight current day with event
-                    }
-                    else {
-                        return 'lime'; // Highlight current day
-                    }
+                } else if (hasEvents) {
+                    return 'orange'; // Day has events
+                } else if (isToday) {
+                    return 'lime'; // Highlight current day
                 } else {
                     return 'white';
                 }
@@ -253,34 +258,20 @@ const Calendar = () => {
     const handleClick = (event, day) => {
         setSelectedDay(day);
 
-        const hasInput = dayInput[day] || submittedData[day];
+        const hasInput = events.some(event => event.date.toDateString() === day.toDateString());
 
         // Reset input mode when switching between days
         setInputMode(false);
 
-        if (!hasInput || (hasInput && !submittedData[day]?.events.length)) {
+        if (!hasInput) {
             setInputMode(true);
         }
 
         if (hasInput) {
-            setDayInput({ ...dayInput, [day]: '' });
+            const eventData = events.find(event => event.date.toDateString() === day.toDateString());
+            setDayInput(eventData);
         }
 
-        // Reset removed events when switching to input mode or when there are no events left
-        setRemovedEvents((prevRemovedEvents) => {
-            const updatedRemovedEvents = { ...prevRemovedEvents };
-            delete updatedRemovedEvents[day];
-            return updatedRemovedEvents;
-        });
-
-        setDaysWithData((prevDaysWithData) => {
-            if (hasInput && !prevDaysWithData.some(date => date.toDateString() === day.toDateString())) {
-                return [...prevDaysWithData, day];
-            } else if (!hasInput && prevDaysWithData.some(date => date.toDateString() === day.toDateString())) {
-                return prevDaysWithData.filter((d) => d.toDateString() !== day.toDateString());
-            }
-            return prevDaysWithData;
-        });
     };
 
         /* 
@@ -346,8 +337,8 @@ const Calendar = () => {
         if ((dayInput[selectedDay] ?? '').trim() !== '') {
             // Prepare the data to be submitted
             const newEvent = {
-              event: dayInput[selectedDay] || '',
-              expenses: expectedExpenses[selectedDay] || ''
+              event: dayInput[selectedDay],
+              expenses: +expectedExpenses[selectedDay] 
             };
         
             const updatedSubmittedData = {
@@ -362,19 +353,16 @@ const Calendar = () => {
         
             // Set the submitted data locally
             setSubmittedData(updatedSubmittedData);
-        
-            // Prepare the data object to be passed to the finance context
-            const data = {
-              date: selectedDay,
-              events: updatedSubmittedData[selectedDay]?.events || [],
-            };
-        
+            
             // Call the submitEventData function with the data
-            await addEventCategory(data);
-        
+            await addEvent( {
+                date: selectedDay,
+                event: newEvent,
+              });
+              
+            setDayInput('');
             // Clear input values if necessary
-            setDayInput({ ...dayInput, [selectedDay]: '' });
-            setExpectedExpenses({ ...expectedExpenses, [selectedDay]: '' });
+            setExpectedExpenses(0);
         }
     };
         
@@ -385,6 +373,14 @@ const Calendar = () => {
         // Check if the form should be rendered (selected day is not null and not in input mode)
         const shouldRenderForm = selectedDay !== null && !inputMode;
 
+        let hasInputEvents = false;
+        let eventsForSelectedDay = [];
+
+        debugger;
+        if (selectedDay) {
+            hasInputEvents = events.some(event => event.date.toDateString() === selectedDay.toDateString());
+            eventsForSelectedDay = events.filter(event => event.date.toDateString() === selectedDay.toDateString());
+        }
         return (
             <>
                 {shouldRenderForm &&(
@@ -395,14 +391,14 @@ const Calendar = () => {
                         <label className="input-ground"> Events of {selectedDay.toLocaleDateString()}: </label>
 
                         {/* Container for events with optional border based on submitted expenses */}
-                        <div className={`input-ground${submittedInfo && submittedInfo.expenses ? ' with-border' : ''}`}>
+                        <div className={`input-ground${hasInputEvents ? ' with-border' : ''}`}>
                             {/* Render submitted events if available, otherwise display a message */}
-                            {submittedInfo && submittedInfo.events && submittedInfo.events.length > 0 ? (
-                                submittedInfo.events.map((event, index) => (
+                            {hasInputEvents ? (
+                                eventsForSelectedDay.map((event, index) => (
                                     <div key={index}>
-                                        <strong>Event {index + 1}:</strong> {event.event}
-                                        {event.expenses && (
-                                            <span className="expected-expenses"> - Expected Expenses: {event.expenses}</span>
+                                        <strong>Event {index + 1}:</strong> {event.eventInfo.event}
+                                        {event.eventInfo.expense && (
+                                            <span className="expected-expenses"> - Expected Expenses: {event.eventInfo.expense}</span>
                                         )}
                                     </div>
                                 ))

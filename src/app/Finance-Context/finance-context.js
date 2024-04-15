@@ -32,11 +32,8 @@ export const financeContext = createContext({
   addCategory: async () => {},
   deleteExpenseItem: async () => {},
   deleteExpenseCategory: async () => {},
-  addEventCategory: async () => {},
-  addEventItem: async () => {},
-  deleteEventCategory: async () => {},
-  deleteEventItem: async () => {},
-  submitEventData: async () => {}, // Calendar related
+  addEvent: async () => {},
+  deleteEvent: async () => {},
   updateExpense: async () => {},
 });
 
@@ -70,15 +67,15 @@ export default function FinanceContextProvider({ children }) {
    * The category should look something like this:
    *  {date : selectedDate, total:0}
    * 
-   * @param {array} category - A list of events where it contains the userID, date, and another array of events 
+   * @param {array} item - A list of events where it contains the userID, date, and another array of events 
    */
-  const addEventCategory = async (category) => {
+  const addEvent = async (item) => {
     try {
       const collectionRef = collection(db, "events");
 
       const docSnap = await addDoc(collectionRef, {
         uid: user.uid,
-        ...category,
+        ...item,
       });
 
       setEvents((prevEvents) => {
@@ -87,7 +84,7 @@ export default function FinanceContextProvider({ children }) {
           {
             id: docSnap.id,
             uid: user.uid,
-            ...category,
+            ...item,
           },
         ];
       });
@@ -97,45 +94,8 @@ export default function FinanceContextProvider({ children }) {
     }
   }
 
-  /** Adds a new event to the already existing event list.
-   * The new event should have the following properties:
-   * const newEvent = {
-            date : event.date
-            total: event.total + +eventExpectedExpenses,
-            items: [
-                ...event.items,
-                {
-                    amount: +eventExpectedExpenses,
-                    id: uuidv4(),
-                },
-            ],
-        };
-   *  
-   * 
-   * @param {string} eventCategoryID 
-   * @param {array} newEvent 
-   */
-  const AddEventItem = async (eventCategoryID, newEvent) => {
-    const docRef = doc(db, "expenses", eventCategoryID);
-    try {
-      await updateDoc(docRef, { ...newEvent });
-      setEvents((prevState) => {
-        const updatedEvents = [...prevState];
 
-        const foundIndex = updatedEvents.findIndex((event) => {
-          return event.id === eventCategoryID;
-        });
-
-        updatedEvents[foundIndex] = { id: eventCategoryID, ...newEvent };
-
-        return updatedEvents;
-      });
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  const deleteEventCategory = async (eventCategoryID) => {
+  const deleteEvent = async (eventCategoryID) => {
     try {
       const docRef = doc(db, "expenses", eventCategoryID);
       await deleteDoc(docRef);
@@ -152,25 +112,6 @@ export default function FinanceContextProvider({ children }) {
     }
   }
 
-  const deleteEventItem = async (updatedEvent, eventCategoryID) => {
-      try {
-        const docRef = doc(db, "expenses", eventCategoryID);
-        await updateDoc(docRef, {
-          ...updatedEvent,
-        });
-        setExpenses((prevEvents) => {
-          const updatedEvents = [...prevEvents];
-          const pos = updatedEvents.findIndex(
-            (ex) => ex.id === eventCategoryID
-          );
-          updatedEvents[pos].items = [...updatedEvent.items];
-          updatedEvents[pos].total = updatedEvent.total;
-          return updatedEvents;
-        });
-      } catch (err) {
-        throw err;
-      }
-  }
 
   /** Adds a new monthly budget document to the database. It is saved with the document Id and the User Id.
    * 
@@ -413,10 +354,8 @@ export default function FinanceContextProvider({ children }) {
     addCategory,
     deleteExpenseItem,
     deleteExpenseCategory,
-    addEventCategory,
-    AddEventItem,
-    deleteEventCategory,
-    deleteEventItem,
+    addEvent,
+    deleteEvent,
     updateExpense,
   };
 
@@ -450,12 +389,12 @@ export default function FinanceContextProvider({ children }) {
         const docData = doc.data();
         return {
           id: doc.id,
-          date:  new Date(docData.date.toMillis()),
+          date:  docData.date.toDate(),
           uid:  docData.uid,
-          events: docData.events.map((item) => ({
-            event: item.event,
-            expenses: item.expenses,
-        }))
+          eventInfo: {
+            event: docData.event.event,
+            expense: docData.event.expenses,
+          }
         };
       });
 
