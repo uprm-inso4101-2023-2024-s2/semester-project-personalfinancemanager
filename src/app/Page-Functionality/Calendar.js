@@ -18,7 +18,6 @@ const Calendar = () => {
     - selectedDay: Represents the currently selected day in the calendar. Initialized to null.
     - inputMode: Tracks whether the calendar is in input mode, allowing the user to add events. Initialized to false.
     - dayInput: Holds input data for each day, where the date is the key. Initialized as an empty object.
-    - submittedData: Keeps track of submitted events for each day, with the date as the key. Initialized as an empty object.
     - expectedExpenses: Stores the expected expenses for each day with the date as the key. Initialized as an empty object.
     - daysWithData: Keeps a list of days that have associated data. Initialized as an empty array.
     - removedEvents: Tracks the days from which events have been removed, with the date as the key. Initialized as an empty object.
@@ -26,16 +25,12 @@ const Calendar = () => {
     const [selectedDay, setSelectedDay] = useState(null);
     const [inputMode, setInputMode] = useState(false);
     const [dayInput, setDayInput] = useState('');
-    const [submittedData, setSubmittedData] = useState([]);
     const [expectedExpenses, setExpectedExpenses] = useState(0);
-    const [daysWithData, setDaysWithData] = useState([]);
-    const [removedEvents, setRemovedEvents] = useState({});
     // State to control the visibility of the modal
     const [isBudgetModalVisible, setIsBudgetModalVisible] = useState(false);
     // State to hold the budget input
     const [budgetInput, setBudgetInput] = useState('');
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December",];
-    debugger;
     //Variables to calculate total income, total expenses, and the percentage of the total expenses compared to the monthly budget.
     useEffect(() => {
         const monthlyincome = monthlyIncomeFilter(income, currentMonth + 1, currentTime.getFullYear());
@@ -54,7 +49,7 @@ const Calendar = () => {
         let progressValue = (totalExpenses / monthlyBudgetAmount) * 100;
         progressValue > 100 ? progressValue = 100 : progressValue = progressValue;
         setProgress(progressValue);
-    },[currentTime, submittedData, currentMonth, monthlyBudgets, income, expenses]);
+    },[currentTime, currentMonth, monthlyBudgets, income, expenses]);
 
 
     const renderBudgetButton = () => {
@@ -71,6 +66,13 @@ const Calendar = () => {
             <div className="progress"style={{ width: `${percentage}%` }}> </div>
         </div>
     );
+    }
+
+    const calculateTotalExpenses = (eventsForSelectedDay) => {
+        const totalExpenses = eventsForSelectedDay.reduce((total, event) => {
+            return total + (event.eventInfo.expense || 0); // Use 0 if expense is undefined
+        }, 0);
+        return totalExpenses;
     }
 
     /** Handles the budget button. Adds a budget to the database if the user does not already have one. 
@@ -114,7 +116,7 @@ const Calendar = () => {
 
     useEffect(() => {
         renderCalendar();
-    }, [currentTime, submittedData, currentMonth]); // Re-render whenever currentTime or submittedData changes
+    }, [currentTime, currentMonth]); 
 
     const renderCalendar = () => {
         const svg = d3.select(svgRef.current);
@@ -154,24 +156,6 @@ const Calendar = () => {
         svg.selectAll('.day')
             .data(daysInCurrentMonth)
             .enter().append('rect')
-            .attr('class', (d) => {
-                const hasData = daysWithData.some(date => date.toDateString() === d.toDateString());
-                const isToday = d.getDate() === currentTime.getDate() && d.getMonth() === currentTime.getMonth();
-                const hasEvents = submittedData[d] && submittedData[d].events && submittedData[d].events.length > 0;
-
-                // Check if the day has been removed
-                const hasRemovedEvents = removedEvents[d];
-
-                 /*
-                Generates a string representing a combination of CSS classes for a calendar day based on conditions.
-                - "day": Base CSS class always present.
-                - "with-data": Added if there is data for the day.
-                - "submitted": Added if events have been submitted for the day.
-                - "orange-fill": Added if today and events have been submitted.
-                - "removed": Added if events for the day have been removed.
-                */
-                return `day${hasData ? ' with-data' : ''}${hasEvents ? ' submitted' : ''}${isToday && hasEvents  ? ' orange-fill' : ''}${hasRemovedEvents ? ' removed' : ''}`;
-            })
             .attr('width', xScale.bandwidth())
             .attr('height', yScale.bandwidth())
             .attr('x', (d) => xScale(dayLabels[d.getDay()]))
@@ -314,7 +298,7 @@ const Calendar = () => {
               event: dayInput[selectedDay],
               expense: +expectedExpenses[selectedDay] 
             };
-            
+
             await addEvent( {
                 date: selectedDay,
                 eventInfo: newEvent,
@@ -329,7 +313,6 @@ const Calendar = () => {
         
     // Renders the panel based on the selected day and input mode.
     const renderPanel = () => {
-        const submittedInfo = submittedData[selectedDay];
 
         // Check if the form should be rendered (selected day is not null and not in input mode)
         const shouldRenderForm = selectedDay !== null && !inputMode;
@@ -367,11 +350,9 @@ const Calendar = () => {
                             )}
 
                             {/* Display total expenses if available */}
-                            {submittedInfo && submittedInfo.expenses && (
-                                <div>
-                                    <strong>Total Expenses:</strong> {submittedInfo.expenses}
-                                </div>
-                            )}
+                            <div>
+                                <strong>Total Expenses:</strong> {calculateTotalExpenses(eventsForSelectedDay)}
+                            </div>
                         </div>
                     </div>
                 )}
