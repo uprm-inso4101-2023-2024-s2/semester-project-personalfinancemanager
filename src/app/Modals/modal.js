@@ -11,7 +11,7 @@ function Modal({show, onClose, children}){
           onClick={() => {
             onClose(false);
           }}
-        className='w-10 h-10 mb-4 font-bold rounded-full bg-slate-500'
+        className='w-10 h-10 mb-4 font-bold rounded-full bg-red-500'
         >
           X
         </button>
