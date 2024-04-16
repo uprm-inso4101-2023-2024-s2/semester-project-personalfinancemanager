@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 
+
+
 /**
  * Functional component for rendering a line chart using D3.js.
  */
@@ -9,8 +11,13 @@ export default function RenderLineChart() {
   const [data] = useState([300, 125, 200, 250, 100, 75, 25, 215, 165, 201, 34]);
   // Reference hook for SVG element
   const svgRef = useRef();
+  const [color1, setColor1] = useState('steelblue');
+  const [color2, setColor2] = useState('red');
+  const [newColor1, setNewColor1] = useState(color1);
+  const [newColor2, setNewColor2] = useState(color2);
 
   useEffect(() => {
+
     // Chart dimensions and margins
     const w = 600; // Increased width to accommodate legend
     const h = 350;
@@ -107,7 +114,7 @@ export default function RenderLineChart() {
       } )
       .transition()
       .duration(600)
-      .attr('stroke', 'steelblue')
+      .attr('stroke', color1)
       .attr('stroke-width', 2);
 
     // Define another dataset for the second line
@@ -139,7 +146,7 @@ export default function RenderLineChart() {
       } )
       .transition()
       .duration(1000)
-      .attr('stroke', 'red')
+      .attr('stroke', color2)
       .attr('stroke-width', 2)
       ;
 
@@ -152,7 +159,7 @@ export default function RenderLineChart() {
           .attr('y', 0)
           .attr('width', 10)
           .attr('height', 10)
-          .attr('fill', 'steelblue');
+          .attr('fill', color1);
 
     legend.append('text')
           .attr('x', 15)
@@ -165,7 +172,7 @@ export default function RenderLineChart() {
           .attr('y', 20)
           .attr('width', 10)
           .attr('height', 10)
-          .attr('fill', 'red');
+          .attr('fill', color2);
 
     legend.append('text')
           .attr('x', 15)
@@ -173,12 +180,41 @@ export default function RenderLineChart() {
           .attr('fill', 'black')
           .text('Expenses');
 
-  }, [data]);
+  }, [data, color1, color2]);
+
+  const handleColorUpdate1 = () => {
+    setColor1(newColor1);
+  };
+
+  const handleColorUpdate2 = () => {
+    setColor2(newColor2);
+  };
 
   // JSX return
   return (
     <div className="App">
       <svg ref={svgRef}></svg>
+      <div className="mt-4 flex items-center">
+        <label className="mr-2">Pick Color 1</label>
+          <input
+            type="color" 
+            className="bg bg-slate-500 w-24 h-10"
+            value={newColor1}
+            onChange={(e) => setNewColor1(e.target.value)}        
+          />
+          <button onClick={handleColorUpdate1} className="btn btn-primary ml-2">Update Color 1</button>
+        </div>
+
+        <div className="mt-4 flex items-center">
+        <label className="mr-2">Pick Color 2</label>
+          <input
+            type="color" 
+            className="bg bg-slate-500 w-24 h-10"
+            value={newColor2}
+            onChange={(e) => setNewColor2(e.target.value)}    
+          />
+          <button onClick={handleColorUpdate2} className="btn btn-primary ml-2">Update Color 2</button>
+      </div>
     </div>
   );
 }
