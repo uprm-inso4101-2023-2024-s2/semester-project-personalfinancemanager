@@ -187,9 +187,9 @@ const Calendar = () => {
                 const isToday = d.getDate() === currentTime.getDate() && d.getMonth() === currentTime.getMonth();
                 if ((d.getDate() < currentTime.getDate() && d.getMonth() === currentTime.getMonth()) || (d.getMonth() < currentTime.getMonth())) {
                     return 'rgba(211, 211, 211, 0.8)'; // Day has passed
-                } else if(hasEvents) {
+                } else if (hasEvents) {
                         return 'rgba(255, 165, 0, 0.8)'; // Highlight current day with event
-                    } else if (isToday && (d.getMonth() === currentTime.getMonth())) {
+                    } else if (isToday) {
                         return 'rgba(50, 205, 50, 0.8)'; // Highlight current day
                     } else {
                     return 'rgba(255, 255, 255, 0.8)';
