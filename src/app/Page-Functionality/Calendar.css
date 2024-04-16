@@ -110,7 +110,6 @@
     top: 0; 
     margin-bottom: 35px;
     transition: width 3s ease;
-    z-index: 1;
   }
   
 .progress {
@@ -119,7 +118,6 @@
     border-radius: 10px;
     transition: width 2s ease;
     overflow: hidden;
-    z-index: 0;
 }
 
 #calendarSvg {
@@ -196,9 +194,10 @@
 }
 
 .progress-hover {
-    justify-content: center;
     position: absolute;
-    top: -30px; /* Position above the progress bar */
+    top: -35px; 
+    right: calc(75% + 10px);
+    margin-bottom: 10px;
     overflow: visible;
     transform: translateX(-50%);
     background-color: rgba(0, 0, 0, 0.8);
@@ -210,5 +209,4 @@
     transition: opacity 0.3s ease;
     background-color: rgba(0, 0, 0, 0.8); 
     color: white; 
-    z-index: 2;
 }
