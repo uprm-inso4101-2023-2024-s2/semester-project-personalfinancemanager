@@ -35,6 +35,7 @@ const Calendar = () => {
     // State to hold the budget input
     const [budgetInput, setBudgetInput] = useState('');
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December",];
+    const [hoverPercentage, setHoverPercentage] = useState(null);
 
     //Variables to calculate total income, total expenses, and the percentage of the total expenses compared to the monthly budget.
     useEffect(() => {
@@ -65,10 +66,23 @@ const Calendar = () => {
     }
 
     function renderProgressBar(percentage){
+        const handleMouseEnter = () => {
+            setHoverPercentage(percentage);
+        };
+    
+        const handleMouseLeave = () => {
+            setHoverPercentage(null);
+        };
+    
         return (
-            <div className="progressBar">
-            <div className="progress"style={{ width: `${percentage}%` }}> </div>
-        </div>
+            <div className='progress-container'>
+                <div className="progressBar" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+                    <div className="progress"style={{ width: `${percentage}%` }}> </div>
+                </div>
+                {hoverPercentage !== null && (
+                    <div className="progress-hover">{hoverPercentage.toFixed(2)}%</div>
+                )}
+            </div>
     );
     }
 
