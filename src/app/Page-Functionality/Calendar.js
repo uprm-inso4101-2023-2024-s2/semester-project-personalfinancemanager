@@ -80,6 +80,7 @@ const Calendar = () => {
         );
     }
 
+    debugger;
     function renderProgressBar(percentage){
         const handleMouseEnter = () => {
             setHoverPercentage(percentage);
@@ -88,11 +89,30 @@ const Calendar = () => {
         const handleMouseLeave = () => {
             setHoverPercentage(null);
         };
+
+        // Get the progress element
+        var progressElement = document.querySelector('.progress');
+
+        if (progressElement) {
+            // Remove existing classes
+            progressElement.classList.remove('low', 'medium', 'high');
+        
+            // Determine the class to add based on the percentage
+            if (percentage < 50) {
+                progressElement.classList.add('low');
+            } else if (percentage >= 50 && percentage < 75) {
+                progressElement.classList.add('medium');
+            } else {
+                progressElement.classList.add('high');
+            }
+        } else {
+            console.error("Progress element not found!");
+        }
     
         return (
             <div className='progress-container'>
                 <div className="progressBar" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-                    <div className="progress"style={{ width: `${percentage}%` }}> </div>
+                    <div className="progress" style={{ width: `${percentage}%` }}> </div>
                 </div>
                 {hoverPercentage !== null && (
                     <div className="progress-hover">{hoverPercentage.toFixed(2)}%</div>
@@ -110,7 +130,7 @@ const Calendar = () => {
     const handleAddOrUpdateBudget = () => {
         setIsBudgetModalVisible(true); // Show the modal instead of using window.prompt
     };
-    debugger;
+    
     const handleBudgetSubmit = () => {
         const budget = parseFloat(budgetInput);
         if (!isNaN(budget) && budget >= 0) {

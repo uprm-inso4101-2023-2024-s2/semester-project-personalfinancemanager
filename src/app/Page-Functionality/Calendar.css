@@ -119,12 +119,11 @@
     justify-content: center;
     width: 500px; 
     height: 20px; 
-    background-color: #000000; 
+    background-color: #808080; 
     border-radius: 10px; 
     overflow: hidden; 
     position: relative; 
     top: 0; 
-    margin-bottom: 35px;
     transition: width 3s ease;
   }
   
@@ -132,8 +131,38 @@
     height: 100%;
     background-color: #cf1414; 
     border-radius: 10px;
-    transition: width 2s ease;
+    width: 0;
+    transition: width 2s ease, background-color 0.5s ease;
     overflow: hidden;
+}
+
+.progress.low {
+    background: linear-gradient(to right, green 0%, green 50%);
+}
+
+.progress.medium {
+    background: linear-gradient(to right, green 0%, green 50%, yellow 75%, yellow 100%);
+}   
+
+.progress.high {
+    background: linear-gradient(to right, green 0%, green 50%, yellow 55%, yellow 75%, red 80%, red 100%);
+}
+
+.progress-hover {
+    justify-content: center;
+    position: absolute;
+    top: -35px;
+    left: 25px;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    background-color: rgba(0, 0, 0, 0.8); 
+    color: white; 
 }
 
 #calendarSvg {
@@ -228,22 +257,4 @@
     align-items: center;
     text-align: center;
     margin-top: 20px;
-}
-
-.progress-hover {
-    position: absolute;
-    top: -35px; 
-    right: calc(75% + 10px);
-    margin-bottom: 10px;
-    overflow: visible;
-    transform: translateX(-50%);
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    font-size: 14px;
-    padding: 5px 10px;
-    border-radius: 5px;
-    opacity: 1;
-    transition: opacity 0.3s ease;
-    background-color: rgba(0, 0, 0, 0.8); 
-    color: white; 
 }
