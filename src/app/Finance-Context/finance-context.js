@@ -21,6 +21,7 @@ export const financeContext = createContext({
   income: [],
   expenses: [],
   monthlyBudgets: [],
+  events: [],
   createMonthlyBudgets: async () => {},
   updateMonthlyBudgets: async () => {},
   deleteBudget: async () => {},
@@ -31,6 +32,8 @@ export const financeContext = createContext({
   addCategory: async () => {},
   deleteExpenseItem: async () => {},
   deleteExpenseCategory: async () => {},
+  addEvent: async () => {},
+  deleteEvent: async () => {},
   updateExpense: async () => {},
 });
 
@@ -55,8 +58,60 @@ export default function FinanceContextProvider({ children }) {
   const [income, setIncome] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [monthlyBudgets, setBudgets] = useState([]);
+  const [events, setEvents] = useState([]);
 
   const { user } = useContext(authContext);
+
+  /** Adds a new event category, identified by the user and the event date. This should be called 
+   * when the user does not hae any events in the specified date.
+   * The category should look something like this:
+   *  {date : selectedDate, total:0}
+   * 
+   * @param {array} item - A list of events where it contains the userID, date, and another array of events 
+   */
+  const addEvent = async (item) => {
+    try {
+      const collectionRef = collection(db, "events");
+
+      const docSnap = await addDoc(collectionRef, {
+        uid: user.uid,
+        ...item,
+      });
+
+      setEvents((prevEvents) => {
+        return [
+          ...prevEvents,
+          {
+            id: docSnap.id,
+            uid: user.uid,
+            ...item,
+          },
+        ];
+      });
+      
+    } catch (err) {
+      throw err;
+    }
+  }
+
+
+  const deleteEvent = async (eventID) => {
+    try {
+      const docRef = doc(db, "events", eventID);
+      await deleteDoc(docRef);
+
+      setEvents((prevEvents) => {
+        const updatedEvents = prevEvents.filter(
+          (event) => event.id !== eventID
+        );
+
+        return [...updatedEvents];
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+
 
   /** Adds a new monthly budget document to the database. It is saved with the document Id and the User Id.
    * 
@@ -281,10 +336,14 @@ export default function FinanceContextProvider({ children }) {
     }
   };
 
+
+
+
   const values = {
     income,
     expenses,
     monthlyBudgets,
+    events, 
     createMonthlyBudgets,
     updateMonthlyBudgets,
     deleteBudget,
@@ -295,6 +354,8 @@ export default function FinanceContextProvider({ children }) {
     addCategory,
     deleteExpenseItem,
     deleteExpenseCategory,
+    addEvent,
+    deleteEvent,
     updateExpense,
   };
 
@@ -316,6 +377,28 @@ export default function FinanceContextProvider({ children }) {
       });
 
       setIncome(data);
+    };
+
+    const getEventsData = async () => { // calendar related
+      const collectionRef = collection(db, "events");
+      const q = query(collectionRef, where("uid", "==", user.uid));
+
+      const docsSnap = await getDocs(q);
+
+      const data = docsSnap.docs.map((doc) => {
+        const docData = doc.data();
+        return {
+          id: doc.id,
+          date:  docData.date.toDate(),
+          uid:  docData.uid,
+          eventInfo: {
+            event: docData.eventInfo.event,
+            expense: docData.eventInfo.expense,
+          }
+        };
+      });
+
+      setEvents(data);
     };
 
     const getBudgetData = async () => {
@@ -354,6 +437,7 @@ export default function FinanceContextProvider({ children }) {
     getIncomeData();
     getExpensesData();
     getBudgetData();
+    getEventsData(); // calendar related
   }, [user]);
 
   return (

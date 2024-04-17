@@ -256,7 +256,7 @@ export default function RenderDBC( {
          
     const renderMonthSelector = () => {
       return (
-        <div className='month-selector-panel'>
+        <div className='month-selector-panel bar'>
           <select className='select-input' name='months' id='months' onChange={handleChangeMonth} value={selectedMonth}>
             <option value="0">{new Date().getFullYear().toString()}</option>
             {months.map((month, index) => (
