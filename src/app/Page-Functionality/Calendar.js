@@ -74,15 +74,10 @@ const Calendar = () => {
         );
     }
 
-    debugger;
     function renderProgressBar(percentage){
-        const handleMouseEnter = () => {
+        useEffect(() => {
             setHoverPercentage(percentage);
-        };
-    
-        const handleMouseLeave = () => {
-            setHoverPercentage(null);
-        };
+        }, [percentage]);
 
         // Get the progress element
         var progressElement = document.querySelector('.progress');
@@ -105,7 +100,7 @@ const Calendar = () => {
     
         return (
             <div className='progress-container'>
-                <div className="progressBar" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+                <div className="progressBar">
                     <div className="progress" style={{ width: `${percentage}%` }}> </div>
                 </div>
                 {hoverPercentage !== null && (
