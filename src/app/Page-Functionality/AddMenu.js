@@ -13,6 +13,8 @@ function AddMenu() {
 
   const [language, setLanguage] = useState('Español'); // State for language
 
+  const [activeButton, setActiveButton] = useState('home'); // State to track active button
+
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -22,6 +24,7 @@ function AddMenu() {
   };
 
   const handleClick = (action) => {
+    setActiveButton(action); // Set the active button when clicked
     switch (action) {
       case 'home':
         // Add logic 
@@ -69,10 +72,10 @@ function AddMenu() {
               <FontAwesomeIcon icon={faTimes} size="2x" className="text-red-600" />
             </button>
             <div className="mt-20"> {/* Adjust margin top here */}
-              <button onClick={() => handleClick('expenses')} className="block w-full text-left mb-4 ml-4 text-white z-10 rounded-md">Home</button>
-              <button onClick={() => handleClick('income')} className="block w-full text-left mb-4 ml-4 text-white z-10 rounded-md">Calendar</button>
-              <button onClick={() => handleClick('budget')} className="block w-full text-left mb-4 ml-4 text-white z-10 rounded-md">Graphs</button>
-              <button onClick={() => handleClick('calendar')} className="block w-full text-left mb-4 ml-4 text-white z-10 rounded-md">Settings</button>
+              <button onClick={() => handleClick('home')} className={`block w-full text-left mb-4 ml-4 z-10 rounded-md ${activeButton === 'home' ? 'bg-gray-700' : ''}`}>Home</button>
+              <button onClick={() => handleClick('calendar')} className={`block w-full text-left mb-4 ml-4 z-10 rounded-md ${activeButton === 'calendar' ? 'bg-gray-700' : ''}`}>Calendar</button>
+              <button onClick={() => handleClick('graphs')} className={`block w-full text-left mb-4 ml-4 z-10 rounded-md ${activeButton === 'graphs' ? 'bg-gray-700' : ''}`}>Graphs</button>
+              <button onClick={() => handleClick('settings')} className={`block w-full text-left mb-4 ml-4 z-10 rounded-md ${activeButton === 'settings' ? 'bg-gray-700' : ''}`}>Settings</button>
             </div>
           </div>
         </div>
