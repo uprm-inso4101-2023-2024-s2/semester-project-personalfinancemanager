@@ -150,7 +150,7 @@
 
 .progress-hover {
     position: absolute;
-    right: -110px;
+    right: -120px;
     transform: translateX(-50%);
     background-color: #494949; 
     color: white;
