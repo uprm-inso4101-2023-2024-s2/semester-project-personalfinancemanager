@@ -28,13 +28,10 @@ const Calendar = () => {
       ];
     /* 
     State variables used to manage the interactive behavior of the calendar component.
-
     - selectedDay: Represents the currently selected day in the calendar. Initialized to null.
     - inputMode: Tracks whether the calendar is in input mode, allowing the user to add events. Initialized to false.
     - dayInput: Holds input data for each day, where the date is the key. Initialized as an empty object.
     - expectedExpenses: Stores the expected expenses for each day with the date as the key. Initialized as an empty object.
-    - daysWithData: Keeps a list of days that have associated data. Initialized as an empty array.
-    - removedEvents: Tracks the days from which events have been removed, with the date as the key. Initialized as an empty object.
     */
     const [selectedDay, setSelectedDay] = useState(null);
     const [inputMode, setInputMode] = useState(false);
