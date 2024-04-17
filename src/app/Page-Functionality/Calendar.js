@@ -9,7 +9,7 @@ import './Calendar.css';
 const Calendar = () => {
     const svgRef = useRef(null);
     const [progress, setProgress] = useState(0);
-    const {expenses, income, monthlyBudgets, createMonthlyBudgets, updateMonthlyBudgets} = useContext(financeContext);
+    const {expenses, income, monthlyBudgets, events, createMonthlyBudgets, updateMonthlyBudgets, addEvent, deleteEvent,} = useContext(financeContext);
     const [currentTime, setCurrentTime] = useState(new Date());
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
     const monthBackgroundImages = [
@@ -32,18 +32,14 @@ const Calendar = () => {
     - selectedDay: Represents the currently selected day in the calendar. Initialized to null.
     - inputMode: Tracks whether the calendar is in input mode, allowing the user to add events. Initialized to false.
     - dayInput: Holds input data for each day, where the date is the key. Initialized as an empty object.
-    - submittedData: Keeps track of submitted events for each day, with the date as the key. Initialized as an empty object.
     - expectedExpenses: Stores the expected expenses for each day with the date as the key. Initialized as an empty object.
     - daysWithData: Keeps a list of days that have associated data. Initialized as an empty array.
     - removedEvents: Tracks the days from which events have been removed, with the date as the key. Initialized as an empty object.
     */
     const [selectedDay, setSelectedDay] = useState(null);
     const [inputMode, setInputMode] = useState(false);
-    const [dayInput, setDayInput] = useState({});
-    const [submittedData, setSubmittedData] = useState({});
-    const [expectedExpenses, setExpectedExpenses] = useState({});
-    const [daysWithData, setDaysWithData] = useState([]);
-    const [removedEvents, setRemovedEvents] = useState({});
+    const [dayInput, setDayInput] = useState('');
+    const [expectedExpenses, setExpectedExpenses] = useState(0);
     // State to control the visibility of the modal
     const [isBudgetModalVisible, setIsBudgetModalVisible] = useState(false);
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -70,7 +66,8 @@ const Calendar = () => {
         let progressValue = (totalExpenses / monthlyBudgetAmount) * 100;
         progressValue > 100 ? progressValue = 100 : progressValue = progressValue;
         setProgress(progressValue);
-    },[currentTime, submittedData, currentMonth, monthlyBudgets, income, expenses]);
+    },[currentTime, currentMonth, monthlyBudgets, income, expenses]);
+
 
     const renderBudgetButton = () => {
         return (
@@ -121,6 +118,13 @@ const Calendar = () => {
     );
     }
 
+    const calculateTotalExpenses = (eventsForSelectedDay) => {
+        const totalExpenses = eventsForSelectedDay.reduce((total, event) => {
+            return total + (event.eventInfo.expense || 0); // Use 0 if expense is undefined
+        }, 0);
+        return totalExpenses;
+    }
+
     /** Handles the budget button. Adds a budget to the database if the user does not already have one. 
      * If the user has a budget, then it is updated.
      * 
@@ -165,7 +169,7 @@ const Calendar = () => {
 
     useEffect(() => {
         renderCalendar();
-    }, [currentTime, submittedData, currentMonth]); // Re-render whenever currentTime or submittedData changes
+    }, [currentTime, currentMonth]); 
 
     const renderCalendar = () => {
         const svg = d3.select(svgRef.current);
@@ -205,47 +209,24 @@ const Calendar = () => {
         svg.selectAll('.day')
             .data(daysInCurrentMonth)
             .enter().append('rect')
-            .attr('class', (d) => {
-                const hasData = daysWithData.some(date => date.toDateString() === d.toDateString());
-                const isToday = d.getDate() === currentTime.getDate() && d.getMonth() === currentTime.getMonth();
-                const hasEvents = submittedData[d] && submittedData[d].events && submittedData[d].events.length > 0;
-
-                // Check if the day has been removed
-                const hasRemovedEvents = removedEvents[d];
-
-                 /*
-                Generates a string representing a combination of CSS classes for a calendar day based on conditions.
-                - "day": Base CSS class always present.
-                - "with-data": Added if there is data for the day.
-                - "submitted": Added if events have been submitted for the day.
-                - "orange-fill": Added if today and events have been submitted.
-                - "removed": Added if events for the day have been removed.
-                */
-                return `day${hasData ? ' with-data' : ''}${hasEvents ? ' submitted' : ''}${isToday && hasEvents  ? ' orange-fill' : ''}${hasRemovedEvents ? ' removed' : ''}`;
-            })
             .attr('width', xScale.bandwidth())
             .attr('height', yScale.bandwidth())
             .attr('x', (d) => xScale(dayLabels[d.getDay()]))
             .attr('y', (d) => yScale(d3.timeWeek.count(d3.timeMonth(d), d)) + yScale.bandwidth())
             .attr('fill', (d) => {
-                const isToday = d.getDate() === currentTime.getDate();
-                const hasEvent = submittedData[d] && submittedData[d].event && submittedData[d].events.length > 0;
-
-                // Check if the day has been removed
-                const hasRemovedEvents = removedEvents[d];
-
-                // Fill the day depending on if it has events or not
+                const hasEvents = events.some(event => {
+                    const eventDate = new Date(event.date);
+                    return eventDate.getDate() === d.getDate() && eventDate.getMonth() === d.getMonth() && eventDate.getFullYear() === d.getFullYear();
+                });
                 
+                const isToday = d.getDate() === currentTime.getDate() && d.getMonth() === currentTime.getMonth();
                 if ((d.getDate() < currentTime.getDate() && d.getMonth() === currentTime.getMonth()) || (d.getMonth() < currentTime.getMonth())) {
                     return 'rgba(211, 211, 211, 0.8)'; // Day has passed
-                } else if (isToday && (d.getMonth() === currentTime.getMonth())) {
-                    if(hasEvent) {
+                } else if (hasEvents) {
                         return 'rgba(255, 165, 0, 0.8)'; // Highlight current day with event
-                    }
-                    else {
+                    } else if (isToday) {
                         return 'rgba(50, 205, 50, 0.8)'; // Highlight current day
-                    }
-                } else {
+                    } else {
                     return 'rgba(255, 255, 255, 0.8)';
                 }
             })
@@ -305,34 +286,20 @@ const Calendar = () => {
     const handleClick = (event, day) => {
         setSelectedDay(day);
 
-        const hasInput = dayInput[day] || submittedData[day];
+        const hasInput = events.some(event => event.date.toDateString() === day.toDateString());
 
         // Reset input mode when switching between days
         setInputMode(false);
 
-        if (!hasInput || (hasInput && !submittedData[day]?.events.length)) {
+        if (!hasInput) {
             setInputMode(true);
         }
 
         if (hasInput) {
-            setDayInput({ ...dayInput, [day]: '' });
+            const eventData = events.find(event => event.date.toDateString() === day.toDateString());
+            setDayInput(eventData);
         }
 
-        // Reset removed events when switching to input mode or when there are no events left
-        setRemovedEvents((prevRemovedEvents) => {
-            const updatedRemovedEvents = { ...prevRemovedEvents };
-            delete updatedRemovedEvents[day];
-            return updatedRemovedEvents;
-        });
-
-        setDaysWithData((prevDaysWithData) => {
-            if (hasInput && !prevDaysWithData.some(date => date.toDateString() === day.toDateString())) {
-                return [...prevDaysWithData, day];
-            } else if (!hasInput && prevDaysWithData.some(date => date.toDateString() === day.toDateString())) {
-                return prevDaysWithData.filter((d) => d.toDateString() !== day.toDateString());
-            }
-            return prevDaysWithData;
-        });
     };
 
         /* 
@@ -356,35 +323,16 @@ const Calendar = () => {
     - Checks if there is a selected day with submitted data.
     - Removes the last event and updates removed events and the SVG element fill color.
     */
-    const handleRemoveEvent = () => {
-        if (selectedDay && submittedData[selectedDay]) {
-            const updatedSubmittedData = { ...submittedData };
-
-            // Replace with the actual width and height of your SVG container
-            const width = 800;
-            const height = 600;
-
-            const yScale = d3.scaleBand().range([0, height]).domain(d3.range(0, 7));
-            const xScale = d3.scaleBand().range([0, width]).domain(['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']);
-
-            const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-            // Remove the last event
-            const updatedEvents = updatedSubmittedData[selectedDay].events.slice(0, -1);
-            updatedSubmittedData[selectedDay].events = updatedEvents;
-
-            // Set removed events for the selected day
-            setRemovedEvents({ ...removedEvents, [selectedDay]: true });
-
-            // Update the fill color directly in the SVG element
-            const svg = d3.select(svgRef.current);
-            const removedDay = svg.select(`.day[fill='white'][y='${yScale(d3.timeWeek.count(d3.timeMonth(selectedDay), selectedDay)) + yScale.bandwidth()}'][x='${xScale(dayLabels[selectedDay.getDay()])}']`);
-
-            if (removedDay) {
-                removedDay.attr('fill', 'white');
+    const handleRemoveEvent = async () => {
+        if (selectedDay) {
+            const eventsForSelectedDay = events.filter(event => event.date.toDateString() === selectedDay.toDateString());
+            if (eventsForSelectedDay.length > 0) {
+                const eventID = eventsForSelectedDay[eventsForSelectedDay.length - 1].id;
+                await deleteEvent(eventID);
+                toast.success("Last event deleted succesfully.");
+            } else {
+                toast.error("There is no event to delete.");
             }
-
-            setSubmittedData(updatedSubmittedData);
         }
     };
 
@@ -394,33 +342,48 @@ const Calendar = () => {
     - Updates events and expected expenses for the selected day.
     - Resets input values for the selected day.
     */
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if ((dayInput[selectedDay] ?? '').trim() !== '') {
-            setSubmittedData({
-                ...submittedData,
-                [selectedDay]: {
-                    events: [
-                        ...(submittedData[selectedDay]?.events || []),
-                        {
-                            event: dayInput[selectedDay] || '',
-                            expenses: expectedExpenses[selectedDay] || ''
-                        }
-                    ],
-                }
-            });
-            setDayInput({ ...dayInput, [selectedDay]: '' });
-            setExpectedExpenses({ ...expectedExpenses, [selectedDay]: '' });
+            // Prepare the data to be submitted
+            if(isNaN(+expectedExpenses[selectedDay]) || +expectedExpenses[selectedDay] <= 0){
+                toast.error("Please enter a number before submitting.");
+                return;
+            }
+            
+            const newEvent = {
+              event: dayInput[selectedDay],
+              expense: +expectedExpenses[selectedDay] 
+            };
+
+            await addEvent( {
+                date: selectedDay,
+                eventInfo: newEvent,
+              });
+              
+            setDayInput('');
+            setExpectedExpenses(0);
+            toast.success("Event added successfully!");
+            setTimeout(() => {
+                toast.warning("You can keep adding events, close and reopen the panel to view your events.")
+            }, 2000);
+            } else {
+            toast.error("Please enter something before submitting.");
         }
     };
-
         
     // Renders the panel based on the selected day and input mode.
     const renderPanel = () => {
-        const submittedInfo = submittedData[selectedDay];
 
         // Check if the form should be rendered (selected day is not null and not in input mode)
         const shouldRenderForm = selectedDay !== null && !inputMode;
 
+        let hasInputEvents = false;
+        let eventsForSelectedDay = [];
+
+        if (selectedDay) {
+            hasInputEvents = events.some(event => event.date.toDateString() === selectedDay.toDateString());
+            eventsForSelectedDay = events.filter(event => event.date.toDateString() === selectedDay.toDateString());
+        }
         return (
             <>
                 {shouldRenderForm &&(
@@ -431,14 +394,14 @@ const Calendar = () => {
                         <label className="input-ground"> Events of {selectedDay.toLocaleDateString()}: </label>
 
                         {/* Container for events with optional border based on submitted expenses */}
-                        <div className={`input-ground${submittedInfo && submittedInfo.expenses ? ' with-border' : ''}`}>
+                        <div className={`input-ground${hasInputEvents ? ' with-border' : ''}`}>
                             {/* Render submitted events if available, otherwise display a message */}
-                            {submittedInfo && submittedInfo.events && submittedInfo.events.length > 0 ? (
-                                submittedInfo.events.map((event, index) => (
+                            {hasInputEvents ? (
+                                eventsForSelectedDay.map((event, index) => (
                                     <div key={index}>
-                                        <strong>Event {index + 1}:</strong> {event.event}
-                                        {event.expenses && (
-                                            <span className="expected-expenses"> - Expected Expenses: {event.expenses}</span>
+                                        <strong>Event {index + 1}:</strong> {event.eventInfo.event}
+                                        {event.eventInfo.expense && (
+                                            <span className="expected-expenses"> - Expected Expenses: {event.eventInfo.expense}</span>
                                         )}
                                     </div>
                                 ))
@@ -447,11 +410,9 @@ const Calendar = () => {
                             )}
 
                             {/* Display total expenses if available */}
-                            {submittedInfo && submittedInfo.expenses && (
-                                <div>
-                                    <strong>Total Expenses:</strong> {submittedInfo.expenses}
-                                </div>
-                            )}
+                            <div>
+                                <strong>Total Expenses:</strong> {calculateTotalExpenses(eventsForSelectedDay)}
+                            </div>
                         </div>
                     </div>
                 )}
