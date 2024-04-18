@@ -162,6 +162,7 @@ body {
   max-width: 300px;
   box-sizing: border-box;
   margin: 20px auto;
+  overflow: hidden;
 }
 
 .balance-label {
@@ -171,6 +172,9 @@ body {
 .balance-amount {
   font-size: 2rem;
   font-weight: 350;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Style For 'Expenses' & 'Income' Buttons */
