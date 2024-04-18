@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { authContext } from "./Login/auth-context";
 
-
 function AddMenu() {
   const { user, loading, logout } = useContext(authContext);
 
@@ -49,7 +48,7 @@ function AddMenu() {
         <FontAwesomeIcon icon={faBars} size="2x" className="text-white" />
       </button>
       {isOpen && (
-        <div className="overlay fixed inset-0 flex items-start justify-start bg-black bg-opacity-50">{/*Black overlay*/}
+        <div className="overlay" style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 9999 }}>
           <div className="menu-items bg-black p-4 rounded-l-xl shadow-md flex flex-col justify-start h-full w-1/4">
             <div className="blue-stripe absolute top-0 left-0 h-20 bg-black w-1/4 m-0 flex items-center justify-center">
               {/* Black stripe */}
