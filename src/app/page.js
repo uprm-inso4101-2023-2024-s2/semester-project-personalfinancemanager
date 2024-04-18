@@ -132,35 +132,37 @@ export default function Home() {
         onClose={setShowTableAnalisis}
       />
 
-          <section className="container max-w-2x1 px-6 mx-auto">
-            <section className="balance-box">
-              <h3 className="balance-label">My Balance</h3>
-              <h2 className="balance-amount">{currencyFormatter(balance)}</h2>
-            </section>
+            <section className="container max-w-2x1 px-6 mx-auto">
+              <section className="enclosing-box">
+                <section className="balance-box">
+                  <h3 className="balance-label">My Balance</h3>
+                  <h2 className="balance-amount">{currencyFormatter(balance)}</h2>
+                </section>
 
-            <div className="button-container">
-              <button
-                onClick={() => setShowAddIncomeModal(true)}
-                className={`${buttonBaseClass} ${buttonWidthClass} bg-green-500 hover:bg-green-550`}
-                style={{ margin: 'auto' }} 
-              >
-                Income +
-              </button>
-              <button
-                onClick={() => setShowAddExpenseModal(true)}
-                className={`${buttonBaseClass} ${buttonWidthClass} bg-red-500 hover:bg-red-550`}
-                style={{ margin: 'auto' }}
-              >
-                Expenses +
-              </button>
-              <button 
-                onClick={() => {setShowTableAnalisis(true);}}
-                className={`${buttonBaseClass} ${buttonWidthClass} bg-yellow-500 hover:bg-red-550`}
-                style={{ margin: 'auto' }}
-              >
-                Table
-              </button>
-            </div>
+                <div className="button-container">
+                  <button
+                    onClick={() => setShowAddIncomeModal(true)}
+                    className={`${buttonBaseClass} ${buttonWidthClass} bg-green-500 hover:bg-green-550`}
+                    style={{ margin: 'auto' }}
+                  >
+                    Income +
+                  </button>
+                  <button
+                    onClick={() => setShowAddExpenseModal(true)}
+                    className={`${buttonBaseClass} ${buttonWidthClass} bg-red-500 hover:bg-red-550`}
+                    style={{ margin: 'auto' }}
+                  >
+                    Expenses +
+                  </button>
+                  <button
+                    onClick={() => { setShowTableAnalisis(true); }}
+                    className={`${buttonBaseClass} ${buttonWidthClass} bg-yellow-500 hover:bg-red-550`}
+                    style={{ margin: 'auto' }}
+                  >
+                    Table
+                  </button>
+                </div>
+              </section>
 
             {/** Expenses */}
             <section className='py-6'>
