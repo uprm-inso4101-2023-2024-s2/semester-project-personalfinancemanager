@@ -108,7 +108,7 @@ function SignUpPage({ currentPage, setCurrentPage }) {
                             </div>
                             <div>
                                 <label className="block text-gray-400">Email address:</label>
-                                <div className={`relative ${!isEmailValid ? 'mb-6' : 'mb-2'}`}> {/* Adjust margin based on error presence */}
+                                <div className={`relative ${!isEmailValid ? 'mb-6' : 'mb-2'}`}>
                                     <FontAwesomeIcon icon={faEnvelope} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                                     <input
                                         type="email"
@@ -129,7 +129,6 @@ function SignUpPage({ currentPage, setCurrentPage }) {
                                         }`}
                                 >
                                     {" "}
-                                    {/* Adjust margin based on error presence */}
                                     <FontAwesomeIcon
                                         icon={faKey}
                                         className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -156,7 +155,7 @@ function SignUpPage({ currentPage, setCurrentPage }) {
                             </div>
                             <div>
                                 <label className="block text-gray-400">Confirm Password:</label>
-                                <div className={`relative ${confirmPasswordErrors ? 'mb-6' : 'mb-2'}`}> {/* Adjust margin based on error presence */}
+                                <div className={`relative ${confirmPasswordErrors ? 'mb-6' : 'mb-2'}`}>
                                     <FontAwesomeIcon icon={faKey} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                                     <input
                                         type={showPassword ? 'text' : 'password'}
