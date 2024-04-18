@@ -12,17 +12,9 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap');
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 32, 35, 40;
-    --background-end-rgb: 32, 35, 40;
-  }
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 32, 35, 40;
+  --background-end-rgb: 32, 35, 40;
 }
 
 body {
