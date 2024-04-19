@@ -89,7 +89,7 @@ export default function Home() {
   const renderChart = () => {
     switch (chartType) {
       case 'bar':
-        return <RenderBarChart expensesData={expenses} />;
+        return <RenderBarChart expensesData ={expenses} incomeData = {income} />;
       case 'pie':
         return <RenderPieChart expensesData={expenses} />;
       case 'line':

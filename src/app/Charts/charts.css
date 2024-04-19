@@ -12,4 +12,29 @@
     background-color: #FFF;
     border-radius: 5px; 
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-  }
+}
+
+.bar-chart {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 50px;
+}
+
+.toggle-data {
+    display: flex;
+    text-align: center;
+    background-color: rgb(72, 233, 118);
+    color: black;
+    border-radius: 10px;
+    padding: 10px 20px;
+}
+
+
+.toggle-month {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    margin-top: 20px;
+}
