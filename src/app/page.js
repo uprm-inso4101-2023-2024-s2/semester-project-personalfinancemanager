@@ -13,6 +13,7 @@ import AddExpensesModal from './Modals/AddExpensesModal';
 import AddIncomesModal from './Modals/AddIncomesModal';
 import { financeContext } from './Finance-Context/finance-context';
 // import Calendar from './Page-Functionality/Calendar';
+import { CalendarContext } from './Page-Functionality/calendarContext';
 import CalendarPage from './Pages/CalendarPage'
 import TableAnalisisModal from './Modals/tableAnalysisModal';
 import { toast } from 'react-toastify';
@@ -30,8 +31,6 @@ ChartJS.register(
   Legend
 );
 
-// export const PageContext = createContext();
-
 export default function Home() {
   const [chartType, setChartType] = useState('bar');
   const [displayExpenses, setDisplayExpenses] = useState(true); 
@@ -42,6 +41,7 @@ export default function Home() {
   const [showTableAnalisis, setShowTableAnalisis] = useState(false);
   const [balance, setBalance] = useState(0);
   const { expenses, income } = useContext(financeContext);
+  const { showCalendar } = useContext(CalendarContext)
 
   const { user } = useContext(authContext);
 
@@ -53,12 +53,14 @@ export default function Home() {
     }, 0);
     setBalance(newBalance);
 
-    if (user) {
+    if (showCalendar) {
+      setCurrentPage('calendar')
+    } else if (user) {
       setCurrentPage('home');
     } else {
       setCurrentPage('login')
     }
-  }, [expenses, income, user]);
+  }, [expenses, income, user, showCalendar]);
 
   const toggleChartType = () => {
     setChartType(prevType => {
@@ -107,13 +109,6 @@ export default function Home() {
 
 
   const renderCurrentPage = () => {
-    switch(Nav()){
-      case 'calendar':
-        setCurrentPage('calendar')
-        break;
-      default:
-        break;
-    }
     switch(currentPage) {
       case 'login':
         return <LoginPage currentPage={currentPage} setCurrentPage={setCurrentPage} />;
@@ -122,7 +117,6 @@ export default function Home() {
       case 'forgotpassword':
         return <ForgotPassword currentPage={currentPage} setCurrentPage={setCurrentPage} />;
       case 'calendar':
-        // <Nav currentPage={currentPage} setCurrentPage={setCurrentPage} />
         return <CalendarPage />;
       case 'home':
         return (
@@ -225,7 +219,6 @@ export default function Home() {
   }
   return (
     <>
-      {/* <PageContext.Provider value={{ currentPage, setCurrentPage }}></PageContext.Provider> */}
       {renderCurrentPage()}
       {<p>[Debugging] Current Page: {currentPage}</p>}
     </>

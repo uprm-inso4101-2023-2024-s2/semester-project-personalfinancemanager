@@ -3,12 +3,12 @@ import React, { useState, useContext } from 'react';
 import { authContext } from "./Login/auth-context";
 import AddMenu from './AddMenu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { PageContext } from '../page.js';
+import { useCalendar } from './calendarContext';
 
 
 function Nav() {
   const { user, loading, logout } = useContext(authContext);
-  // const { currentPage, setCurrentPage} = useContext(PageContext);
+  const { toggleCalendar } = useCalendar()
   const handleClick = (action) => {
     switch (action) {
       case 'Graphs':
@@ -22,10 +22,10 @@ function Nav() {
         break;
       case 'calendar':
         //Add logic
-        // setCurrentPage('calendar')
-        return 'calendar'
-        // break;
+        toggleCalendar()
+        break;
       default:
+        // setCurrentPage('home') //this creates an infinite re render loop
         break;
     }
    };
@@ -49,7 +49,7 @@ function Nav() {
             <button onClick={() => handleClick('graphs')} className="btn mr-2">Graphs</button>
             <button onClick={() => handleClick('support')} className="btn mr-2">Support</button>
             <button onClick={() => handleClick('account')} className="btn">Account</button>
-            <button onClick={() => logout} className="btn btn-danger mr-4">
+            <button onClick={logout} className="btn btn-danger mr-4">
               Sign out
             </button>
             {/* Add more buttons as needed */}
