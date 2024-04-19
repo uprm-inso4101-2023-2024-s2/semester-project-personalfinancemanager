@@ -28,13 +28,10 @@ const Calendar = () => {
       ];
     /* 
     State variables used to manage the interactive behavior of the calendar component.
-
     - selectedDay: Represents the currently selected day in the calendar. Initialized to null.
     - inputMode: Tracks whether the calendar is in input mode, allowing the user to add events. Initialized to false.
     - dayInput: Holds input data for each day, where the date is the key. Initialized as an empty object.
     - expectedExpenses: Stores the expected expenses for each day with the date as the key. Initialized as an empty object.
-    - daysWithData: Keeps a list of days that have associated data. Initialized as an empty array.
-    - removedEvents: Tracks the days from which events have been removed, with the date as the key. Initialized as an empty object.
     */
     const [selectedDay, setSelectedDay] = useState(null);
     const [inputMode, setInputMode] = useState(false);
@@ -46,6 +43,8 @@ const Calendar = () => {
     // State to hold the budget input
     const [budgetInput, setBudgetInput] = useState('');
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December",];
+    const [hoverPercentage, setHoverPercentage] = useState(null);
+
     //Variables to calculate total income, total expenses, and the percentage of the total expenses compared to the monthly budget.
     useEffect(() => {
         const monthlyincome = monthlyIncomeFilter(income, currentMonth + 1, currentTime.getFullYear());
@@ -76,10 +75,38 @@ const Calendar = () => {
     }
 
     function renderProgressBar(percentage){
+        useEffect(() => {
+            setHoverPercentage(percentage);
+        }, [percentage]);
+
+        // Get the progress element
+        var progressElement = document.querySelector('.progress');
+
+        if (progressElement) {
+            // Remove existing classes
+            progressElement.classList.remove('low', 'medium', 'high');
+        
+            // Determine the class to add based on the percentage
+            if (percentage < 50) {
+                progressElement.classList.add('low');
+            } else if (percentage >= 50 && percentage < 75) {
+                progressElement.classList.add('medium');
+            } else {
+                progressElement.classList.add('high');
+            }
+        } else {
+            console.error("Progress element not found!");
+        }
+    
         return (
-            <div className="progressBar">
-            <div className="progress"style={{ width: `${percentage}%` }}> </div>
-        </div>
+            <div className='progress-container'>
+                <div className="progressBar">
+                    <div className="progress" style={{ width: `${percentage}%` }}> </div>
+                </div>
+                {hoverPercentage !== null && (
+                    <div className="progress-hover">{hoverPercentage.toFixed(2)}%</div>
+                )}
+            </div>
     );
     }
 
@@ -99,7 +126,7 @@ const Calendar = () => {
     const handleAddOrUpdateBudget = () => {
         setIsBudgetModalVisible(true); // Show the modal instead of using window.prompt
     };
-
+    
     const handleBudgetSubmit = () => {
         const budget = parseFloat(budgetInput);
         if (!isNaN(budget) && budget >= 0) {
