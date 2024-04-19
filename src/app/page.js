@@ -19,6 +19,10 @@ import { Chart as ChartJS, Tooltip, LinearScale, CategoryScale, BarElement, Lege
 import LoginPage from './Pages/LoginPage';
 import SignUpPage from './Pages/SignUpPage';
 import ForgotPassword from './Page-Functionality/Login/ForgotPassword';
+import GraphsPage from './Pages/GraphsPage';
+import { useGraph } from './Page-Functionality/graphcontext'
+
+
 
 ChartJS.register(
   CategoryScale,
@@ -38,8 +42,8 @@ export default function Home() {
   const [showTableAnalisis, setShowTableAnalisis] = useState(false);
   const [balance, setBalance] = useState(0);
   const { expenses, income } = useContext(financeContext);
-
   const { user } = useContext(authContext);
+  const { showGraph } = useGraph();
 
   useEffect((newBalance) => {
     newBalance = income.reduce((total, i) => {
@@ -49,12 +53,14 @@ export default function Home() {
     }, 0);
     setBalance(newBalance);
 
-    if (user) {
+    if (showGraph) {
+      setCurrentPage('graph');
+    } else if (user) {
       setCurrentPage('home');
     } else {
-      setCurrentPage('login')
+      setCurrentPage('login');
     }
-  }, [expenses, income, user]);
+  }, [showGraph, user, income, expenses]);
 
   const toggleChartType = () => {
     setChartType(prevType => {
@@ -104,6 +110,8 @@ export default function Home() {
 
   const renderCurrentPage = () => {
     switch(currentPage) {
+      case 'graph':
+        return <GraphsPage />
       case 'login':
         return <LoginPage currentPage={currentPage} setCurrentPage={setCurrentPage} />;
       case 'signup':
@@ -164,7 +172,7 @@ export default function Home() {
 
             {/** Expenses */}
             <section className='py-6'>
-              <h3 className="text-2xl pl-6">My Expenses</h3>
+              <h3 className="text-2xl pl-6"></h3>
               <div className='flex flex-col gap-4 mt-6'>
                 {expenses.map((expense) => {
                   return (
@@ -176,24 +184,7 @@ export default function Home() {
               </div>
             </section>
 
-            <div className="mt-2 group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 flex justify-between">
-              <button style={{ margin: '0 5px' }} onClick={() => setChartType('bar')}>
-                <img src="https://cdn.pixabay.com/photo/2014/03/25/16/26/bar-chart-297122_1280.png" alt="Bar Chart" style={{ width: '100px', height: 'auto' }} />
-              </button>
-              <button style={{ margin: '0 5px' }} onClick={() => setChartType('pie')}>
-                <img src="https://freesvg.org/img/1529053464.png" alt="Pie Chart" style={{ width: '100px', height: 'auto' }} />
-              </button>
-              <button style={{ margin: '0 5px' }} onClick={() => setChartType('line')}>
-                <img src="https://c.mql5.com/31/4/MAStop_200.png" alt="Line Chart" style={{ width: '100px', height: 'auto' }} />
-              </button>
-              <button style={{ margin: '0 5px' }} onClick={() => setChartType('divergence')}>
-                <img src="https://www.xelplus.com/wp-content/uploads/2019/04/Charting-Survey-Results-727a6c.png" alt="Diverging Bar Chart" style={{ width: '100px', height: 'auto' }} />
-              </button>
-            </div>
-
-            <section className="max-w-2x1 px-6 mx-auto flex justify-center">
-              {renderChart()}
-            </section>
+           
 
             {/* Calendar */}
             <section className='py-6 pl-6'>

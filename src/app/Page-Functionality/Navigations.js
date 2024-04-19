@@ -1,22 +1,27 @@
 'use client'
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { authContext } from "./Login/auth-context";
 import AddMenu from './AddMenu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {useGraph} from './graphcontext'
 
 
 function Nav() {
   const { user, loading, logout } = useContext(authContext);
+  const { toggleGraphs } = useGraph(); 
+
+
+
   const handleClick = (action) => {
     switch (action) {
-      case 'Graphs':
-        // Add logic 
+      case 'graphs':
+        toggleGraphs();
         break;
       case 'support':
-        // Add logic 
+        //Add logic
         break;
       case 'account':
-        // Add logic 
+        //Add logic 
         break;
       case 'calendar':
         //Add logic
@@ -41,10 +46,11 @@ function Nav() {
         {/* Right side of the navigation */}
         {user && !loading && (
           <nav className="flex items-center gap-4">
-            <button onClick={handleClick('calendar')} className="btn mr-2">Calendar</button>
-            <button onClick={handleClick('graphs')} className="btn mr-2">Graphs</button>
-            <button onClick={handleClick('support')} className="btn mr-2">Support</button>
-            <button onClick={handleClick('account')} className="btn">Account</button>
+          <button onClick={() => handleClick('calendar')} className="btn mr-2">Calendar</button>
+          <button onClick={() => handleClick('graphs')} className="btn mr-2">Graphs</button>
+          <button onClick={() => handleClick('support')} className="btn mr-2">Support</button>
+          <button onClick={() => handleClick('account')} className="btn">Account</button>
+
             <button onClick={logout} className="btn btn-danger mr-4">
               Sign out
             </button>
