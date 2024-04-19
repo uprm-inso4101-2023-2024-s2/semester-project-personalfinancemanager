@@ -10,7 +10,7 @@ import { financeContext } from '../Finance-Context/finance-context'
 
 
 function GraphsPage() {
-  const [chartType, setChartType] = useState('Type of Graph');
+  const [chartType, setChartType] = useState('');
   const { expenses, income } = useContext(financeContext);
 
 

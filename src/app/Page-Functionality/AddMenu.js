@@ -4,9 +4,12 @@ import { useContext } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { authContext } from "./Login/auth-context";
+import {useGraph} from './graphcontext'
 
 
 function AddMenu() {
+  const { toggleGraphs } = useGraph(); 
+
   const { user, loading, logout } = useContext(authContext);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -30,7 +33,8 @@ function AddMenu() {
         // Add logic 
         break;
       case 'graphs':
-        // Add logic 
+        handleClose();
+        toggleGraphs();
         break;
       case 'settings':
         // Add logic 
@@ -69,10 +73,10 @@ function AddMenu() {
               <FontAwesomeIcon icon={faTimes} size="2x" className="text-red-600" />
             </button>
             <div className="mt-20"> {/* Adjust margin top here */}
-              <button onClick={() => handleClick('expenses')} className="block w-full text-left mb-4 ml-4 text-white z-10 rounded-md">Home</button>
-              <button onClick={() => handleClick('income')} className="block w-full text-left mb-4 ml-4 text-white z-10 rounded-md">Calendar</button>
-              <button onClick={() => handleClick('budget')} className="block w-full text-left mb-4 ml-4 text-white z-10 rounded-md">Graphs</button>
-              <button onClick={() => handleClick('calendar')} className="block w-full text-left mb-4 ml-4 text-white z-10 rounded-md">Settings</button>
+              <button onClick={() => handleClick('home')} className="block w-full text-left mb-4 ml-4 text-white z-10 rounded-md">Home</button>
+              <button onClick={() => handleClick('calendar')} className="block w-full text-left mb-4 ml-4 text-white z-10 rounded-md">Calendar</button>
+              <button onClick={() => handleClick('graphs')} className="block w-full text-left mb-4 ml-4 text-white z-10 rounded-md">Graphs</button>
+              <button onClick={() => handleClick('settings')} className="block w-full text-left mb-4 ml-4 text-white z-10 rounded-md">Settings</button>
             </div>
           </div>
         </div>
