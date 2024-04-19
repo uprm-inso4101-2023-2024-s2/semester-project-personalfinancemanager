@@ -6,9 +6,13 @@ import AuthContextProvider from "./Page-Functionality/Login/auth-context";
 import FinanceContextProvider from "./Finance-Context/finance-context";
 import { ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useContext } from "react";
+// import { PageContext } from "./page.js";
 
 
 export default function RootLayout({ children }) {
+  // const { currentPage, setCurrentPage } = useContext(PageContext);
+
   return (
     <html lang="en">
       <head>
@@ -16,7 +20,8 @@ export default function RootLayout({ children }) {
         <AuthContextProvider>
           <FinanceContextProvider> 
             <ToastContainer/>
-            <Nav /> {children} 
+            {/* <Nav currentPage={currentPage} setCurrentPage={setCurrentPage}/> {children}  */}
+            <Nav /> {children}
           </FinanceContextProvider>
         </AuthContextProvider>
         </body>

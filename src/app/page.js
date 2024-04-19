@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable react/jsx-key */
 'use client'
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, createContext } from 'react';
 import RenderBarChart from "./Charts/barChart";
 import RenderPieChart from "./Charts/ExpenseChart"; 
 import RenderDBC from "./Charts/divergingBarChart";
@@ -12,13 +12,15 @@ import { authContext} from './Page-Functionality/Login/auth-context';
 import AddExpensesModal from './Modals/AddExpensesModal';
 import AddIncomesModal from './Modals/AddIncomesModal';
 import { financeContext } from './Finance-Context/finance-context';
-import Calendar from './Page-Functionality/Calendar';
+// import Calendar from './Page-Functionality/Calendar';
+import CalendarPage from './Pages/CalendarPage'
 import TableAnalisisModal from './Modals/tableAnalysisModal';
 import { toast } from 'react-toastify';
 import { Chart as ChartJS, Tooltip, LinearScale, CategoryScale, BarElement, Legend} from "chart.js";
 import LoginPage from './Pages/LoginPage';
 import SignUpPage from './Pages/SignUpPage';
 import ForgotPassword from './Page-Functionality/Login/ForgotPassword';
+import Nav from './Page-Functionality/Navigations'
 
 ChartJS.register(
   CategoryScale,
@@ -27,6 +29,8 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+
+// export const PageContext = createContext();
 
 export default function Home() {
   const [chartType, setChartType] = useState('bar');
@@ -103,6 +107,13 @@ export default function Home() {
 
 
   const renderCurrentPage = () => {
+    switch(Nav()){
+      case 'calendar':
+        setCurrentPage('calendar')
+        break;
+      default:
+        break;
+    }
     switch(currentPage) {
       case 'login':
         return <LoginPage currentPage={currentPage} setCurrentPage={setCurrentPage} />;
@@ -110,6 +121,9 @@ export default function Home() {
         return <SignUpPage currentPage={currentPage} setCurrentPage={setCurrentPage} />;
       case 'forgotpassword':
         return <ForgotPassword currentPage={currentPage} setCurrentPage={setCurrentPage} />;
+      case 'calendar':
+        // <Nav currentPage={currentPage} setCurrentPage={setCurrentPage} />
+        return <CalendarPage />;
       case 'home':
         return (
         // Main container code...
@@ -198,12 +212,12 @@ export default function Home() {
             </section>
 
             {/* Calendar */}
-            <section className='py-6 pl-6'>
+            {/* <section className='py-6 pl-6'>
               <h3 className='text-2xl text-center'>Calendar System</h3>
               <div className="flex justify-center">
                 <Calendar />
               </div>
-            </section>
+            </section> */}
           </section>
         </main>
         )
@@ -211,8 +225,13 @@ export default function Home() {
   }
   return (
     <>
+      {/* <PageContext.Provider value={{ currentPage, setCurrentPage }}></PageContext.Provider> */}
       {renderCurrentPage()}
       {<p>[Debugging] Current Page: {currentPage}</p>}
     </>
+    // <PageContext.Provider value={{ currentPage, setCurrentPage }}>
+    //   {renderCurrentPage()}
+    //   <p>[Debugging] Current Page: {currentPage}</p>
+    // </PageContext.Provider>
   );
 }
