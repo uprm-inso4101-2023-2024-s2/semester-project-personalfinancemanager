@@ -295,3 +295,17 @@ body, button, input, .btn, .balance-box, .balance-label, .balance-amount, .text-
   border-color: #007bff;
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
+
+/* Menu styles */
+.menu {
+  position: relative; 
+  z-index: 100; 
+}
+
+.overlay {
+  z-index: 101; 
+}
+
+.menu-items {
+  z-index: 102; 
+}
