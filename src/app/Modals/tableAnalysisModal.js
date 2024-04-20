@@ -67,7 +67,6 @@ function TableAnalisisModal({ show, onClose }) {
   const weeklyExpenses = expensesFilterByWeek(expenses);
   const monthlyExpenses = expensesFilterByMonth(expenses, currentMonth);
 
-  console.log(dailyExpenses, weeklyExpenses, monthlyExpenses);
 
   const [meanDailyExpenses, medianDailyExpenses, modeDailyExpenses] =
     calculateStatistics(dailyExpenses);
