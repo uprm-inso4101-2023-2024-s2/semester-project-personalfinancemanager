@@ -30,15 +30,17 @@ const RenderBarChart = ({ expensesData, incomeData }) => {
     //determine whether it should filter the expenses or not and by month or year
     if (shouldFilterByMonth) {
       if (viewIncome) {
-        filteredData = monthlyIncomeFilter(incomeData, selectedMonth, currentTime.getFullYear());
+        const incomeFilter = monthlyIncomeFilter(incomeData, selectedMonth, currentTime.getFullYear());
+        filteredData = aggregateIncomeData(incomeFilter);
       }
       else {
         filteredData = monthlyExpensefilter(expensesData, selectedMonth, currentTime.getFullYear());
       }
     }
-    else if (shouldFilterByYear) {
+    else {
       if (viewIncome) {
-        filteredData = yearlyIncomeFilter(incomeData, currentTime.getFullYear());
+        const incomeFilter = yearlyIncomeFilter(incomeData, currentTime.getFullYear());
+        filteredData = aggregateIncomeData(incomeFilter);
       }
       else {
         filteredData = yearlyExpenseFilter(expensesData, currentTime.getFullYear());
@@ -49,7 +51,6 @@ const RenderBarChart = ({ expensesData, incomeData }) => {
     for (let i = 0; i < filteredData.length; i++) {
       totalExpense += filteredData[i].total;
     }  
-
     if (totalExpense === 0) {
       setNoDataMessage('No data available');
       setShowBarChart(false);
@@ -59,6 +60,26 @@ const RenderBarChart = ({ expensesData, incomeData }) => {
       renderBarChartforPeriod(filteredData);
     }
 }, [expensesData, incomeData, selectedMonth, noDataMessage, shouldFilterByYear, shouldFilterByMonth, viewIncome]);
+
+//checks for duplicate income data and adds their amounts
+const aggregateIncomeData = (incomeData) => {
+  const unduplicatedData = {};
+  incomeData.forEach((item) => {
+    const { description, amount } = item;
+    if (unduplicatedData[description]) {
+      unduplicatedData[description] += amount;
+    } else {
+      unduplicatedData[description] = amount;
+    }
+  });
+
+  const aggregatedData = Object.keys(unduplicatedData).map((description) => ({
+    description,
+    amount: unduplicatedData[description],
+  }));
+
+  return aggregatedData;
+};
 
 const renderBarChartforPeriod = (filteredData) => {
     //deletes previous bars
@@ -100,7 +121,7 @@ const renderBarChartforPeriod = (filteredData) => {
       .attr('y', (d) => yScale(viewIncome ? d.amount : d.total))
       .attr('width', xScale.bandwidth())
       .attr('height', (d) => h - yScale(viewIncome ? d.amount : d.total))
-      .style('fill', (d) => viewIncome ? 'lightblue' : d.color) // Set different colors for income and expenses
+      .style('fill', (d) => viewIncome ? 'lightblue' : d.color)
       .on('mouseover', function(event, d) {
         
         d3.select(this)
@@ -114,10 +135,10 @@ const renderBarChartforPeriod = (filteredData) => {
           .text(`$${formattedValue}`);
 
         const tooltipTextWidth = tooltipText.node().getBBox().width;
-        const tooltipWidth = tooltipTextWidth + 20; // Add padding
+        const tooltipWidth = tooltipTextWidth + 20; 
 
         const tooltipX = xScale(viewIncome ? d.description : d.title) + (xScale.bandwidth() - tooltipWidth) / 2;
-        const tooltipY = yScale(viewIncome ? d.amount : d.total) - 25; // Raise tooltip above the bar
+        const tooltipY = yScale(viewIncome ? d.amount : d.total) - 25;
 
         const tooltip = svg.append('g')
           .attr('class', 'tooltip')
@@ -139,7 +160,7 @@ const renderBarChartforPeriod = (filteredData) => {
           .text(viewIncome ? `$${d.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : `$${d.total.toLocaleString('en-US', { minimumFractionDigits: 2 })}`);
 
         tooltipText.attr('x', tooltipX + tooltipWidth / 2)
-          .attr('y', tooltipY + 10) // Center text vertically
+          .attr('y', tooltipY + 10)
           .attr('text-anchor', 'middle')
           .attr('alignment-baseline', 'middle');
       })
@@ -160,11 +181,6 @@ const renderBarChartforPeriod = (filteredData) => {
       setSelectedMonth(null);
       setShouldFilterByMonth(false);
       setShouldFilterByYear(true);
-    } else if (selectedValue === "-1"){
-      // If all expenses are selected, disable filtering
-      setSelectedMonth(null);
-      setShouldFilterByMonth(false);
-      setShouldFilterByYear(false);
     } else {
       // For the months, enable monthly filtering and set the selected month
       const selectedMonth = parseInt(selectedValue);
@@ -179,7 +195,6 @@ const renderBarChartforPeriod = (filteredData) => {
     return (
       <div className='month-selector-panel'>
         <select className='select-input2' name='months' id='months' onChange={handleChangeMonth} value={selectedMonth}>
-          <option value="-1">All</option>
           <option value="0">{new Date().getFullYear().toString()}</option>
           <option value="1">January</option>
           <option value="2">February</option>
@@ -198,8 +213,9 @@ const renderBarChartforPeriod = (filteredData) => {
     );
   };
 
+  // Toggle between income and expenses
   const handleToggleView = () => {
-    setViewIncome((prev) => !prev); // Toggle between income and expenses
+    setViewIncome((prev) => !prev);
   };
 
   return (
