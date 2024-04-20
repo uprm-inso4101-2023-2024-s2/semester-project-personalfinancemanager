@@ -66,16 +66,17 @@ const aggregateIncomeData = (incomeData) => {
   const unduplicatedData = {};
   incomeData.forEach((item) => {
     const { description, amount } = item;
-    if (unduplicatedData[description]) {
-      unduplicatedData[description] += amount;
+    const generalDescription = description.trim().toLowerCase();
+    if (unduplicatedData[generalDescription]) {
+      unduplicatedData[generalDescription] += amount;
     } else {
-      unduplicatedData[description] = amount;
+      unduplicatedData[generalDescription] = amount;
     }
   });
 
-  const aggregatedData = Object.keys(unduplicatedData).map((description) => ({
-    description,
-    amount: unduplicatedData[description],
+  const aggregatedData = Object.keys(unduplicatedData).map((generalDescription) => ({
+    description: generalDescription,
+    amount: unduplicatedData[generalDescription],
   }));
 
   return aggregatedData;
