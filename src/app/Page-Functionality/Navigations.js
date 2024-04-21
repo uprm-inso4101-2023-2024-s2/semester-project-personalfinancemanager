@@ -5,10 +5,12 @@ import AddMenu from './AddMenu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {useGraph} from './graphcontext'
 
-
 function Nav() {
   const { user, loading, logout } = useContext(authContext);
   const { toggleGraphs } = useGraph(); 
+  const [isGraphShown, setIsGraphShown] = useState(false);
+
+  
 
 
 
@@ -16,13 +18,16 @@ function Nav() {
     switch (action) {
       case 'graphs':
         toggleGraphs();
+        setIsGraphShown(prev => !prev);
         break;
       case 'support':
         //Add logic
         break;
-      case 'account':
-        //Add logic 
-        break;
+      case 'home':
+        if(isGraphShown){
+          setIsGraphShown(prev => !prev);
+          toggleGraphs();
+        }
       case 'calendar':
         //Add logic
         break;
@@ -46,10 +51,10 @@ function Nav() {
         {/* Right side of the navigation */}
         {user && !loading && (
           <nav className="flex items-center gap-4">
-          <button onClick={() => handleClick('calendar')} className="btn mr-2">Calendar</button>
+          <button onClick={() => handleClick('home')} className="btn mr-2">Home</button>
           <button onClick={() => handleClick('graphs')} className="btn mr-2">Graphs</button>
           <button onClick={() => handleClick('support')} className="btn mr-2">Support</button>
-          <button onClick={() => handleClick('account')} className="btn">Account</button>
+          <button onClick={() => handleClick('calendar')} className="btn">Calendar</button>
 
             <button onClick={logout} className="btn btn-danger mr-4">
               Sign out
