@@ -12,17 +12,9 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap');
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 32, 35, 40;
-    --background-end-rgb: 32, 35, 40;
-  }
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 32, 35, 40;
+  --background-end-rgb: 32, 35, 40;
 }
 
 body {
@@ -146,27 +138,43 @@ body {
   position: relative;
   color: white;
 }
+/* Enclosing box for Balance Box and Buttons */
+.enclosing-box {
+  border-radius: 10px;
+  margin: 20px auto;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: auto;
+  box-sizing: border-box;
+  background-image: linear-gradient(to bottom, #838FA2, #B0BACD);
+}
 
 /* Style For Balance Box */
 .balance-box {
-  background-color: #007aff; 
-  border-radius: 10px; 
-  color: white; 
-  font-family:'Helvetica Neue';
-  text-align: center; 
-  width: 100%; 
-  max-width: 300px; 
-  box-sizing: border-box; 
+  background-color: #007aff;
+  border-radius: 10px;
+  color: white;
+  font-family: 'Helvetica Neue';
+  text-align: center;
+  width: 100%;
+  max-width: 300px;
+  box-sizing: border-box;
   margin: 20px auto;
+  overflow: hidden;
 }
 
 .balance-label {
-  font-size: 1rem; 
+  font-size: 1rem;
 }
 
 .balance-amount {
   font-size: 2rem;
   font-weight: 350;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Style For 'Expenses' & 'Income' Buttons */
@@ -179,43 +187,82 @@ body {
   font-size: 1rem;
 }
 
-/* Responsive styles for smaller screens */
+/* Responsive styles for small screens */
 @media (max-width: 396px) {
+  .enclosing-box {
+    padding: 15px;
+  }
+
   .button-container {
-    flex-direction: column; 
-    gap: 5px; 
-    max-width: 100%; 
-    padding: 0 10px; 
+    flex-direction: column;
+    gap: 5px;
+    max-width: 100%;
+    padding: 0 10px;
   }
 
   .button-container button {
-    width: 75%; 
-    font-size: 0.8rem; 
+    width: 100%;
+    font-size: 0.8rem;
   }
 }
 
-/* Responsive styles for larger screens */
-@media (min-width: 768px) {
+/* Responsive styles for medium screens */
+@media (min-width: 396px) and (max-width: 768px) {
+  .enclosing-box {
+    padding: 15px;
+    margin: 20px auto;
+    max-width: calc(100% - 40px);
+  }
+
   .balance-box {
-    padding: 30px; 
-    margin-top: 40px;
-    max-width: 400px; 
-  }
-
-  .balance-label {
-    font-size: 1.50rem; 
-  }
-
-  .balance-amount {
-    font-size: 3rem; 
+    padding: 20px;
+    margin-top: 0;
+    max-width: calc(100% - 40px);
   }
 
   .button-container {
     display: flex;
+    flex-direction: row;
     gap: 10px;
+    max-width: calc(100% - 40px);
+    align-items: center;
     justify-content: center;
-    margin: 0 auto;
-    max-width: 400px; 
+  }
+
+  .button-container button {
+    flex: 1;
+    min-height: 40px;
+  }
+}
+
+/* Responsive styles for large screens */
+@media (min-width: 768px) {
+  .enclosing-box {
+    margin: 20px auto;
+    padding: 20px;
+    max-width: calc(400px + 40px);
+    box-sizing: border-box;
+  }
+
+  .balance-box {
+    box-sizing: border-box;
+    padding: 30px;
+    margin-top: 0px;
+    max-width: 400px;
+  }
+
+  .balance-label {
+    font-size: 1.50rem;
+  }
+
+  .balance-amount {
+    font-size: 3rem;
+  }
+
+  .button-container {
+    justify-content: center;
+    max-width: 400px;
+    margin-bottom: 0px;
   }
 }
 
@@ -227,7 +274,15 @@ body {
   color: black;
 }
 
-body, button, input, .btn, .balance-box, .balance-label, .balance-amount, .text-2xl, .section-title {
+body,
+button,
+input,
+.btn,
+.balance-box,
+.balance-label,
+.balance-amount,
+.text-2xl,
+.section-title {
   font-family: 'Nunito', sans-serif;
   /*font-family: 'Helvetica Neue', sans-serif;*/
   /*font-family: 'Roboto', sans-serif;*/
@@ -243,7 +298,7 @@ body, button, input, .btn, .balance-box, .balance-label, .balance-amount, .text-
 .month-name-label,
 .year-label,
 .day-label-top {
-    fill: white;
+  fill: white;
 }
 
 .bg-gray-100::placeholder {
@@ -259,10 +314,10 @@ body, button, input, .btn, .balance-box, .balance-label, .balance-amount, .text-
   color: black;
 }
 
-.expense-message{
-  display: flex; 
+.expense-message {
+  display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
   font-size: 25px;
 }
 
@@ -295,7 +350,6 @@ body, button, input, .btn, .balance-box, .balance-label, .balance-amount, .text-
   border-color: #007bff;
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
-
 /* Menu styles */
 .menu {
   position: relative; 

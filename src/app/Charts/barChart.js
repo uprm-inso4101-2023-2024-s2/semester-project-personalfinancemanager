@@ -153,7 +153,7 @@ const RenderBarChart = ({expensesData}) => {
   //render the month selector panel
   const renderMonthSelector = () => {
     return (
-      <div className='month-selector-panel'>
+      <div className='month-selector-panel bar'>
         <select className='select-input' name='months' id='months' onChange={handleChangeMonth} value={selectedMonth}>
           <option value="-1">All</option>
           <option value="0">{new Date().getFullYear().toString()}</option>

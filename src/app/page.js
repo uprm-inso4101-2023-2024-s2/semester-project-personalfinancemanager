@@ -34,7 +34,7 @@ ChartJS.register(
 
 export default function Home() {
   const [chartType, setChartType] = useState('bar');
-  const [displayExpenses, setDisplayExpenses] = useState(true); 
+  const [displayExpenses, setDisplayExpenses] = useState(true);
   const [currentPage, setCurrentPage] = useState('login');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showAddIncomeModal, setShowAddIncomeModal] = useState(false);
@@ -70,6 +70,10 @@ export default function Home() {
       else return 'bar';
     });
   }
+
+  const toggleDisplayExpenses = () => {
+    setDisplayExpenses(prevDisplay => !prevDisplay);
+  };
 
   const handleLoginButtonClick = () => {
     if (isLoggedIn) {
@@ -107,9 +111,38 @@ export default function Home() {
     }
   }
 
+  const renderExpenses = () => {
+    return (
+      <section className='py-6'>
+        <div className="flex justify-between items-center">
+          <h3 className="text-2xl pl-6">My Expenses</h3>
+          <div className="my-4 px-6">
+            <button
+              onClick={toggleDisplayExpenses}
+              className={`${buttonBaseClass} ${buttonWidthClass} bg-gray-500 hover:bg-gray-600`}
+            >
+              {displayExpenses ? 'Hide Expenses' : 'Show Expenses'}
+            </button>
+          </div>
+        </div>
+        {displayExpenses &&
+          <div className='flex flex-col gap-4 mt-6'>
+            {expenses.map((expense) => {
+              return (
+                <ExpenseCategoryItem
+                  expense={expense}
+                  key={expense.id}
+                />
+              );
+            })}
+          </div>
+        }
+      </section>
+    );
+  }
 
   const renderCurrentPage = () => {
-    switch(currentPage) {
+    switch (currentPage) {
       case 'graph':
         return <GraphsPage />
       case 'login':
@@ -120,31 +153,34 @@ export default function Home() {
         return <ForgotPassword currentPage={currentPage} setCurrentPage={setCurrentPage} />;
       case 'home':
         return (
-        // Main container code...
-        <main className="container max-w-2x1 px-6 mx-auto">
-         {/* Add Income Modal */}
-      <AddIncomesModal 
-        show={showAddIncomeModal} 
-        onClose={setShowAddIncomeModal}
-      />
-      
-      {/* Add Expenses Modal */}
-      <AddExpensesModal 
-        show={showAddExpenseModal} 
-        onClose={setShowAddExpenseModal} 
-      />
+          // Main container code...
+          <main className="container max-w-2x1 px-6 mx-auto">
+            {/* Add Income Modal */}
+            <AddIncomesModal
+              show={showAddIncomeModal}
+              onClose={setShowAddIncomeModal}
+            />
 
-      {/* Table Analisis */}
-      <TableAnalisisModal 
-        show={showTableAnalisis} 
-        onClose={setShowTableAnalisis}
-      />
+            {/* Add Expenses Modal */}
+            <AddExpensesModal
+              show={showAddExpenseModal}
+              onClose={setShowAddExpenseModal}
+            />
 
-          <section className="container max-w-2x1 px-6 mx-auto">
-            <section className="balance-box">
-              <h3 className="balance-label">My Balance</h3>
-              <h2 className="balance-amount">{currencyFormatter(balance)}</h2>
-            </section>
+            {/* Table Analisis */}
+            <TableAnalisisModal
+              show={showTableAnalisis}
+              onClose={setShowTableAnalisis}
+            />
+
+            <section className="container max-w-2x1 px-6 mx-auto">
+              <section className="enclosing-box">
+                <section className="balance-box">
+                  <h3 className="balance-label">My Balance</h3>
+                  <h2 className="balance-amount">{currencyFormatter(balance)}</h2>
+                </section>
+              </section>
+            
 
             <div className="button-container">
               <button
@@ -162,7 +198,7 @@ export default function Home() {
                 Expenses +
               </button>
               <button 
-                onClick={() => {setShowTableAnalisis(true);}}
+                onClick={() => { setShowTableAnalisis(true);}}
                 className={`${buttonBaseClass} ${buttonWidthClass} bg-yellow-500 hover:bg-red-550`}
                 style={{ margin: 'auto' }}
               >
@@ -172,7 +208,7 @@ export default function Home() {
 
             {/** Expenses */}
             <section className='py-6'>
-              <h3 className="text-2xl pl-6"></h3>
+              <h3 className="text-2xl pl-6">My Expenses</h3>
               <div className='flex flex-col gap-4 mt-6'>
                 {expenses.map((expense) => {
                   return (
@@ -184,17 +220,34 @@ export default function Home() {
               </div>
             </section>
 
-           
+            <div className="mt-2 group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 flex justify-between">
+              <button style={{ margin: '0 5px' }} onClick={() => setChartType('bar')}>
+                <img src="https://cdn.pixabay.com/photo/2014/03/25/16/26/bar-chart-297122_1280.png" alt="Bar Chart" style={{ width: '100px', height: 'auto' }} />
+              </button>
+              <button style={{ margin: '0 5px' }} onClick={() => setChartType('pie')}>
+                <img src="https://freesvg.org/img/1529053464.png" alt="Pie Chart" style={{ width: '100px', height: 'auto' }} />
+              </button>
+              <button style={{ margin: '0 5px' }} onClick={() => setChartType('line')}>
+                <img src="https://c.mql5.com/31/4/MAStop_200.png" alt="Line Chart" style={{ width: '100px', height: 'auto' }} />
+              </button>
+              <button style={{ margin: '0 5px' }} onClick={() => setChartType('divergence')}>
+                <img src="https://www.xelplus.com/wp-content/uploads/2019/04/Charting-Survey-Results-727a6c.png" alt="Diverging Bar Chart" style={{ width: '100px', height: 'auto' }} />
+              </button>
+            </div>
 
-            {/* Calendar */}
-            <section className='py-6 pl-6'>
-              <h3 className='text-2xl text-center'>Calendar System</h3>
-              <div className="flex justify-center">
-                <Calendar />
-              </div>
+            <section className="max-w-2x1 px-6 mx-auto flex justify-center">
+              {renderChart()}
             </section>
-          </section>
-        </main>
+
+                {/* Calendar */}
+                <section className='py-6 pl-6'>
+                  <h3 className='text-2xl text-center'>Calendar System</h3>
+                  <div className="flex justify-center">
+                    <Calendar />
+                  </div>
+                </section>
+              </section>
+          </main>
         )
     }
   }

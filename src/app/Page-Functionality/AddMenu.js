@@ -16,6 +16,8 @@ function AddMenu() {
 
   const [language, setLanguage] = useState('Español'); // State for language
 
+  const [activeButton, setActiveButton] = useState('home'); // State to track active button
+
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -25,6 +27,7 @@ function AddMenu() {
   };
 
   const handleClick = (action) => {
+    setActiveButton(action); // Set the active button when clicked
     switch (action) {
       case 'home':
         // Add logic 
@@ -50,7 +53,7 @@ function AddMenu() {
         <FontAwesomeIcon icon={faBars} size="2x" className="text-white" />
       </button>
       {isOpen && (
-        <div className="overlay fixed inset-0 flex items-start justify-start bg-black bg-opacity-50">{/*Black overlay*/}
+        <div className="overlay" style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 9999 }}>
           <div className="menu-items bg-black p-4 rounded-l-xl shadow-md flex flex-col justify-start h-full w-1/4">
             <div className="blue-stripe absolute top-0 left-0 h-20 bg-black w-1/4 m-0 flex items-center justify-center">
               {/* Black stripe */}
@@ -73,10 +76,10 @@ function AddMenu() {
               <FontAwesomeIcon icon={faTimes} size="2x" className="text-red-600" />
             </button>
             <div className="mt-20"> {/* Adjust margin top here */}
-              <button onClick={() => handleClick('home')} className="block w-full text-left mb-4 ml-4 text-white z-10 rounded-md">Home</button>
-              <button onClick={() => handleClick('calendar')} className="block w-full text-left mb-4 ml-4 text-white z-10 rounded-md">Calendar</button>
-              <button onClick={() => handleClick('graphs')} className="block w-full text-left mb-4 ml-4 text-white z-10 rounded-md">Graphs</button>
-              <button onClick={() => handleClick('settings')} className="block w-full text-left mb-4 ml-4 text-white z-10 rounded-md">Settings</button>
+              <button onClick={() => handleClick('home')} className={`block w-full text-left mb-4 ml-4 z-10 rounded-md ${activeButton === 'home' ? 'bg-gray-700' : ''}`}>Home</button>
+              <button onClick={() => handleClick('calendar')} className={`block w-full text-left mb-4 ml-4 z-10 rounded-md ${activeButton === 'calendar' ? 'bg-gray-700' : ''}`}>Calendar</button>
+              <button onClick={() => handleClick('graphs')} className={`block w-full text-left mb-4 ml-4 z-10 rounded-md ${activeButton === 'graphs' ? 'bg-gray-700' : ''}`}>Graphs</button>
+              <button onClick={() => handleClick('settings')} className={`block w-full text-left mb-4 ml-4 z-10 rounded-md ${activeButton === 'settings' ? 'bg-gray-700' : ''}`}>Settings</button>
             </div>
           </div>
         </div>
