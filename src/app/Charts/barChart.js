@@ -194,7 +194,7 @@ const renderBarChartforPeriod = (filteredData) => {
   //render the month selector panel
   const renderMonthSelector = () => {
     return (
-      <div className='month-selector-panel bar'>
+      <div className='month-selector-panel'>
         <select className='select-input' name='months' id='months' onChange={handleChangeMonth} value={selectedMonth}>
           <option value="0">{new Date().getFullYear().toString()}</option>
           <option value="1">January</option>
