@@ -4,8 +4,12 @@ import { useContext } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { authContext } from "./Login/auth-context";
+import {useGraph} from './graphcontext'
+
 
 function AddMenu() {
+  const { toggleGraphs } = useGraph(); 
+
   const { user, loading, logout } = useContext(authContext);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -32,7 +36,8 @@ function AddMenu() {
         // Add logic 
         break;
       case 'graphs':
-        // Add logic 
+        handleClose();
+        toggleGraphs();
         break;
       case 'settings':
         // Add logic 
