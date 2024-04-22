@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import Head from 'next/head'
 import { 
     FaFacebookF, 
@@ -8,9 +8,17 @@ import {
 } from 'react-icons/fa'
 import {MdLockOutline} from 'react-icons/md'
 import { authContext } from '../Page-Functionality/Login/auth-context';
+import EncryptionPasswordModal from '../Modals/EncryptionPasswordModal';
 
 function LoginPage({currentPage, setCurrentPage}) {
-    const { googleLoginHandler, facebookLoginHandler } = useContext(authContext);
+    const { user, encryptionPassword, googleLoginHandler, facebookLoginHandler } = useContext(authContext);
+    const [showEncryptionPasswordModal, setShowEncryptionPasswordModal] = useState(false);
+
+    useEffect(() => {
+        if (user && !encryptionPassword) {
+            setShowEncryptionPasswordModal(true)
+        }
+    }, [user, encryptionPassword, showEncryptionPasswordModal]);
 
     if (currentPage=='login') {
         return (
@@ -22,6 +30,9 @@ function LoginPage({currentPage, setCurrentPage}) {
             
 
             <main className='flex flex-col items-center justify-center w-full flex-1 px-20 text-center'>
+
+            <EncryptionPasswordModal show={showEncryptionPasswordModal} onClose={setShowEncryptionPasswordModal} />
+
             <div className='bg-white rounded-2xl shadow-2xl flex w-2/3 max-w-4xl' style={{ backgroundColor: '#181A1B' }}>
                     <div className='w-3/5 p-5'>
                         <div className='py-10'>
@@ -52,7 +63,7 @@ function LoginPage({currentPage, setCurrentPage}) {
                                     <button onClick={() => setCurrentPage('forgotpassword')} className='flex items-center text-xs'>Forgot password?</button>
                                     
                                 </div>
-                                <button onClick={() => setCurrentPage('home')} className='border-2 border-green-500 text-green-500 rounded-full px-12 py-2 inline-block font-semibold hover:bg-green-500 hover:text-white'>Sign In</button>
+                                <button onClick={() => setShowEncryptionPasswordModal(true)} className='border-2 border-green-500 text-green-500 rounded-full px-12 py-2 inline-block font-semibold hover:bg-green-500 hover:text-white'>Sign In</button>
                             </div>
                         </div>
                     </div>

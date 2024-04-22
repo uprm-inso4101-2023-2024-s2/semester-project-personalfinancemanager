@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
 function Nav() {
-  const { user, loading, logout } = useContext(authContext);
+  const { user, loading, encryptionPassword, logout } = useContext(authContext);
   const handleClick = (action) => {
     switch (action) {
       case 'Graphs':
@@ -26,11 +26,12 @@ function Nav() {
     }
    };
 
+   let shouldRender = user && encryptionPassword && !loading;
    return (
      <header className="container max-w-full px-20 mx-auto bg-custom-gray py-4">
        <div className="flex items-center justify-between">
          {/* Left side of the navigation */}
-         {user && !loading && (
+         {shouldRender && (
           <div className="flex items-center gap-4 ml-12">
             <div>
               <AddMenu />
@@ -39,7 +40,7 @@ function Nav() {
           </div>
         )}
         {/* Right side of the navigation */}
-        {user && !loading && (
+        {shouldRender && (
           <nav className="flex items-center gap-4">
             <button onClick={handleClick('calendar')} className="btn mr-2">Calendar</button>
             <button onClick={handleClick('graphs')} className="btn mr-2">Graphs</button>

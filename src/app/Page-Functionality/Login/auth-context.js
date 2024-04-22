@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext } from "react"
+import { createContext, useState } from "react"
 
 import {auth} from '../../index'
 import { GoogleAuthProvider, FacebookAuthProvider, signInWithPopup, signOut } from "firebase/auth"
@@ -9,13 +9,16 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 
 export const authContext = createContext({
   user: null,
+  encryptionPassword: '', updateEncryptionPassword: () => {},   // TODO: wipe from memory when tab is closed
   loading: false,
   googleLoginHandler: async () => {},
+  facebookLoginHandler: async () => {},
   logout: async () => {},
 });
 
 export default function AuthContextProvider({ children }) {
   const [user, loading] = useAuthState(auth);
+  const [encryptionPassword, setEncryptionPassword] = useState('');
 
   const googleProvider = new GoogleAuthProvider(auth);
 
@@ -44,6 +47,7 @@ export default function AuthContextProvider({ children }) {
   const values = {
     user,
     loading,
+    encryptionPassword, setEncryptionPassword,
     googleLoginHandler,
     facebookLoginHandler,
     logout,

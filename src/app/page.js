@@ -19,6 +19,7 @@ import { Chart as ChartJS, Tooltip, LinearScale, CategoryScale, BarElement, Lege
 import LoginPage from './Pages/LoginPage';
 import SignUpPage from './Pages/SignUpPage';
 import ForgotPassword from './Page-Functionality/Login/ForgotPassword';
+import EncryptionPasswordModal from './Modals/EncryptionPasswordModal';
 
 ChartJS.register(
   CategoryScale,
@@ -38,8 +39,9 @@ export default function Home() {
   const [showTableAnalisis, setShowTableAnalisis] = useState(false);
   const [balance, setBalance] = useState(0);
   const { expenses, income } = useContext(financeContext);
+  const [showEncryptionPasswordModal, setShowEncryptionPasswordModal] = useState(false);
 
-  const { user } = useContext(authContext);
+  const { user, encryptionPassword } = useContext(authContext);
 
   useEffect((newBalance) => {
     newBalance = income.reduce((total, i) => {
@@ -49,12 +51,13 @@ export default function Home() {
     }, 0);
     setBalance(newBalance);
 
-    if (user) {
+    if (user && encryptionPassword) {
+      console.log(encryptionPassword);
       setCurrentPage('home');
     } else {
       setCurrentPage('login')
     }
-  }, [expenses, income, user]);
+  }, [expenses, income, user, encryptionPassword]);
 
   const toggleChartType = () => {
     setChartType(prevType => {
@@ -114,6 +117,13 @@ export default function Home() {
         return (
         // Main container code...
         <main className="container max-w-2x1 px-6 mx-auto">
+
+      <EncryptionPasswordModal
+        show={showEncryptionPasswordModal}
+        onClose={setShowEncryptionPasswordModal}
+        setCurrentPage={setCurrentPage}
+      />
+
          {/* Add Income Modal */}
       <AddIncomesModal 
         show={showAddIncomeModal} 
