@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 
+
+
 /**
  * Functional component for rendering a line chart using D3.js.
  */
@@ -9,8 +11,13 @@ export default function RenderLineChart() {
   const [data] = useState([300, 125, 200, 250, 100, 75, 25, 215, 165, 201, 34]);
   // Reference hook for SVG element
   const svgRef = useRef();
+  const [color1, setColor1] = useState('steelblue');
+  const [color2, setColor2] = useState('red');
+  const [newColor1, setNewColor1] = useState(color1);
+  const [newColor2, setNewColor2] = useState(color2);
 
   useEffect(() => {
+
     // Chart dimensions and margins
     const w = 600; // Increased width to accommodate legend
     const h = 350;
@@ -32,7 +39,7 @@ export default function RenderLineChart() {
                      .range([0, innerWidth]);
 
     const yScale = d3.scaleLinear()
-                     .domain([0, d3.max(data)])
+                     .domain([0, d3.max(data)]) 
                      .range([innerHeight, 0]);
 
     // Line generator
@@ -70,7 +77,7 @@ export default function RenderLineChart() {
               .attr('y1', 0)
               .attr('x2', innerWidth)
               .attr('y2', 0)
-              .style('stroke', 'black')
+              .style('stroke', 'gray')
               .style('stroke-width', '1px')
               .style('opacity', '0.1');
 
@@ -82,7 +89,7 @@ export default function RenderLineChart() {
               .attr('y1', 0)
               .attr('x2', 0)
               .attr('y2', -innerHeight)
-              .style('stroke', 'black')
+              .style('stroke', 'gray')
               .style('stroke-width', '1px')
               .style('opacity', '0.1');
 
@@ -90,10 +97,25 @@ export default function RenderLineChart() {
     svg.append('path')
        .datum(data)
        .attr('fill', 'none')
-       .attr('stroke', 'steelblue')
-       .attr('stroke-width', 2)
        .attr('d', line)
-       .attr('transform', `translate(${margin.left}, ${margin.top})`);
+       .attr('transform', `translate(${margin.left}, ${margin.top})`)
+
+       .on('mouseover', function(event, d){
+        d3.select(this)
+        .style('fill', d.color)
+        .transition()
+        .duration(200)
+        .attr('stroke-width', 5);
+          } 
+        )
+      .on('mouseout', function(event, d) {
+        d3.select(this)
+        .attr('stroke-width', 2)
+      } )
+      .transition()
+      .duration(600)
+      .attr('stroke', color1)
+      .attr('stroke-width', 2);
 
     // Define another dataset for the second line
     const data2 = [50, 150, 100, 200, 250, 175, 125, 275, 225, 150, 100];
@@ -107,10 +129,26 @@ export default function RenderLineChart() {
     svg.append('path')
        .datum(data2)
        .attr('fill', 'none')
-       .attr('stroke', 'red')
-       .attr('stroke-width', 2)
        .attr('d', line2)
-       .attr('transform', `translate(${margin.left}, ${margin.top})`);
+       .attr('transform', `translate(${margin.left}, ${margin.top})`)
+
+       .on('mouseover', function(event, d){
+        d3.select(this)
+        .style('fill', d.color)
+        .transition()
+        .duration(200)
+        .attr('stroke-width', 5);
+          } 
+        )
+      .on('mouseout', function(event, d) {
+        d3.select(this)
+        .attr('stroke-width', 2)
+      } )
+      .transition()
+      .duration(1000)
+      .attr('stroke', color2)
+      .attr('stroke-width', 2)
+      ;
 
     // Adding legend
     const legend = svg.append('g')
@@ -121,7 +159,7 @@ export default function RenderLineChart() {
           .attr('y', 0)
           .attr('width', 10)
           .attr('height', 10)
-          .attr('fill', 'steelblue');
+          .attr('fill', color1);
 
     legend.append('text')
           .attr('x', 15)
@@ -134,7 +172,7 @@ export default function RenderLineChart() {
           .attr('y', 20)
           .attr('width', 10)
           .attr('height', 10)
-          .attr('fill', 'red');
+          .attr('fill', color2);
 
     legend.append('text')
           .attr('x', 15)
@@ -142,12 +180,41 @@ export default function RenderLineChart() {
           .attr('fill', 'black')
           .text('Expenses');
 
-  }, [data]);
+  }, [data, color1, color2]);
+
+  const handleColorUpdate1 = () => {
+    setColor1(newColor1);
+  };
+
+  const handleColorUpdate2 = () => {
+    setColor2(newColor2);
+  };
 
   // JSX return
   return (
     <div className="App">
       <svg ref={svgRef}></svg>
+      <div className="mt-4 flex items-center">
+        <label className="mr-2">Pick Color 1</label>
+          <input
+            type="color" 
+            className="bg bg-slate-500 w-24 h-10"
+            value={newColor1}
+            onChange={(e) => setNewColor1(e.target.value)}        
+          />
+          <button onClick={handleColorUpdate1} className="btn btn-primary ml-2">Update Color 1</button>
+        </div>
+
+        <div className="mt-4 flex items-center">
+        <label className="mr-2">Pick Color 2</label>
+          <input
+            type="color" 
+            className="bg bg-slate-500 w-24 h-10"
+            value={newColor2}
+            onChange={(e) => setNewColor2(e.target.value)}    
+          />
+          <button onClick={handleColorUpdate2} className="btn btn-primary ml-2">Update Color 2</button>
+      </div>
     </div>
   );
 }
