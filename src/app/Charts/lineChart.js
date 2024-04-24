@@ -22,7 +22,7 @@ export default function RenderLineChart({incomeData, expensesData}) {
     let updatedFilteredIncome = [];
     let processedExpenses = [];
     let processedIncome = [];
-    
+
     for(let i=1; i<13; i++) {
 
       updatedFilteredExpenses = monthlyExpensefilter(expensesData, i, currentDate.getFullYear());
@@ -71,10 +71,39 @@ export default function RenderLineChart({incomeData, expensesData}) {
     const maxTotal = Math.max(maxIncome, maxExpenses);
 
 
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+
+    //     //  const xScale = d3.scaleBand()
+    //     .domain(months)  // Set domain to month labels
+    //     .range([0, innerWidth])
+    //     .padding(0.1); // Adds some padding between bars
+
+    // // Update the xAxis to work with the band scale
+    // const xAxis = d3.axisBottom(xScale)
+    //   .tickFormat(d => d);  // Optional: Directly use month labels
+
+    // // Applying the updated xScale and xAxis
+    // const xAxisGroup = svg.append('g')
+    //         .call(xAxis)
+    //         .attr('transform', `translate(${margin.left}, ${margin.top + innerHeight})`);
+
+    // // Ensure that other references to xScale(i) in the line generators are adjusted to center the lines, e.g.,
+    // const line = d3.line()
+    //   .x((d, i) => xScale(months[i]) + xScale.bandwidth() / 2)  // Centers the line in the middle of the band
+    //   .y(d => yScale(d));
+
+    // const line2 = d3.line()
+    //   .x((d, i) => xScale(months[i]) + xScale.bandwidth() / 2)  // Same for the second line
+    //   .y(d => yScale(d));
+
+
+    //-----------------------------------------------------------------------------
     // X and Y scales
-    const xScale = d3.scaleLinear()
-                     .domain([0, filteredIncome.length])
-                     .range([0, innerWidth]);
+    const xScale = d3.scaleBand()
+                     .domain(months)
+                     .range([0, innerWidth])
+                     .padding(0.1);
 
     const yScale = d3.scaleLinear()
                      .domain([0, maxTotal])
@@ -82,19 +111,19 @@ export default function RenderLineChart({incomeData, expensesData}) {
 
     // Line generator
     const line = d3.line()
-                   .x((d, i) => xScale(i))
-                   .y(d => yScale(d));
+      .x((d, i) => xScale(months[i]) + xScale.bandwidth() / 2)
+      .y(d => yScale(d));
 
     // X and Y axes
     const xAxis = d3.axisBottom(xScale)
-                  .ticks(filteredIncome.length);
+                  .tickFormat(d => d); 
 
     const yAxis = d3.axisLeft(yScale)
                   .ticks(6);
 
     const xAxisGroup = svg.append('g')
-                          .call(xAxis)
-                          .attr('transform', `translate(${margin.left}, ${margin.top + innerHeight})`);
+                        .call(xAxis)
+                        .attr('transform', `translate(${margin.left}, ${margin.top + innerHeight})`);
 
     const yAxisGroup = svg.append('g')
                           .call(yAxis)
@@ -145,8 +174,8 @@ export default function RenderLineChart({incomeData, expensesData}) {
 
     // Line generator for the second line
     const line2 = d3.line()
-                    .x((d, i) => xScale(i))
-                    .y(d => yScale(d))
+                  .x((d, i) => xScale(months[i]) + xScale.bandwidth() / 2)
+                  .y(d => yScale(d));
 
     // Render second line
     svg.append('path')
