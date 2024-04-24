@@ -3,6 +3,10 @@
 import { createContext, useState, useEffect, useContext } from "react";
 
 import { authContext } from "../Page-Functionality/Login/auth-context";
+const crypto = require("crypto");
+const algorithm = "aes-256-cbc";
+const userPassword = "Password";
+const keyLength = 32;
 
 // Firebase
 import { db } from "../index";
@@ -36,6 +40,34 @@ export const financeContext = createContext({
   deleteEvent: async () => {},
   updateExpense: async () => {},
 });
+
+// encryption functions
+
+function getKeyFromPassword(password) {
+  const hash = crypto.createHash("sha256");
+  hash.update(password);
+  return hash.digest("base64").slice(0, keyLength);
+}
+
+function encrypt(text, password) {
+  const key = getKeyFromPassword(password);
+  const iv = crypto.randomBytes(16); // Initialization vector
+  const cipher = crypto.createCipheriv(algorithm, key, iv);
+  let encrypted = cipher.update(JSON.stringify(text), 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  return { encryptedData: encrypted, iv: iv.toString('hex') };
+}
+
+function decrypt(encryptedObj, password) {
+  const key = getKeyFromPassword(password);
+  const iv = Buffer.from(encryptedObj.iv, 'hex');
+  const decipher = crypto.createDecipheriv(algorithm, key, iv);
+  let decrypted = decipher.update(encryptedObj.encryptedData, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
+  return JSON.parse(decrypted);
+}
+
+
 
  export async function checkExpensesDuplication(user,title){
   try {
@@ -71,28 +103,31 @@ export default function FinanceContextProvider({ children }) {
    */
   const addEvent = async (item) => {
     try {
-      const collectionRef = collection(db, "events");
+        const encryptedItem = encrypt(item, userPassword);
+        const collectionRef = collection(db, "events");
 
-      const docSnap = await addDoc(collectionRef, {
-        uid: user.uid,
-        ...item,
-      });
-
-      setEvents((prevEvents) => {
-        return [
-          ...prevEvents,
-          {
-            id: docSnap.id,
+        const docSnap = await addDoc(collectionRef, {
             uid: user.uid,
-            ...item,
-          },
-        ];
-      });
-      
+            encryptedData: encryptedItem.encryptedData,
+            iv: encryptedItem.iv
+        });
+
+        setEvents((prevEvents) => {
+            return [
+                ...prevEvents,
+                {
+                    id: docSnap.id,
+                    uid: user.uid,
+                    encryptedData: encryptedItem.encryptedData,
+                    iv: encryptedItem.iv
+                },
+            ];
+        });
+
     } catch (err) {
-      throw err;
+        throw err;
     }
-  }
+}
 
 
   const deleteEvent = async (eventID) => {
@@ -119,24 +154,26 @@ export default function FinanceContextProvider({ children }) {
    */
   const createMonthlyBudgets = async (newBudget, month) => {
     try {
-      const collectionRef = collection(db, "monthly_budget");
-      const items = Array.from({ length: 12 }, () => 0); 
-      items[month] = newBudget;
-      const docSnap = await addDoc(collectionRef, {
-        uid : user.uid,
-        budgets: items,
-      });
+        const encryptedBudget = encrypt({ month: newBudget }, userPassword);
+        const collectionRef = collection(db, "monthly_budget");
+        const items = Array.from({ length: 12 }, () => ({ encryptedData: null, iv: null }));
+        items[month] = encryptedBudget;
+        const docSnap = await addDoc(collectionRef, {
+            uid: user.uid,
+            budgets: items,
+        });
 
-      setBudgets({
-          id: docSnap.id,
-          uid : user.uid,
-          budgets : items,
+        setBudgets({
+            id: docSnap.id,
+            uid: user.uid,
+            budgets: items,
         })
 
     } catch (err) {
-      throw err; 
+        throw err;
     }
-  }
+}
+
 
   /** Updates the monthly budget using the budget to update it to.
    * This looks for the document with the user id.
@@ -145,23 +182,25 @@ export default function FinanceContextProvider({ children }) {
    */
   const updateMonthlyBudgets = async (newBudget, month) => {
     try {
-      const colRef = collection(db, "monthly_budget");
-      const q = query(colRef, where("uid", "==", user.uid));
-      const docSnap = await getDocs(q);
-      const updatedItems = docSnap.docs[0].data().budgets;
-      updatedItems[month] = newBudget;
-      const budgetId = docSnap.docs[0].id;
-      const docRef = doc(db, "monthly_budget", budgetId);
-      await updateDoc(docRef, { budgets: updatedItems });
-      setBudgets({
-        id: budgetId,
-        uid: user.uid,
-        budgets: updatedItems
-      });
+        const colRef = collection(db, "monthly_budget");
+        const q = query(colRef, where("uid", "==", user.uid));
+        const docSnap = await getDocs(q);
+        const docData = docSnap.docs[0].data();
+        const updatedItems = docData.budgets;
+        const encryptedBudget = encrypt({ month: newBudget }, userPassword);
+        updatedItems[month] = encryptedBudget;
+        const budgetId = docSnap.docs[0].id;
+        const docRef = doc(db, "monthly_budget", budgetId);
+        await updateDoc(docRef, { budgets: updatedItems });
+        setBudgets({
+            id: budgetId,
+            uid: user.uid,
+            budgets: updatedItems
+        });
     } catch (err) {
-      throw err;
+        throw err;
     }
-  }
+}
 
   /** Deletes the monthly budget doc from the database.
    * 
@@ -195,133 +234,123 @@ export default function FinanceContextProvider({ children }) {
     }
   };
 
-  const addCategory = async (category) => {
+  const addCategory = async (categoryName) => {
+    const encryptedCategory = encrypt({ name: categoryName, items: [] }, userPassword);
     try {
-      const collectionRef = collection(db, "expenses");
-
-      const docSnap = await addDoc(collectionRef, {
-        uid: user.uid,
-        ...category,
-        items: [],
-      });
-
-      setExpenses((prevExpenses) => {
-        return [
-          ...prevExpenses,
-          {
-            id: docSnap.id,
+        const collectionRef = collection(db, "expenses");
+        const docSnap = await addDoc(collectionRef, {
             uid: user.uid,
-            items: [],
-            ...category,
-          },
-        ];
-      });
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  const updateExpense = async (updatedExpense) => {
-    try {
-        const docRef = doc(db, "expenses", updatedExpense.id);
-        await updateDoc(docRef, {
-            ...updatedExpense
+            encryptedData: encryptedCategory.encryptedData,
+            iv: encryptedCategory.iv
         });
-
-        setExpenses(prevExpenses => {
-            const updatedExpenses = [...prevExpenses];
-            const index = updatedExpenses.findIndex(expense => expense.id === updatedExpense.id);
-            if (index !== -1) {
-                updatedExpenses[index] = updatedExpense;
+        setExpenses((prevExpenses) => [
+            ...prevExpenses,
+            {
+                id: docSnap.id,
+                uid: user.uid,
+                name: categoryName, // Store decrypted locally
+                items: []
             }
-            return updatedExpenses;
-        });
+        ]);
     } catch (error) {
         throw error;
     }
 };
 
-  const addExpenseItem = async (expenseCategoryId, newExpense) => {
-    const docRef = doc(db, "expenses", expenseCategoryId);
-
-    try {
-      await updateDoc(docRef, { ...newExpense });
-
-      // Update State
-      setExpenses((prevState) => {
-        const updatedExpenses = [...prevState];
-
-        const foundIndex = updatedExpenses.findIndex((expense) => {
-          return expense.id === expenseCategoryId;
-        });
-
-        updatedExpenses[foundIndex] = { id: expenseCategoryId, ...newExpense };
-
-        return updatedExpenses;
+const updateExpense = async (expenseId, updatedExpenseDetails) => {
+  const encryptedExpense = encrypt(updatedExpenseDetails, userPassword);
+  try {
+      const docRef = doc(db, "expenses", expenseId);
+      await updateDoc(docRef, {
+          encryptedData: encryptedExpense.encryptedData,
+          iv: encryptedExpense.iv
       });
-    } catch (error) {
+      setExpenses((prevExpenses) => {
+          return prevExpenses.map(expense => expense.id === expenseId ? { ...expense, ...updatedExpenseDetails } : expense);
+      });
+  } catch (error) {
       throw error;
-    }
-  };
+  }
+};
 
-  const deleteExpenseItem = async (updatedExpense, expenseCategoryId) => {
-    try {
+
+const addExpenseItem = async (expenseCategoryId, newExpense) => {
+  const encryptedExpense = encrypt(newExpense, userPassword);
+  try {
       const docRef = doc(db, "expenses", expenseCategoryId);
       await updateDoc(docRef, {
-        ...updatedExpense,
+          ...encryptedExpense
       });
-      setExpenses((prevExpenses) => {
-        const updatedExpenses = [...prevExpenses];
-        const pos = updatedExpenses.findIndex(
-          (ex) => ex.id === expenseCategoryId
-        );
-        updatedExpenses[pos].items = [...updatedExpense.items];
-        updatedExpenses[pos].total = updatedExpense.total;
-        return updatedExpenses;
+      setExpenses((prevState) => {
+          return prevState.map(expense => {
+              if (expense.id === expenseCategoryId) {
+                  return { ...expense, items: [...expense.items, newExpense] }; 
+              }
+              return expense;
+          });
       });
-    } catch (error) {
+  } catch (error) {
       throw error;
-    }
-  };
+  }
+};
 
-  const deleteExpenseCategory = async (expenseCategoryId) => {
-    try {
+
+const deleteExpenseItem = async (expenseCategoryId, itemIndex) => {
+  try {
+      const docRef = doc(db, "expenses", expenseCategoryId);
+      const docSnap = await getDoc(docRef);
+      let items = decrypt(docSnap.data().encryptedData, docSnap.data().iv, userPassword).items;
+      items.splice(itemIndex, 1); // Remove the item at the specified index
+      const encryptedData = encrypt({ items }, userPassword);
+      await updateDoc(docRef, encryptedData);
+      setExpenses((prevExpenses) => prevExpenses.map(exp => {
+          if (exp.id === expenseCategoryId) {
+              return { ...exp, items };
+          }
+          return exp;
+      }));
+  } catch (error) {
+      throw error;
+  }
+};
+
+
+const deleteExpenseCategory = async (expenseCategoryId) => {
+  try {
       const docRef = doc(db, "expenses", expenseCategoryId);
       await deleteDoc(docRef);
-
-      setExpenses((prevExpenses) => {
-        const updatedExpenses = prevExpenses.filter(
-          (expense) => expense.id !== expenseCategoryId
-        );
-
-        return [...updatedExpenses];
-      });
-    } catch (error) {
+      setExpenses((prevExpenses) => prevExpenses.filter((expense) => expense.id !== expenseCategoryId));
+  } catch (error) {
       throw error;
-    }
-  };
+  }
+};
 
-  const addIncomeItem = async (newIncome) => {
-    const collectionRef = collection(db, "income");
 
-    try {
-      const docSnap = await addDoc(collectionRef, newIncome);
 
-      // Update state
-      setIncome((prevState) => {
-        return [
+  
+const addIncomeItem = async (newIncome) => {
+  const encryptedIncome = encrypt(newIncome, userPassword);
+  try {
+      const collectionRef = collection(db, "income");
+      const docSnap = await addDoc(collectionRef, {
+          ...encryptedIncome,
+          uid: user.uid
+      });
+      setIncome((prevState) => [
           ...prevState,
           {
-            id: docSnap.id,
-            ...newIncome,
-          },
-        ];
-      });
-    } catch (error) {
-      console.log(error.message);
+              id: docSnap.id,
+              ...newIncome
+          }
+      ]);
+  } catch (error) {
       throw error;
-    }
-  };
+  }
+};
+
+
+
+
   const removeIncomeItem = async (incomeId) => {
     const docRef = doc(db, "income", incomeId);
     try {
@@ -365,74 +394,86 @@ export default function FinanceContextProvider({ children }) {
     const getIncomeData = async () => {
       const collectionRef = collection(db, "income");
       const q = query(collectionRef, where("uid", "==", user.uid));
+  
+      try {
+          const docsSnap = await getDocs(q);
+          const data = docsSnap.docs.map(doc => {
+              const decryptedData = decrypt({ encryptedData: doc.data().encryptedData, iv: doc.data().iv }, userPassword);
+              return {
+                  id: doc.id,
+                  ...decryptedData
+              };
+          });
+          setIncome(data);
+      } catch (error) {
+          console.log(error.message);
+          throw error;
+      }
+  };
+  
 
-      const docsSnap = await getDocs(q);
+  const getEventsData = async () => {
+    const collectionRef = collection(db, "events");
+    const q = query(collectionRef, where("uid", "==", user.uid));
 
-      const data = docsSnap.docs.map((doc) => {
-        return {
-          id: doc.id,
-          ...doc.data(),
-          createdAt: new Date(doc.data().createdAt.toMillis()),
-        };
-      });
-
-      setIncome(data);
-    };
-
-    const getEventsData = async () => { // calendar related
-      const collectionRef = collection(db, "events");
-      const q = query(collectionRef, where("uid", "==", user.uid));
-
-      const docsSnap = await getDocs(q);
-
-      const data = docsSnap.docs.map((doc) => {
-        const docData = doc.data();
-        return {
-          id: doc.id,
-          date:  docData.date.toDate(),
-          uid:  docData.uid,
-          eventInfo: {
-            event: docData.eventInfo.event,
-            expense: docData.eventInfo.expense,
-          }
-        };
-      });
-
-      setEvents(data);
-    };
-
-    const getBudgetData = async () => {
-      const colRef = collection(db, "monthly_budget");
-      const q = query(colRef, where("uid", "==", user.uid));
-      const docSnap = await getDocs(q);
-      const items = docSnap.size > 0 ? docSnap.docs[0].data().budgets : [];
-      const docID = docSnap.size > 0 ? docSnap.docs[0].id : "";
-      
-      setBudgets({
-        id: docID,
-        uid: user.uid,
-        budgets: items
-      });
+    try {
+        const docsSnap = await getDocs(q);
+        const data = docsSnap.docs.map(doc => {
+            const decryptedData = decrypt({ encryptedData: doc.data().encryptedData, iv: doc.data().iv }, userPassword);
+            return {
+                id: doc.id,
+                ...decryptedData
+            };
+        });
+        setEvents(data);
+    } catch (error) {
+        console.log(error.message);
+        throw error;
     }
+};
 
-    const getExpensesData = async () => {
-      const collectionRef = collection(db, "expenses");
-      const q = query(collectionRef, where("uid", "==", user.uid));
-      const docsSnap = await getDocs(q);
 
-      const data = docsSnap.docs.map((doc) => {
-        return {
-          id: doc.id,
-          ...doc.data(),
-          items: doc.data().items.map((item) => ({
-            ...item,
-            createdAt: new Date(item.createdAt.toMillis()), 
-        }))
-        };
+const getBudgetData = async () => {
+  const colRef = collection(db, "monthly_budget");
+  const q = query(colRef, where("uid", "==", user.uid));
+
+  try {
+      const docSnap = await getDocs(q);
+      const data = docSnap.docs.map(doc => {
+          const decryptedBudgets = doc.data().budgets.map(budget => decrypt({ encryptedData: budget.encryptedData, iv: budget.iv }, userPassword));
+          return {
+              id: doc.id,
+              budgets: decryptedBudgets,
+              uid: user.uid
+          };
       });
+      setBudgets(data.length > 0 ? data[0] : null); // Assuming there should only be one budget document per user
+  } catch (error) {
+      console.log(error.message);
+      throw error;
+  }
+};
 
+const getExpensesData = async () => {
+  const collectionRef = collection(db, "expenses");
+  const q = query(collectionRef, where("uid", "==", user.uid));
+
+  try {
+      const docsSnap = await getDocs(q);
+      const data = docsSnap.docs.map(doc => {
+          const decryptedData = decrypt({ encryptedData: doc.data().encryptedData, iv: doc.data().iv }, userPassword);
+          return {
+              id: doc.id,
+              ...decryptedData
+          };
+      });
       setExpenses(data);
-    };
+  } catch (error) {
+      console.log(error.message);
+      throw error;
+  }
+};
+
 
     getIncomeData();
     getExpensesData();
