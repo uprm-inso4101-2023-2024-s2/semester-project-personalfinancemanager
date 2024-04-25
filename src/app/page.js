@@ -103,9 +103,9 @@ export default function Home() {
       case 'pie':
         return <RenderPieChart expensesData={expenses} />;
       case 'line':
-        return <RenderLineChart />;
+        return <RenderLineChart expensesData ={expenses} incomeData = {income} />;
       case 'divergence':
-        return <RenderDBC expensesData ={expenses} incomeData = {income} /> 
+        return <RenderDBC expensesData ={expenses} incomeData = {income} />;
       default:
         return null;
     }
