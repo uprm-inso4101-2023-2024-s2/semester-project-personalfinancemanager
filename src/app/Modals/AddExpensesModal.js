@@ -96,8 +96,9 @@ function AddExpensesModal({ show, onClose }) {
 
     return (
         <Modal show={show} onClose={onClose}>
+        <div style={{ overflowY: 'auto', overflowX:'hidden', maxHeight: 'clamp(300px, 65vh, 70vh)' }}>
             <div className="flex flex-col gap-4">
-                <label className="input-ground"> Enter an amount...</label>
+                <label className="expense-label"> Expense Amount</label>
                 <input
                     type="number"
                     min={0.01}
@@ -109,49 +110,12 @@ function AddExpensesModal({ show, onClose }) {
                     required
                 />
             </div>
-
-            {/* Expenses Category */}
-            {expenseAmount > 0 && (
-                <div className= "flex flex-col gap-4 mt-6">
-                    <div className="flex items-center justify-between">
-                        <h3 className="text-2x1 capitalize">Select expense category</h3>
-                        <button onClick={() => setShowAddExpense(true)} className="text-lime-800">+ New Category</button>
-                    </div>
-
-                    {showAddExpense && (
-                        <div className= "flex items-center justify-between">
-                            <input type="text" placeholder="Enter Title" ref={titleRef}/>
-                            <label>Pick Color</label>
-                            <input type="color" className="bg bg-slate-500 w-24 h-10" ref={colorRef}/>
-                            <button onClick={addCategoryHandler} className="btn btn2-primary-outline">Create</button>
-                            <button className="btn btn-danger">Cancel</button>
-                        </div>
-                    )}
-
-                    {expenses.map((expense) => (
-                        <button key={expense.id} onClick={() => setSelectedCategory(expense.id)}>
-                            <div
-                                style={{ boxShadow: expense.id === selectedCategory ? "1px 1px 4px" : "none" }}
-                                className="flex items-center justify-between px-4 py-4 bg-slate-500 rounded-3xl"
-                            >
-                                <div className="flex items-center gap-2">
-                                    <div
-                                        className="w-[25px] h-[25px] rounded-full"
-                                        style={{ backgroundColor: expense.color }}
-                                    />
-                                    <h4 className="capitalize">{expense.title}</h4>
-                                </div>
-                            </div>
-                        </button>
-                    ))}
-                </div>
-            )}
-
             {expenseAmount > 0 && selectedCategory && (
                 <div className="mt-6">
                 {/* Date Input Field */}
-                    <label htmlFor="date">Select Date and Time</label>
+                    <label htmlFor="date">Select Date and Time:</label>
                     <input 
+                        style={{color: "black", backgroundColor: "gray-500", borderRadius: "5px", marginRight: "10px", marginLeft: "10px",cursor: "pointer"}}
                         type="datetime-local" 
                         name="date"
                         value={formatDate(selectedDate)} // Format ISO date to string
@@ -161,6 +125,45 @@ function AddExpensesModal({ show, onClose }) {
                     <button className="btn btn-primary" onClick={AddCategoryItemHandler}>Add Expense</button>
                 </div>
             )}
+
+            {/* Expenses Category */}
+            {expenseAmount > 0 && (
+                
+                <div className= "flex flex-col gap-4 mt-6">
+                    <div className="flex items-center justify-between">
+                        <h3 className="text-2x1 expense-label">Select Expense Category</h3>
+                        <button onClick={() => setShowAddExpense(true)} className="text-lime-800">+ New Category</button>
+                    </div>
+
+                    {showAddExpense && (
+                        <div className= "flex items-center justify-between">
+                            <input type="text" placeholder="Enter Title" ref={titleRef}/>
+                            <label className="expense-label">Pick Color:</label>
+                            <input type="color" className="bg bg-slate-500 w-24 h-10" ref={colorRef}/>
+                            <button onClick={addCategoryHandler} className="btn btn2-primary-outline">Create</button>
+                            <button className="btn btn-danger">Cancel</button>
+                        </div>
+                    )}
+
+                    {expenses.map((expense) => (
+                        <button key={expense.id} onClick={() => setSelectedCategory(expense.id)}>
+                            <div
+                                style={{ boxShadow: expense.id === selectedCategory ? "1px 1px 4px" : "none", width: "90%", margin: "0 auto" }}
+                                className="flex items-center justify-between px-2 py-2 bg-slate-500 rounded-3xl"
+                            >
+                                <div className="flex items-center gap-1">
+                                    <div
+                                        className="w-[25px] h-[25px] rounded-full"
+                                        style={{ backgroundColor: expense.color }}
+                                    />
+                                    <h4 className="capitalize text-sm">{expense.title}</h4>
+                                </div>
+                            </div>
+                        </button>
+                    ))}
+                </div>
+            )}
+        </div>
         </Modal>
     );
 }

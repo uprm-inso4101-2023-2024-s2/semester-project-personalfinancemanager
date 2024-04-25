@@ -20,6 +20,10 @@ import { Chart as ChartJS, Tooltip, LinearScale, CategoryScale, BarElement, Lege
 import LoginPage from './Pages/LoginPage';
 import SignUpPage from './Pages/SignUpPage';
 import ForgotPassword from './Page-Functionality/Login/ForgotPassword';
+import GraphsPage from './Pages/GraphsPage';
+import { useGraph } from './Page-Functionality/graphcontext'
+
+
 
 ChartJS.register(
   CategoryScale,
@@ -31,7 +35,7 @@ ChartJS.register(
 
 export default function Home() {
   const [chartType, setChartType] = useState('bar');
-  const [displayExpenses, setDisplayExpenses] = useState(true); 
+  const [displayExpenses, setDisplayExpenses] = useState(true);
   const [currentPage, setCurrentPage] = useState('login');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showAddIncomeModal, setShowAddIncomeModal] = useState(false);
@@ -41,8 +45,8 @@ export default function Home() {
   const { expenses, income } = useContext(financeContext);
   const [showAddPreferenceModal, setShowAddPreferenceModal] = useState(false);
   const [preferences, setPreferences] = useState([]); 
-
   const { user } = useContext(authContext);  
+  const { showGraph } = useGraph();
   
   const handleAddPreference = (newPreference) => {
     setPreferences([...preferences, newPreference]);
@@ -57,12 +61,14 @@ export default function Home() {
     }, 0);
     setBalance(newBalance);
 
-    if (user) {
+    if (showGraph) {
+      setCurrentPage('graph');
+    } else if (user) {
       setCurrentPage('home');
     } else {
-      setCurrentPage('login')
+      setCurrentPage('login');
     }
-  }, [expenses, income, user]);
+  }, [showGraph, user, income, expenses]);
 
   const toggleChartType = () => {
     setChartType(prevType => {
@@ -72,6 +78,10 @@ export default function Home() {
       else return 'bar';
     });
   }
+
+  const toggleDisplayExpenses = () => {
+    setDisplayExpenses(prevDisplay => !prevDisplay);
+  };
 
   const handleLoginButtonClick = () => {
     if (isLoggedIn) {
@@ -97,21 +107,52 @@ export default function Home() {
   const renderChart = () => {
     switch (chartType) {
       case 'bar':
-        return <RenderBarChart expensesData={expenses} />;
+        return <RenderBarChart expensesData ={expenses} incomeData = {income} />;
       case 'pie':
         return <RenderPieChart expensesData={expenses} />;
       case 'line':
-        return <RenderLineChart />;
+        return <RenderLineChart expensesData ={expenses} incomeData = {income} />;
       case 'divergence':
-        return <RenderDBC expensesData ={expenses} incomeData = {income} /> 
+        return <RenderDBC expensesData ={expenses} incomeData = {income} />;
       default:
         return null;
     }
   }
 
+  const renderExpenses = () => {
+    return (
+      <section className='py-6'>
+        <div className="flex justify-between items-center">
+          <h3 className="text-2xl pl-6">My Expenses</h3>
+          <div className="my-4 px-6">
+            <button
+              onClick={toggleDisplayExpenses}
+              className={`${buttonBaseClass} ${buttonWidthClass} bg-gray-500 hover:bg-gray-600`}
+            >
+              {displayExpenses ? 'Hide Expenses' : 'Show Expenses'}
+            </button>
+          </div>
+        </div>
+        {displayExpenses &&
+          <div className='flex flex-col gap-4 mt-6'>
+            {expenses.map((expense) => {
+              return (
+                <ExpenseCategoryItem
+                  expense={expense}
+                  key={expense.id}
+                />
+              );
+            })}
+          </div>
+        }
+      </section>
+    );
+  }
 
   const renderCurrentPage = () => {
-    switch(currentPage) {
+    switch (currentPage) {
+      case 'graph':
+        return <GraphsPage />
       case 'login':
         return <LoginPage currentPage={currentPage} setCurrentPage={setCurrentPage} />;
       case 'signup':
@@ -120,25 +161,25 @@ export default function Home() {
         return <ForgotPassword currentPage={currentPage} setCurrentPage={setCurrentPage} />;
       case 'home':
         return (
-        // Main container code...
-        <main className="container max-w-2x1 px-6 mx-auto">
-         {/* Add Income Modal */}
-      <AddIncomesModal 
-        show={showAddIncomeModal} 
-        onClose={setShowAddIncomeModal}
-      />
-      
-      {/* Add Expenses Modal */}
-      <AddExpensesModal 
-        show={showAddExpenseModal} 
-        onClose={setShowAddExpenseModal} 
-      />
+          // Main container code...
+          <main className="container max-w-2x1 px-6 mx-auto">
+            {/* Add Income Modal */}
+            <AddIncomesModal
+              show={showAddIncomeModal}
+              onClose={setShowAddIncomeModal}
+            />
 
-      {/* Table Analisis */}
-      <TableAnalisisModal 
-        show={showTableAnalisis} 
-        onClose={setShowTableAnalisis}
-      />
+            {/* Add Expenses Modal */}
+            <AddExpensesModal
+              show={showAddExpenseModal}
+              onClose={setShowAddExpenseModal}
+            />
+
+            {/* Table Analisis */}
+            <TableAnalisisModal
+              show={showTableAnalisis}
+              onClose={setShowTableAnalisis}
+            />
 
           {/* Add Preference Modal */}
           <AddPreferenceModal
@@ -147,11 +188,14 @@ export default function Home() {
             onAddPreference={handleAddPreference}
           />
 
-          <section className="container max-w-2x1 px-6 mx-auto">
-            <section className="balance-box">
-              <h3 className="balance-label">My Balance</h3>
-              <h2 className="balance-amount">{currencyFormatter(balance)}</h2>
-            </section>
+            <section className="container max-w-2x1 px-6 mx-auto">
+              <section className="enclosing-box">
+                <section className="balance-box">
+                  <h3 className="balance-label">My Balance</h3>
+                  <h2 className="balance-amount">{currencyFormatter(balance)}</h2>
+                </section>
+              </section>
+            
 
             <div className="button-container">
               <button
@@ -169,7 +213,7 @@ export default function Home() {
                 Expenses +
               </button>
               <button 
-                onClick={() => {setShowTableAnalisis(true);}}
+                onClick={() => { setShowTableAnalisis(true);}}
                 className={`${buttonBaseClass} ${buttonWidthClass} bg-yellow-500 hover:bg-red-550`}
                 style={{ margin: 'auto' }}
               >
@@ -238,15 +282,15 @@ export default function Home() {
               {renderChart()}
             </section>
 
-            {/* Calendar */}
-            <section className='py-6 pl-6'>
-              <h3 className='text-2xl text-center'>Calendar System</h3>
-              <div className="flex justify-center">
-                <Calendar />
-              </div>
-            </section>
-          </section>
-        </main>
+                {/* Calendar */}
+                <section className='py-6 pl-6'>
+                  <h3 className='text-2xl text-center'>Calendar System</h3>
+                  <div className="flex justify-center">
+                    <Calendar />
+                  </div>
+                </section>
+              </section>
+          </main>
         )
     }
   }

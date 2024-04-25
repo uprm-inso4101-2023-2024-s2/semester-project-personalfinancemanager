@@ -67,7 +67,6 @@ function TableAnalisisModal({ show, onClose }) {
   const weeklyExpenses = expensesFilterByWeek(expenses);
   const monthlyExpenses = expensesFilterByMonth(expenses, currentMonth);
 
-  console.log(dailyExpenses, weeklyExpenses, monthlyExpenses);
 
   const [meanDailyExpenses, medianDailyExpenses, modeDailyExpenses] =
     calculateStatistics(dailyExpenses);
@@ -128,14 +127,14 @@ function TableAnalisisModal({ show, onClose }) {
 
   return (
     <Modal show={show} onClose={onClose}>
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-4" style = {{color: 'black'}}>
         <h2 className="text-xl font-bold ">Analysis Table</h2>
       </div>
 
       {renderSwitchButton()}
 
       <div>
-        <h1 className="mb-6 text text-center text-xl">
+        <h1 className="mb-6 text text-center text-xl" style = {{color: 'black'}}>
           {isIncome ? "Income" : "Expenses"}
         </h1>
       </div>
@@ -193,7 +192,7 @@ function TableAnalisisModal({ show, onClose }) {
             </tr>
             <tr>
               <td>
-                <strong>Mothly</strong>
+                <strong>Monthly</strong>
               </td>
               <td>
                 {isIncome
@@ -232,6 +231,7 @@ function TableAnalisisModal({ show, onClose }) {
           border: 1px solid black;
           padding: 18px;
           text-align: center;
+          color: #000000;
         }
 
         th {

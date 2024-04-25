@@ -1,18 +1,25 @@
 #calendar-container {
-    padding-top: 10px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 15px;
+    padding-right: 0px;
+    padding-top: 30px;
     position: relative;
     display: flex;
-    width: 100%;
     justify-content: center;
     flex-direction: row;
     align-items: flex-start;
     margin-top: 20px;
     bottom: 10px;
+    border: 8px solid rgb(255, 255, 255);  /* Set border size and make it transparent */
 }
 
 .panel {
-    margin-top: 30px;
-    margin-right: 5px;
+    position: absolute; /* Makes the panel positioned absolutely relative to its nearest positioned ancestor */
+    left: 0; /* Aligns the panel to the left edge of its container */
+    margin-top: 70px;
+    margin-left: 15px;
     padding: 5px;
     display: flex;
     flex-direction: column;
@@ -81,27 +88,42 @@
 }
 
 .month-selector-panel {
+    position: absolute;
+    margin-top: 8px;
     display: flex;
     text-align: center;
     justify-content: center; 
     font-size: 25px;
+    cursor: pointer; /* Cursor pointer to indicate it's clickable */
+    transition: background-color 0.3s, transform 0.2s;
+    border-radius: 10px;
   }
 
 .select-input {
     text-align: center;
+    background-color: rgb(159, 194, 232);/*Changed color on the month selection dropdown to match the budget button*/
+    cursor: pointer; /* Cursor pointer to indicate it's clickable */
+    transition: background-color 0.3s, transform 0.2s;
+    border-radius: 10px;
 }
 
+.progress-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 15px;
+}
 
 .progressBar {
     justify-content: center;
     width: 500px; 
     height: 20px; 
-    background-color: #000000; 
+    background-color: #494949; 
     border-radius: 10px; 
     overflow: hidden; 
-    position: absolute; 
+    position: relative; 
     top: 0; 
-    margin-bottom: 35px;
     transition: width 3s ease;
   }
   
@@ -109,7 +131,34 @@
     height: 100%;
     background-color: #cf1414; 
     border-radius: 10px;
-    transition: width 2s ease;
+    width: 0;
+    transition: width 2s ease, background-color 0.5s ease;
+    overflow: hidden;
+}
+
+.progress.low {
+    background: linear-gradient(to right, green 0%, green 50%);
+}
+
+.progress.medium {
+    background: linear-gradient(to right, green 0%, green 50%, yellow 75%, yellow 100%);
+}   
+
+.progress.high {
+    background: linear-gradient(to right, green 0%, green 50%, yellow 55%, yellow 75%, red 80%, red 100%);
+}
+
+.progress-hover {
+    position: absolute;
+    right: -120px;
+    transform: translateX(-50%);
+    background-color: #494949; 
+    color: white;
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    opacity: 1;
+    transition: opacity 0.3s ease;
 }
 
 #calendarSvg {
@@ -126,8 +175,82 @@
     margin-bottom: 10px;
     margin-left: auto;
     margin-right: auto;
-    background-color: rgb(150,150,150);
+    background-color: rgb(72, 233, 118);
     color: black;
     border-radius: 10px;
     padding: 10px 20px;
   }
+
+  .modal-content {
+    display: flex;
+    font-size: large;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    width: 100%; 
+    overflow-y: auto; 
+    overflow-x: hidden; 
+    max-height: clamp(300px, 65vh, 70vh); 
+    overflow-y: hidden;
+}
+
+.modal-input {
+    margin-bottom: 10px;
+    width: 100%; /* This makes the input take full width of the parent container */
+}
+
+.modal-button {
+    background-color: #007BFF; /* A bright blue, which is commonly associated with primary actions */
+    color: white; /* White text for contrast */
+    border: none; /* No border for a cleaner look */
+    padding: 12px 24px; /* Adequate padding for better clickability */
+    font-size: 18px; /* Larger font size for better readability */
+    font-weight: bold; /* Bold font to make the text stand out */
+    border-radius: 5px; /* Slightly rounded corners */
+    cursor: pointer; /* Cursor pointer to indicate it's clickable */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transition for visual feedback */
+    width: 75%; /* Ensures it matches the width of the input fields */
+    margin-top: 10px;
+}
+.modal-button.green-button {
+    background-color: green !important;
+}
+.modal-button.red-button {
+    background-color: red !important;
+}
+
+.modal-button:hover {
+    background-color: #0056b3; /* Darker shade of blue on hover */
+    transform: scale(1.05); /* Slight increase in size to indicate interactivity */
+}
+
+.modal-button:active {
+    background-color: #004085; /* Even darker for the active state */
+    transform: scale(0.95); /* Small shrink effect on click */
+}
+
+.modal-current-budget {
+    margin-top: 10px; /* Space above the budget display */
+    font-size: 16px; /* Make the font slightly larger for visibility */
+    color: #2c8f18; /* A mild color for the text */
+    width: 100%; /* Aligns with the input and button */
+    text-align: center; /* Center-align the text */
+    flex-direction: column;
+    align-items: center;
+}
+
+.financial-tips {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.confirmation-modal{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 20px;
+}
