@@ -1,12 +1,16 @@
 'use client'
-import { useContext, useState } from "react";
+import { useState, useContext } from 'react';
 import { authContext } from "./Login/auth-context";
 import AddMenu from './AddMenu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useCalendar } from './calendarContext';
 import {useGraph} from './graphcontext'
 
 function Nav() {
   const { user, loading, logout } = useContext(authContext);
+  const { toggleCalendar } = useCalendar();
+  const [isCalendarShown, setIsCalendarShown] = useState(false);
+
   const { toggleGraphs } = useGraph(); 
   const [isGraphShown, setIsGraphShown] = useState(false);
 
@@ -29,8 +33,14 @@ function Nav() {
           toggleGraphs();
         }
       case 'calendar':
-        //Add logic
+        toggleCalendar();
+        setIsCalendarShown(prev => !prev);
         break;
+      case 'home':
+        if(isCalendarShown){
+          setIsCalendarShown(prev => !prev);
+          toggleCalendar();
+        }
       default:
         break;
     }

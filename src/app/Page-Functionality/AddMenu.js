@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { authContext } from "./Login/auth-context";
+import { useCalendar } from './calendarContext';
 import {useGraph} from './graphcontext'
 
 
@@ -17,6 +18,8 @@ function AddMenu() {
   const [language, setLanguage] = useState('Español'); // State for language
 
   const [activeButton, setActiveButton] = useState('home'); // State to track active button
+
+  const { toggleCalendar } = useCalendar();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -33,7 +36,8 @@ function AddMenu() {
         // Add logic 
         break;
       case 'calendar':
-        // Add logic 
+        handleClose();
+        toggleCalendar();
         break;
       case 'graphs':
         handleClose();
