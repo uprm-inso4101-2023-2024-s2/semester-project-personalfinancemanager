@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { authContext } from "./Login/auth-context";
 import AddMenu from './AddMenu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,7 +8,9 @@ import { useCalendar } from './calendarContext';
 
 function Nav() {
   const { user, loading, logout } = useContext(authContext);
-  const { toggleCalendar } = useCalendar()
+  const { toggleCalendar } = useCalendar();
+  const [isCalendarShown, setIsCalendarShown] = useState(false);
+
   const handleClick = (action) => {
     switch (action) {
       case 'Graphs':
@@ -21,11 +23,15 @@ function Nav() {
         // Add logic 
         break;
       case 'calendar':
-        //Add logic
-        toggleCalendar()
+        toggleCalendar();
+        setIsCalendarShown(prev => !prev);
         break;
+      case 'home':
+        if(isCalendarShown){
+          setIsCalendarShown(prev => !prev);
+         toggleCalendar();
+        }
       default:
-        // setCurrentPage('home') //this creates an infinite re render loop
         break;
     }
    };

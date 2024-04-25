@@ -4,7 +4,7 @@ import Nav from './Page-Functionality/Navigations'
 import AuthContextProvider from "./Page-Functionality/Login/auth-context";
 
 import FinanceContextProvider from "./Finance-Context/finance-context";
-import { CalendarContext } from "./Page-Functionality/calendarContext";
+import CalendarContext from "./Page-Functionality/calendarContext";
 import { ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 

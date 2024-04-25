@@ -12,9 +12,11 @@ import { authContext} from './Page-Functionality/Login/auth-context';
 import AddExpensesModal from './Modals/AddExpensesModal';
 import AddIncomesModal from './Modals/AddIncomesModal';
 import { financeContext } from './Finance-Context/finance-context';
-// import Calendar from './Page-Functionality/Calendar';
-import { CalendarContext } from './Page-Functionality/calendarContext';
+//calendar imports
+import Calendar from './Page-Functionality/Calendar';
+import { useCalendar } from './Page-Functionality/calendarContext';
 import CalendarPage from './Pages/CalendarPage'
+//calendar imports
 import TableAnalisisModal from './Modals/tableAnalysisModal';
 import { toast } from 'react-toastify';
 import { Chart as ChartJS, Tooltip, LinearScale, CategoryScale, BarElement, Legend} from "chart.js";
@@ -41,7 +43,7 @@ export default function Home() {
   const [showTableAnalisis, setShowTableAnalisis] = useState(false);
   const [balance, setBalance] = useState(0);
   const { expenses, income } = useContext(financeContext);
-  const { showCalendar } = useContext(CalendarContext)
+  const { showCalendar } = useCalendar()
 
   const { user } = useContext(authContext);
 
@@ -60,7 +62,7 @@ export default function Home() {
     } else {
       setCurrentPage('login')
     }
-  }, [expenses, income, user, showCalendar]);
+  }, [showCalendar, user, income, expenses]);
 
   const toggleChartType = () => {
     setChartType(prevType => {
@@ -204,14 +206,6 @@ export default function Home() {
             <section className="max-w-2x1 px-6 mx-auto flex justify-center">
               {renderChart()}
             </section>
-
-            {/* Calendar */}
-            {/* <section className='py-6 pl-6'>
-              <h3 className='text-2xl text-center'>Calendar System</h3>
-              <div className="flex justify-center">
-                <Calendar />
-              </div>
-            </section> */}
           </section>
         </main>
         )
@@ -222,9 +216,5 @@ export default function Home() {
       {renderCurrentPage()}
       {<p>[Debugging] Current Page: {currentPage}</p>}
     </>
-    // <PageContext.Provider value={{ currentPage, setCurrentPage }}>
-    //   {renderCurrentPage()}
-    //   <p>[Debugging] Current Page: {currentPage}</p>
-    // </PageContext.Provider>
   );
 }
