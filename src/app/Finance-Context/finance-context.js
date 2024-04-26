@@ -22,6 +22,7 @@ export const financeContext = createContext({
   expenses: [],
   monthlyBudgets: [],
   events: [],
+  preferences: [],
   createMonthlyBudgets: async () => {},
   updateMonthlyBudgets: async () => {},
   deleteBudget: async () => {},
@@ -35,6 +36,10 @@ export const financeContext = createContext({
   addEvent: async () => {},
   deleteEvent: async () => {},
   updateExpense: async () => {},
+  addPreferenceItem: async () => {},
+  deletePreferenceItem: async () => {},
+  deletePreferenceCategory: async () => {},
+  updatePreference: async () => {},
 });
 
  export async function checkExpensesDuplication(user,title){
@@ -59,6 +64,7 @@ export default function FinanceContextProvider({ children }) {
   const [expenses, setExpenses] = useState([]);
   const [monthlyBudgets, setBudgets] = useState([]);
   const [events, setEvents] = useState([]);
+  const [preferences, setPreferences] = useState([]);
 
   const { user } = useContext(authContext);
 
@@ -94,6 +100,79 @@ export default function FinanceContextProvider({ children }) {
     }
   }
 
+  const addPreferenceItem = async (newPreference) => {
+    try {
+      const collectionRef = collection(db, "preferences");
+      const docSnap = await addDoc(collectionRef, {
+        uid: user.uid,
+        ...newPreference,
+      });
+      setPreferences((prevPreferences) => [
+        ...prevPreferences,
+        { id: docSnap.id, uid: user.uid, ...newPreference },
+      ]);
+    } catch (error) {
+      console.error("Error adding preference item:", error);
+      throw error;
+    }
+  };
+
+  const deletePreferenceItem = async (updatedPreference, preferenceId) => {
+    try {
+      const docRef = doc(db, "preferences", preferenceId);
+      await updateDoc(docRef, {
+        ...updatedPreference,
+      });
+      setPreferences((prevPreferences) => {
+        const updatedPreference = [...prevPreferences];
+        const pos = updatedPreference.findIndex(
+          (preference) => preference.id === preferenceId
+        );
+        updatedPreference[pos].items = [...updatedPreference.items];
+        updatedPreference[pos].total = updatedPreference.total;
+        return updatedPreference;
+      });
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const deletePreferenceCategory = async (preferenceCategoryId) => {
+    try {
+      const docRef = doc(db, "preferences", preferenceCategoryId);
+      await deleteDoc(docRef);
+
+      setPreferences((prevPreferences) => {
+        const updatedPreference = prevPreferences.filter(
+          (preference) => preference.id !== preferenceCategoryId
+        );
+
+        return [...updatedPreference];
+      });
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const updatePreference = async (updatedPreference) => {
+    try {
+        const docRef = doc(db, "preferences", updatedPreference.id);
+        await updateDoc(docRef, {
+            ...updatedPreference
+        });
+
+        setPreferences(prevPreferences => {
+            const updatedPreference = [...prevPreferences];
+            const index = updatedPreference.findIndex(preference => preference.id === updatedPreference.id);
+            if (index !== -1) {
+              updatedPreference[index] = updatedPreference;
+            }
+            return updatedPreference;
+        });
+    } catch (error) {
+        throw error;
+    }
+};
 
   const deleteEvent = async (eventID) => {
     try {
@@ -343,7 +422,8 @@ export default function FinanceContextProvider({ children }) {
     income,
     expenses,
     monthlyBudgets,
-    events, 
+    events,
+    preferences, 
     createMonthlyBudgets,
     updateMonthlyBudgets,
     deleteBudget,
@@ -434,6 +514,23 @@ export default function FinanceContextProvider({ children }) {
       setExpenses(data);
     };
 
+    const getPreferencesData = async () => {
+      try {
+        const collectionRef = collection(db, "preferences");
+        const q = query(collectionRef, where("uid", "==", user.uid));
+        const docsSnap = await getDocs(q);
+        const data = docsSnap.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setPreferences(data);
+      } catch (error) {
+        console.error("Error fetching preferences:", error);
+      }
+    };
+
+    // Call function to fetch preferences data
+    getPreferencesData();
     getIncomeData();
     getExpensesData();
     getBudgetData();

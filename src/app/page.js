@@ -21,6 +21,9 @@ import SignUpPage from './Pages/SignUpPage';
 import ForgotPassword from './Page-Functionality/Login/ForgotPassword';
 import GraphsPage from './Pages/GraphsPage';
 import { useGraph } from './Page-Functionality/graphcontext'
+import AddPreferenceModal from './Modals/AddPreferenceModal';
+import ViewPreferenceModal from './Modals/ViewPreferenceModal';
+import PreferenceCategoryItem from './Page-Functionality/PreferenceCategoryItem';
 
 
 
@@ -44,6 +47,10 @@ export default function Home() {
   const { expenses, income } = useContext(financeContext);
   const { user } = useContext(authContext);
   const { showGraph } = useGraph();
+  const [showAddPreferenceModal, setShowAddPreferenceModal] = useState(false);
+  const [displayPreferences, setDisplayPreferences] = useState(true);
+  const [showViewPreferenceModal, setShowViewPreferenceModal] = useState(false); 
+  const { preferences } = useContext(financeContext);
 
   useEffect((newBalance) => {
     newBalance = income.reduce((total, i) => {
@@ -140,6 +147,25 @@ export default function Home() {
       </section>
     );
   }
+  
+  const renderPreferences = () => {
+    return (
+      <section className='py-6'>
+        <h3 className="text-2xl pl-6">Preferences</h3>
+        <div className='flex flex-col gap-4 mt-6'>
+          {/* Render PreferenceCategoryItem */}
+          {preferences.map((preference) => {
+            return (
+              <PreferenceCategoryItem
+                preference={preference}
+                key={preference.id}
+              />
+            );
+          })}
+        </div>
+      </section>
+    );
+  };
 
   const renderCurrentPage = () => {
     switch (currentPage) {
@@ -171,6 +197,12 @@ export default function Home() {
             <TableAnalisisModal
               show={showTableAnalisis}
               onClose={setShowTableAnalisis}
+            />
+
+            {/* AddPreferenceModal */}
+            <AddPreferenceModal
+              show={showAddPreferenceModal}
+              onClose={setShowAddPreferenceModal}
             />
 
             <section className="container max-w-2x1 px-6 mx-auto">
@@ -205,6 +237,30 @@ export default function Home() {
                 Table
               </button>
             </div>
+
+      {/* Preferences */}
+      <section className='py-6'>
+        <h3 className="text-2xl pl-6 flex items-center">
+          Preferences
+          <button
+            //onClick={toggleAddPreferenceModal}
+            className="ml-2 bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-full hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300"
+          >
+            +
+          </button>
+        </h3>
+        <div className='grid grid-cols-3 gap-4 mt-6'>
+          {/* Render PreferenceCategoryItem */}
+          {preferences.map((preference) => (
+            <PreferenceCategoryItem
+              key={preference.id}
+              preference={preference}
+              className="bg-white p-4 rounded-lg"
+            />
+          ))}
+        </div>
+      </section>
+
 
             {/** Expenses */}
             <section className='py-6'>
