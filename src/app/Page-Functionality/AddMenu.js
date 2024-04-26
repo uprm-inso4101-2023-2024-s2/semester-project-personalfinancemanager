@@ -10,6 +10,9 @@ import {useGraph} from './graphcontext'
 
 function AddMenu() {
   const { toggleGraphs } = useGraph(); 
+  const [isGraphShown, setIsGraphShown] = useState(false); 
+  const { toggleCalendar } = useCalendar();
+  const [isCalendarShown, setIsCalendarShown] = useState(false);
 
   const { user, loading, logout } = useContext(authContext);
 
@@ -18,8 +21,6 @@ function AddMenu() {
   const [language, setLanguage] = useState('Español'); // State for language
 
   const [activeButton, setActiveButton] = useState('home'); // State to track active button
-
-  const { toggleCalendar } = useCalendar();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -33,15 +34,36 @@ function AddMenu() {
     setActiveButton(action); // Set the active button when clicked
     switch (action) {
       case 'home':
-        // Add logic 
+        if(isGraphShown){
+          setIsGraphShown(prev => !prev);
+          toggleGraphs();
+        }
+        if(isCalendarShown){
+          setIsCalendarShown(prev => !prev);
+          toggleCalendar();
+        }
         break;
       case 'calendar':
         handleClose();
-        toggleCalendar();
+        if(isGraphShown){
+          setIsGraphShown(prev => !prev);
+          toggleGraphs();
+        }
+        if(!isCalendarShown){
+          setIsCalendarShown(prev => !prev);
+          toggleCalendar();
+        }
         break;
       case 'graphs':
         handleClose();
-        toggleGraphs();
+        if(!isGraphShown){
+          setIsGraphShown(prev => !prev);
+          toggleGraphs();
+        }
+        if(isCalendarShown){
+          setIsCalendarShown(prev => !prev);
+          toggleCalendar();
+        }
         break;
       case 'settings':
         // Add logic 

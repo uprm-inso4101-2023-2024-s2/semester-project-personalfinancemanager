@@ -21,8 +21,10 @@ function Nav() {
   const handleClick = (action) => {
     switch (action) {
       case 'graphs':
-        toggleGraphs();
-        setIsGraphShown(prev => !prev);
+        if(!isGraphShown){
+          setIsGraphShown(prev => !prev);
+          toggleGraphs();
+        }
         if(isCalendarShown){
           setIsCalendarShown(prev => !prev);
           toggleCalendar();
@@ -46,8 +48,10 @@ function Nav() {
           setIsGraphShown(prev => !prev);
           toggleGraphs();
         }
-        toggleCalendar();
-        setIsCalendarShown(prev => !prev);
+        if(!isCalendarShown){
+          setIsCalendarShown(prev => !prev);
+          toggleCalendar();
+        }
         break;
       default:
         break;
