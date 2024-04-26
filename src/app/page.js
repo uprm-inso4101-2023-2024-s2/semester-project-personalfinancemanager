@@ -12,11 +12,9 @@ import { authContext} from './Page-Functionality/Login/auth-context';
 import AddExpensesModal from './Modals/AddExpensesModal';
 import AddIncomesModal from './Modals/AddIncomesModal';
 import { financeContext } from './Finance-Context/finance-context';
-//calendar imports
 import Calendar from './Page-Functionality/Calendar';
 import { useCalendar } from './Page-Functionality/calendarContext';
 import CalendarPage from './Pages/CalendarPage'
-//calendar imports
 import TableAnalisisModal from './Modals/tableAnalysisModal';
 import { toast } from 'react-toastify';
 import { Chart as ChartJS, Tooltip, LinearScale, CategoryScale, BarElement, Legend} from "chart.js";

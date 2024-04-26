@@ -23,6 +23,10 @@ function Nav() {
       case 'graphs':
         toggleGraphs();
         setIsGraphShown(prev => !prev);
+        if(isCalendarShown){
+          setIsCalendarShown(prev => !prev);
+          toggleCalendar();
+        }
         break;
       case 'support':
         //Add logic
@@ -32,15 +36,19 @@ function Nav() {
           setIsGraphShown(prev => !prev);
           toggleGraphs();
         }
-      case 'calendar':
-        toggleCalendar();
-        setIsCalendarShown(prev => !prev);
-        break;
-      case 'home':
         if(isCalendarShown){
           setIsCalendarShown(prev => !prev);
           toggleCalendar();
         }
+        break;
+      case 'calendar':
+        if(isGraphShown){
+          setIsGraphShown(prev => !prev);
+          toggleGraphs();
+        }
+        toggleCalendar();
+        setIsCalendarShown(prev => !prev);
+        break;
       default:
         break;
     }
