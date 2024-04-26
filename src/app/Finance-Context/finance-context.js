@@ -22,6 +22,7 @@ export const financeContext = createContext({
   expenses: [],
   monthlyBudgets: [],
   events: [],
+  preferences: [],
   createMonthlyBudgets: async () => {},
   updateMonthlyBudgets: async () => {},
   deleteBudget: async () => {},
@@ -35,6 +36,7 @@ export const financeContext = createContext({
   addEvent: async () => {},
   deleteEvent: async () => {},
   updateExpense: async () => {},
+  addPreference: async () => {},
 });
 
  export async function checkExpensesDuplication(user,title){
@@ -59,8 +61,30 @@ export default function FinanceContextProvider({ children }) {
   const [expenses, setExpenses] = useState([]);
   const [monthlyBudgets, setBudgets] = useState([]);
   const [events, setEvents] = useState([]);
+  const [preferences, setPreferences] = useState([]);
 
   const { user } = useContext(authContext);
+
+  const addPreference = async (newPreference) => {
+    try {
+      const collectionRef = collection(db, "preferences");
+      const docSnap = await addDoc(collectionRef, {
+        uid: user.uid,
+        ...newPreference,
+      });
+
+      setPreferences((prevPreferences) => [
+        ...prevPreferences,
+        {
+          id: docSnap.id,
+          uid: user.uid,
+          ...newPreference,
+        },
+      ]);
+    } catch (err) {
+      throw err;
+    }
+  };
 
   /** Adds a new event category, identified by the user and the event date. This should be called 
    * when the user does not hae any events in the specified date.
@@ -343,7 +367,8 @@ export default function FinanceContextProvider({ children }) {
     income,
     expenses,
     monthlyBudgets,
-    events, 
+    events,
+    preferences, 
     createMonthlyBudgets,
     updateMonthlyBudgets,
     deleteBudget,
@@ -357,6 +382,7 @@ export default function FinanceContextProvider({ children }) {
     addEvent,
     deleteEvent,
     updateExpense,
+    addPreference,
   };
 
   useEffect(() => {
@@ -434,6 +460,24 @@ export default function FinanceContextProvider({ children }) {
       setExpenses(data);
     };
 
+    const getPreferencesData = async () => {
+      try {
+        const collectionRef = collection(db, "preferences");
+        const q = query(collectionRef, where("uid", "==", user.uid));
+        const docSnap = await getDocs(q);
+
+        const data = docSnap.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setPreferences(data);
+      } catch (error) {
+        console.error("Error fetching preferences:", error);
+      }
+    };
+
+    getPreferencesData();
     getIncomeData();
     getExpensesData();
     getBudgetData();
