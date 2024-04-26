@@ -254,7 +254,6 @@ export default function Home() {
   return (
     <>
       {renderCurrentPage()}
-      {<p>[Debugging] Current Page: {currentPage}</p>}
     </>
   );
 }
