@@ -125,7 +125,7 @@ export default function Home() {
           <div className="my-4 px-6">
             <button
               onClick={toggleDisplayExpenses}
-              className={`${buttonBaseClass} ${buttonWidthClass} bg-gray-500 hover:bg-gray-600`}
+              className={`${buttonBaseClass} ${buttonWidthClass} bg-red-500 hover:bg-red-550`}
             >
               {displayExpenses ? 'Hide Expenses' : 'Show Expenses'}
             </button>
@@ -214,19 +214,8 @@ export default function Home() {
               </button>
             </div>
 
-            {/** Expenses */}
-            <section className='py-6'>
-              <h3 className="text-2xl pl-6">My Expenses</h3>
-              <div className='flex flex-col gap-4 mt-6'>
-                {expenses.map((expense) => {
-                  return (
-                    <ExpenseCategoryItem
-                      expense={expense}
-                    />
-                  );
-                })}
-              </div>
-            </section>
+            {/* Expenses */}
+            {renderExpenses()}
 
             <div className="mt-2 group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 flex justify-between">
               <button style={{ margin: '0 5px' }} onClick={() => setChartType('bar')}>
