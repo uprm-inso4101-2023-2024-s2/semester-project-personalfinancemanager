@@ -243,7 +243,7 @@ export default function Home() {
         <h3 className="text-2xl pl-6 flex items-center">
           Preferences
           <button
-            //onClick={toggleAddPreferenceModal}
+            onClick={() => setShowAddPreferenceModal(true)}
             className="ml-2 bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-full hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300"
           >
             +

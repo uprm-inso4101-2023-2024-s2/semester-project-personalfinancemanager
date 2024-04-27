@@ -100,17 +100,24 @@ export default function FinanceContextProvider({ children }) {
     }
   }
 
-  const addPreferenceItem = async (newPreference) => {
+  const addPreferenceItem = async (preferenceCategoryId, newPreference) => {
+    const docRef = doc(db, "preferences", preferenceCategoryId);
+
     try {
-      const collectionRef = collection(db, "preferences");
-      const docSnap = await addDoc(collectionRef, {
-        uid: user.uid,
-        ...newPreference,
+      await updateDoc(docRef, { ...newPreference });
+
+      // Update State
+      setPreferences((prevState) => {
+        const updatedPreference = [...prevState];
+
+        const foundIndex = updatedPreference.findIndex((preference) => {
+          return preference.id === preferenceCategoryId;
+        });
+
+        updatedPreference[foundIndex] = { id: preferenceCategoryId, ...newPreference };
+
+        return updatedPreference;
       });
-      setPreferences((prevPreferences) => [
-        ...prevPreferences,
-        { id: docSnap.id, uid: user.uid, ...newPreference },
-      ]);
     } catch (error) {
       console.error("Error adding preference item:", error);
       throw error;

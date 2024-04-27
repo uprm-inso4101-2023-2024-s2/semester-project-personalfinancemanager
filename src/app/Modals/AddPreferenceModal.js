@@ -9,27 +9,22 @@ import { authContext } from "../Page-Functionality/Login/auth-context";
 function AddPreferenceModal({ show, onClose }) {
     const [preferenceTitle, setPreferenceTitle] = useState("");
     const [preferenceAmount, setPreferenceAmount] = useState("");
-    const { preferences, addPreference } = useContext(financeContext); // Adjust context
+    const { addPreferenceItem } = useContext(financeContext);
     const titleRef = useRef();
     const colorRef = useRef();
     const { user } = useContext(authContext);
 
-    /**
-     * Handles adding a new preference category.
-     */
+
     const addPreferenceHandler = async () => {
         const title = preferenceTitle;
-        const color = colorRef.current.value; // Adjust color reference
+        const color = colorRef.current.value;
 
         try {
-            const isDuplicate = await checkPreferenceDuplication(user, title);
-            if (isDuplicate) {
-                toast.error("This preference category already exists. Please choose a new category name.");
-                return;
-            }
-            await addPreference({ title, color, amount: preferenceAmount });
+            await addPreferenceItem({ title, color, amount: preferenceAmount });
             onClose();
             toast.success("Preference category created!");
+            setPreferenceTitle("");
+            setPreferenceAmount("");
         } catch (error) {
             console.log(error.message);
             toast.error(error.message);
@@ -60,7 +55,7 @@ function AddPreferenceModal({ show, onClose }) {
                         <label className="expense-label">Pick Color:</label>
                         <input type="color" className="bg bg-slate-500 w-24 h-10" ref={colorRef} />
                     </div>
-                    <button onClick={addPreferenceHandler} className="btn btn-primary">Create Preference</button>
+                    <button onClick={addPreferenceHandler} className="btn btn-primary">Create</button>
                 </div>
             </div>
         </Modal>
