@@ -4,11 +4,15 @@ import { useContext } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { authContext } from "./Login/auth-context";
+import { useCalendar } from './calendarContext';
 import {useGraph} from './graphcontext'
 
 
 function AddMenu() {
   const { toggleGraphs } = useGraph(); 
+  const [isGraphShown, setIsGraphShown] = useState(false); 
+  const { toggleCalendar } = useCalendar();
+  const [isCalendarShown, setIsCalendarShown] = useState(false);
 
   const { user, loading, logout } = useContext(authContext);
 
@@ -30,14 +34,36 @@ function AddMenu() {
     setActiveButton(action); // Set the active button when clicked
     switch (action) {
       case 'home':
-        // Add logic 
+        if(isGraphShown){
+          setIsGraphShown(prev => !prev);
+          toggleGraphs();
+        }
+        if(isCalendarShown){
+          setIsCalendarShown(prev => !prev);
+          toggleCalendar();
+        }
         break;
       case 'calendar':
-        // Add logic 
+        handleClose();
+        if(isGraphShown){
+          setIsGraphShown(prev => !prev);
+          toggleGraphs();
+        }
+        if(!isCalendarShown){
+          setIsCalendarShown(prev => !prev);
+          toggleCalendar();
+        }
         break;
       case 'graphs':
         handleClose();
-        toggleGraphs();
+        if(!isGraphShown){
+          setIsGraphShown(prev => !prev);
+          toggleGraphs();
+        }
+        if(isCalendarShown){
+          setIsCalendarShown(prev => !prev);
+          toggleCalendar();
+        }
         break;
       case 'settings':
         // Add logic 

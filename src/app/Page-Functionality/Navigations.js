@@ -1,12 +1,16 @@
 'use client'
-import { useContext, useState } from "react";
+import { useState, useContext } from 'react';
 import { authContext } from "./Login/auth-context";
 import AddMenu from './AddMenu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useCalendar } from './calendarContext';
 import {useGraph} from './graphcontext'
 
 function Nav() {
   const { user, loading, logout } = useContext(authContext);
+  const { toggleCalendar } = useCalendar();
+  const [isCalendarShown, setIsCalendarShown] = useState(false);
+
   const { toggleGraphs } = useGraph(); 
   const [isGraphShown, setIsGraphShown] = useState(false);
 
@@ -17,8 +21,14 @@ function Nav() {
   const handleClick = (action) => {
     switch (action) {
       case 'graphs':
-        toggleGraphs();
-        setIsGraphShown(prev => !prev);
+        if(!isGraphShown){
+          setIsGraphShown(prev => !prev);
+          toggleGraphs();
+        }
+        if(isCalendarShown){
+          setIsCalendarShown(prev => !prev);
+          toggleCalendar();
+        }
         break;
       case 'support':
         //Add logic
@@ -28,8 +38,20 @@ function Nav() {
           setIsGraphShown(prev => !prev);
           toggleGraphs();
         }
+        if(isCalendarShown){
+          setIsCalendarShown(prev => !prev);
+          toggleCalendar();
+        }
+        break;
       case 'calendar':
-        //Add logic
+        if(isGraphShown){
+          setIsGraphShown(prev => !prev);
+          toggleGraphs();
+        }
+        if(!isCalendarShown){
+          setIsCalendarShown(prev => !prev);
+          toggleCalendar();
+        }
         break;
       default:
         break;
@@ -56,7 +78,7 @@ function Nav() {
           <button onClick={() => handleClick('support')} className="btn mr-2">Support</button>
           <button onClick={() => handleClick('calendar')} className="btn">Calendar</button>
 
-            <button onClick={logout} className="btn btn-danger mr-4">
+            <button onClick={() => { handleClick('home'); logout(); }} className="btn btn-danger mr-4">
               Sign out
             </button>
             {/* Add more buttons as needed */}

@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable react/jsx-key */
 'use client'
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, createContext } from 'react';
 import RenderBarChart from "./Charts/barChart";
 import RenderPieChart from "./Charts/ExpenseChart"; 
 import RenderDBC from "./Charts/divergingBarChart";
@@ -13,6 +13,8 @@ import AddExpensesModal from './Modals/AddExpensesModal';
 import AddIncomesModal from './Modals/AddIncomesModal';
 import { financeContext } from './Finance-Context/finance-context';
 import Calendar from './Page-Functionality/Calendar';
+import { useCalendar } from './Page-Functionality/calendarContext';
+import CalendarPage from './Pages/CalendarPage'
 import TableAnalisisModal from './Modals/tableAnalysisModal';
 import { toast } from 'react-toastify';
 import { Chart as ChartJS, Tooltip, LinearScale, CategoryScale, BarElement, Legend} from "chart.js";
@@ -42,6 +44,8 @@ export default function Home() {
   const [showTableAnalisis, setShowTableAnalisis] = useState(false);
   const [balance, setBalance] = useState(0);
   const { expenses, income } = useContext(financeContext);
+  const { showCalendar } = useCalendar()
+
   const { user } = useContext(authContext);
   const { showGraph } = useGraph();
 
@@ -53,14 +57,16 @@ export default function Home() {
     }, 0);
     setBalance(newBalance);
 
-    if (showGraph) {
+    if (showCalendar) {
+      setCurrentPage('calendar')
+    } else if (showGraph) {
       setCurrentPage('graph');
     } else if (user) {
       setCurrentPage('home');
     } else {
       setCurrentPage('login');
     }
-  }, [showGraph, user, income, expenses]);
+  }, [showGraph, showCalendar, user, income, expenses]);
 
   const toggleChartType = () => {
     setChartType(prevType => {
@@ -119,7 +125,7 @@ export default function Home() {
           <div className="my-4 px-6">
             <button
               onClick={toggleDisplayExpenses}
-              className={`${buttonBaseClass} ${buttonWidthClass} bg-gray-500 hover:bg-gray-600`}
+              className={`${buttonBaseClass} ${buttonWidthClass} bg-red-500 hover:bg-red-550`}
             >
               {displayExpenses ? 'Hide Expenses' : 'Show Expenses'}
             </button>
@@ -151,6 +157,8 @@ export default function Home() {
         return <SignUpPage currentPage={currentPage} setCurrentPage={setCurrentPage} />;
       case 'forgotpassword':
         return <ForgotPassword currentPage={currentPage} setCurrentPage={setCurrentPage} />;
+      case 'calendar':
+        return <CalendarPage />;
       case 'home':
         return (
           // Main container code...
@@ -206,19 +214,8 @@ export default function Home() {
               </button>
             </div>
 
-            {/** Expenses */}
-            <section className='py-6'>
-              <h3 className="text-2xl pl-6">My Expenses</h3>
-              <div className='flex flex-col gap-4 mt-6'>
-                {expenses.map((expense) => {
-                  return (
-                    <ExpenseCategoryItem
-                      expense={expense}
-                    />
-                  );
-                })}
-              </div>
-            </section>
+            {/* Expenses */}
+            {renderExpenses()}
 
             <div className="mt-2 group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 flex justify-between">
               <button style={{ margin: '0 5px' }} onClick={() => setChartType('bar')}>
@@ -238,23 +235,14 @@ export default function Home() {
             <section className="max-w-2x1 px-6 mx-auto flex justify-center">
               {renderChart()}
             </section>
-
-                {/* Calendar */}
-                <section className='py-6 pl-6'>
-                  <h3 className='text-2xl text-center'>Calendar System</h3>
-                  <div className="flex justify-center">
-                    <Calendar />
-                  </div>
-                </section>
-              </section>
-          </main>
+          </section>
+        </main>
         )
     }
   }
   return (
     <>
       {renderCurrentPage()}
-      {<p>[Debugging] Current Page: {currentPage}</p>}
     </>
   );
 }
