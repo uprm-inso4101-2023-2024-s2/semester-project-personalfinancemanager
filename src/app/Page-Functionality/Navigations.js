@@ -78,7 +78,7 @@ function Nav() {
           <button onClick={() => handleClick('support')} className="btn mr-2">Support</button>
           <button onClick={() => handleClick('calendar')} className="btn">Calendar</button>
 
-            <button onClick={logout} className="btn btn-danger mr-4">
+            <button onClick={() => { handleClick('home'); logout(); }} className="btn btn-danger mr-4">
               Sign out
             </button>
             {/* Add more buttons as needed */}
