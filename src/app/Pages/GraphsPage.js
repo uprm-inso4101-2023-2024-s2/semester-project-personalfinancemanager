@@ -23,7 +23,7 @@ function GraphsPage() {
       case "Pie Chart":
         return <RenderPieChart expensesData={expenses} />;
       case "Line Chart":
-        return <RenderLineChart />;
+        return <RenderLineChart expensesData ={expenses} incomeData = {income} />;
       case "Diverging Bar Chart":
         return <RenderDBC expensesData ={expenses} incomeData = {income} /> 
       default:
