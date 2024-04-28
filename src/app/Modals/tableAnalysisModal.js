@@ -9,7 +9,7 @@ import {
   incomesFilterByMonth,
   incomesFilterByDay,
   incomesFilterByWeek,
-} from '../Page-Functionality/Filters/moneyFilters';
+} from "../Page-Functionality/Filters/moneyFilters";
 
 function TableAnalisisModal({ show, onClose }) {
   const { expenses, income } = useContext(financeContext);
@@ -218,7 +218,7 @@ function TableAnalisisModal({ show, onClose }) {
           display: flex;
           justify-content: center;
           align-items: center;
-          height: 100vh; // This makes the container take up the full height of the viewport
+          height: 100vh;
         }
 
         table {
@@ -226,28 +226,35 @@ function TableAnalisisModal({ show, onClose }) {
           border-collapse: collapse;
         }
 
-        th,
-        td {
-          border: 1px solid black;
+        th, td {
           padding: 18px;
           text-align: center;
+          background-color: white;
           color: #000000;
         }
-
-        th {
+      
+        tr:hover td {
           background-color: #f2f2f2;
         }
 
-        tr:nth-child(even) {
-          background-color: #f2f2f2;
+        tr {
+          border-bottom: 1px solid #f2f2f2;
         }
 
-        tr:nth-child(odd) {
-          background-color: #ffffff;
+        th:first-child {
+          border-top-left-radius: 10px;
         }
 
-        tr:hover {
-          background-color: #ddd; // Change this to the color you want for the hover effect
+        th:last-child {
+          border-top-right-radius: 10px;
+        }    
+
+        tr:last-child td:first-child {
+          border-bottom-left-radius: 10px;
+        }
+
+        tr:last-child td:last-child {
+          border-bottom-right-radius: 10px;
         }
       `}</style>
     </Modal>
