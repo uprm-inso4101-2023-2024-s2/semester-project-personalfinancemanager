@@ -19,7 +19,7 @@ function GraphsPage() {
   const renderChart = () => {
     switch (chartType) {
       case "Bar Chart":
-        return <RenderBarChart expensesData={expenses} />;
+        return <RenderBarChart expensesData={expenses} incomeData = {income} />;
       case "Pie Chart":
         return <RenderPieChart expensesData={expenses} />;
       case "Line Chart":
