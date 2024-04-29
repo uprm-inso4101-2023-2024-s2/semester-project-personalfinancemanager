@@ -200,7 +200,7 @@ export default function RenderLineChart({incomeData, expensesData}) {
     legend.append('text')
           .attr('x', 15)
           .attr('y', 11)
-          .attr('fill', 'black')
+          .attr('fill', 'white')
           .text('Income');
 
     legend.append('rect')
@@ -213,7 +213,7 @@ export default function RenderLineChart({incomeData, expensesData}) {
     legend.append('text')
           .attr('x', 15)
           .attr('y', 31)
-          .attr('fill', 'black')
+          .attr('fill', 'white')
           .text('Expenses');
 
   }, [expensesData, incomeData, filteredExpenses, filteredIncome]);

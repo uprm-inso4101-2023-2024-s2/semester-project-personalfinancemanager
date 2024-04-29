@@ -19,11 +19,11 @@ function GraphsPage() {
   const renderChart = () => {
     switch (chartType) {
       case "Bar Chart":
-        return <RenderBarChart expensesData={expenses} />;
+        return <RenderBarChart expensesData={expenses} incomeData = {income} />;
       case "Pie Chart":
         return <RenderPieChart expensesData={expenses} />;
       case "Line Chart":
-        return <RenderLineChart />;
+        return <RenderLineChart expensesData ={expenses} incomeData = {income} />;
       case "Diverging Bar Chart":
         return <RenderDBC expensesData ={expenses} incomeData = {income} /> 
       default:
